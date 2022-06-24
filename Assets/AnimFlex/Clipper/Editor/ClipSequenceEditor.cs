@@ -60,16 +60,40 @@ namespace AnimFlex.Clipper.Editor
         {
             for (var i = 0; i < nodesList.arraySize; i++)
             {
+                var oldColor = GUI.color;
+                var oldBackCol = GUI.backgroundColor;
+                GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeColor;
+                GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+
+                
                 GUILayout.BeginHorizontal(EditorStyles.helpBox);
                 GUILayout.BeginVertical();
                 EditorGUI.indentLevel++;
                 DrawClipNodeProperty(nodesList.GetArrayElementAtIndex(i));
                 EditorGUI.indentLevel--;
                 GUILayout.EndVertical();
-                if (GUILayout.Button("X", GUILayout.Width(30))) nodesList.DeleteArrayElementAtIndex(i);
+                if (GUILayout.Button("X", GUILayout.Width(30)))
+                {
+                    nodesList.DeleteArrayElementAtIndex(i);
+                    // resolve connected nodes
+                    for (int j = 0; j < nodesList.arraySize; j++)
+                    {
+                        var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
+                        for (int k = 0; k < nextIndicesProp.arraySize; k++)
+                        {
+                            if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
+                                nextIndicesProp.DeleteArrayElementAtIndex(k);
+                            else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue > i)
+                                nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
+                        }
+                    }
+                }
 
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
+                
+                GUI.color = oldColor;
+                GUI.backgroundColor = oldBackCol;
             }
         }
 
@@ -88,25 +112,23 @@ namespace AnimFlex.Clipper.Editor
 
         private void DrawClipNodeProperty(SerializedProperty clipNode)
         {
-            var oldColor = GUI.color;
-            GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeColor;
-            GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
-
-            // draw name of the node
+            var oldCol = GUI.color;
+            var oldBackCol = GUI.backgroundColor;
+            
             DrawNodeName();
 
             EditorGUILayout.PropertyField(clipNode.FindPropertyRelative("delay"));
 
             // draw clip property
-            GUILayout.BeginVertical(EditorStyles.helpBox);
-            var clip = clipNode.FindPropertyRelative("clip");
             GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipColor;
             GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipBackgroundColor;
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            var clip = clipNode.FindPropertyRelative("clip");
             EditorGUILayout.PropertyField(clip, new GUIContent("Clip Parameters"), true);
             GUILayout.EndVertical();
 
-            GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeColor;
-            GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+            GUI.color = oldCol;
+            GUI.backgroundColor = oldBackCol;
 
             // draw next indices options
             var nextIndicesProp = clipNode.FindPropertyRelative("nextIndices");
@@ -123,8 +145,7 @@ namespace AnimFlex.Clipper.Editor
                 DrawNextIndices();
             }
 
-            GUI.color = oldColor;
-
+            
             void DrawNodeName()
             {
                 // changing editor styles and keeping their old states

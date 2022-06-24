@@ -5,11 +5,7 @@ namespace AnimFlex.Tweening
     [Serializable]
     public abstract class Tween
     {
-        internal void InternalUpdate()
-        {
-            var t = EasingEvaluator.Evaluate(Easing, (Time - delay) * Increment);
-            OnInternalUpdate(t);
-        }
+       
 
         protected abstract void OnInternalUpdate(float t);
 
@@ -25,7 +21,7 @@ namespace AnimFlex.Tweening
 
         /// sets an easing formula to the tween.
         /// for more info, check out https://easings.net
-        public EasingFunc Easing;
+        public Easing easing;
 
         #endregion
 
@@ -52,7 +48,7 @@ namespace AnimFlex.Tweening
         {
             _onStart?.Invoke();
             Increment = 1 / duration;
-            TweeningUpdater.AddTween(this);
+            TweeningUpdater.PlayTween(this);
         }
 
         /// <summary>
@@ -70,18 +66,24 @@ namespace AnimFlex.Tweening
             Time = t * duration + delay;
             InternalUpdate();
         }
-
+        public bool IsFinished => _isFinished;
         #endregion
 
         #region internal
 
+        private bool _isFinished = false;
         internal float Time; // the time it has taken from the initial CreateTween function
         protected float Increment;
         internal void InternalEnd()
         {
             _onEnd?.Invoke();
+            _isFinished = true;
         }
-
+        internal void InternalUpdate()
+        {
+            var t = EasingUtilities.Evaluate(easing, (Time - delay) * Increment);
+            OnInternalUpdate(t);
+        }
         #endregion
     }
 

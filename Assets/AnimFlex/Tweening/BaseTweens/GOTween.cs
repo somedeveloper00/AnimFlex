@@ -15,6 +15,7 @@ namespace AnimFlex.Tweening
             this._instanceObject = instanceObject;
             FromValue = fromValue;
             ToValue = toValue;
+            this.duration = duration;
             Evaluator = evaluator;
         }
 

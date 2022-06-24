@@ -60,7 +60,7 @@ namespace AnimFlex.Clipper.Internal
                 if (nodes[i].nextIndices[j] < nodes.Length) continue;
 
                 Debug.LogError("" +
-                               $"Node {i} has an invalid next node index {nodes[i].nextIndices[j]}. " +
+                               $"Node {i} had an invalid next node index {nodes[i].nextIndices[j]}. " +
                                "It will be removed.");
                 var listTmp = nodes[i].nextIndices.ToList();
                 listTmp.RemoveAt(j--);
