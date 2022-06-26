@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/CallNativeCode.unity
+    path: Assets/Scenes/Sample.unity
     guid: f1b2624f0eb80f548b64c2287ddba3e5
   m_configObjects: {}
