@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useSafeMode: 1
   safeModeOptions:
-    logBehaviour: 2
     nestedTweenFailureBehaviour: 0
   timeScale: 1
   useSmoothDeltaTime: 0
   maxSmoothUnscaledTime: 0.15
   rewindCallbackMode: 0
   showUnityEditorReport: 0
-  logBehaviour: 2
+  logBehaviour: 0
   drawGizmos: 1
   defaultRecyclable: 0
   defaultAutoPlay: 3
@@ -32,8 +31,6 @@ MonoBehaviour:
   defaultEasePeriod: 0
   defaultAutoKill: 1
   defaultLoopType: 0
-  debugMode: 0
-  debugStoreTargetId: 1
   showPreviewPanel: 1
   storeSettingsLocation: 0
   modules:
@@ -45,9 +42,5 @@ MonoBehaviour:
     uiEnabled: 1
     textMeshProEnabled: 0
     tk2DEnabled: 0
-    deAudioEnabled: 0
-    deUnityExtendedEnabled: 0
-    epoOutlineEnabled: 1
-  createASMDEF: 1
   showPlayingTweens: 0
   showPausedTweens: 0
