@@ -29,3 +29,9 @@ AnimFlex is a super-performant graphing solution to create custom sequence calls
 * You can write your custom logics inside OnStart, and add custom serialized fields inside the class itself to get inputs from inspector. 
 For this example, let's just say hi to whoever is calling this clip (note that you have to call `End()` after you're done with your logic)
 ![image](https://user-images.githubusercontent.com/79690923/175805170-287ed29d-f660-42a1-b19d-474b60e8f8e0.png)
+* Now a more useful clip perhaps, huh? one that, for example, can take DoTween animations and play them all at once with predefined delay in a linear way
+![image](https://user-images.githubusercontent.com/79690923/175806488-abd189bf-a1dd-404b-a837-2f6f197080be.png)
+![image](https://user-images.githubusercontent.com/79690923/175806490-f5dcce48-112f-4c38-b181-36dfff86c805.png)
+![sample](https://user-images.githubusercontent.com/79690923/175806506-16519f3c-f691-4a3f-a94a-d4ee17ae7374.gif)
+
+
