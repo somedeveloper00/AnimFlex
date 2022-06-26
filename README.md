@@ -1,7 +1,7 @@
 # AnimFlex
 
-An open source project to solve the problem of having to create logical sequences through code. There's visual graphs now, but some projects don't use the visual graphs for the performance issues or stability.
-AnimFlex is a super-performant graphing solution to create custom sequence calls on the fly. 
+An open source project to solve the problem of having to create performant inspectable sequences. There's Timeline now, but it's not as performant, and as designer friendly as one would like it to be; to create a custom event, you have to go through hell to get it there and ready to use for designers. 
+AnimFlex is a super-performant array-based sequencing solution to create custom event-based clips on the fly.
 
 # Manual
 * you create a "Clip Sequence Component"
@@ -38,7 +38,11 @@ AnimFlex is a super-performant graphing solution to create custom sequence calls
 * You can write your custom logics inside OnStart, and add custom serialized fields inside the class itself to get inputs from inspector. 
 For this example, let's just say hi to whoever is calling this clip (note that you have to call `End()` after you're done with your logic)
 
+
 ![image](https://user-images.githubusercontent.com/79690923/175805170-287ed29d-f660-42a1-b19d-474b60e8f8e0.png)
+![image](https://user-images.githubusercontent.com/79690923/175806987-2a47644b-d8bc-4947-a3be-62d25d9e6674.png)
+![image](https://user-images.githubusercontent.com/79690923/175806992-8afcef38-8ad9-491a-813d-992dc8af34be.png)
+
 * Now a more useful clip perhaps, huh? one that, for example, can take DoTween animations and play them all at once with predefined delay in a linear way
 
 ![image](https://user-images.githubusercontent.com/79690923/175806488-abd189bf-a1dd-404b-a837-2f6f197080be.png)
