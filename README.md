@@ -1,7 +1,7 @@
 # AnimFlex
 
-An open source project to solve the problem of having to create logical sequences through code. There's visual graphs now, but some projects don't use the visual graphs for the performance issues or stability.
-AnimFlex is a super-performant graphing solution to create custom sequence calls on the fly. 
+An open source project to solve the problem of having to create logical sequences through code. There's visual graphs now, but some projects don't use the visual graphs for the performance or stability issues.
+AnimFlex is a super-performant array-based graphing solution to create custom sequence calls on the fly.
 
 # Manual
 * you create a "Clip Sequence Component"
