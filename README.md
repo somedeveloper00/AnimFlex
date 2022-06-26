@@ -37,6 +37,9 @@ AnimFlex is a super-performant array-based sequencing solution to create custom 
 ![image](https://user-images.githubusercontent.com/79690923/175805081-72562db6-0c51-4dc7-a9c8-92d4a21b654c.png)
 * You can write your custom logics inside OnStart, and add custom serialized fields inside the class itself to get inputs from inspector. 
 For this example, let's just say hi to whoever is calling this clip (note that you have to call `End()` after you're done with your logic)
+![image](https://user-images.githubusercontent.com/79690923/175806987-2a47644b-d8bc-4947-a3be-62d25d9e6674.png)
+![image](https://user-images.githubusercontent.com/79690923/175806992-8afcef38-8ad9-491a-813d-992dc8af34be.png)
+
 
 ![image](https://user-images.githubusercontent.com/79690923/175805170-287ed29d-f660-42a1-b19d-474b60e8f8e0.png)
 * Now a more useful clip perhaps, huh? one that, for example, can take DoTween animations and play them all at once with predefined delay in a linear way
