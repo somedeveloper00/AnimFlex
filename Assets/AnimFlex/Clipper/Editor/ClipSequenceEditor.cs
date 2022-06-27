@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using AnimFlex.Clipper.Internal;
@@ -10,6 +11,9 @@ namespace AnimFlex.Clipper.Editor
     [CustomEditor(typeof(ClipSequence))]
     public class ClipSequenceEditor : UnityEditor.Editor
     {
+        // key: serializedProperty's path
+        static private Dictionary<string, bool> _isExtended = new Dictionary<string, bool>();
+        
         private ClipSequence _clipSequence;
 
         private void OnEnable()
@@ -112,14 +116,23 @@ namespace AnimFlex.Clipper.Editor
 
         private void DrawClipNodeProperty(SerializedProperty clipNode)
         {
+            DrawNodeLabel(clipNode, out bool isExtended);
+            if (isExtended)
+            {
+                DrawClipBody(clipNode);
+            }
+            DrawNextNodesGui(clipNode);
+
+        }
+
+        
+        private void DrawClipBody(SerializedProperty clipNode)
+        {
             var oldCol = GUI.color;
             var oldBackCol = GUI.backgroundColor;
-            
-            DrawNodeName();
 
             EditorGUILayout.PropertyField(clipNode.FindPropertyRelative("delay"));
 
-            // draw clip property
             GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipColor;
             GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipBackgroundColor;
             GUILayout.BeginVertical(EditorStyles.helpBox);
@@ -129,24 +142,34 @@ namespace AnimFlex.Clipper.Editor
 
             GUI.color = oldCol;
             GUI.backgroundColor = oldBackCol;
+        }
 
-            // draw next indices options
-            var nextIndicesProp = clipNode.FindPropertyRelative("nextIndices");
-            var playNextAfterFinishProp = clipNode.FindPropertyRelative("playNextAfterFinish");
-
-            EditorGUILayout.PropertyField(playNextAfterFinishProp);
-
-            if (playNextAfterFinishProp.boolValue)
+        private void DrawNodeLabel(SerializedProperty clipNode, out bool isExtended)
+        {
+            GUILayout.BeginHorizontal();
+            isExtended = _isExtended.ContainsKey(clipNode.propertyPath) ? _isExtended[clipNode.propertyPath] : true;
+            var label = isExtended ? "↓" : "→";
+            if (GUILayout.Button(label, GUILayout.Width(20)))
             {
-                if (nextIndicesProp.arraySize > 0) nextIndicesProp.arraySize = 0;
-            }
-            else
-            {
-                DrawNextIndices();
+                isExtended = !isExtended;
+                _isExtended[clipNode.propertyPath] = isExtended;
             }
 
+            DrawNodeName();
+
+            if (!isExtended)
+            {
+                var oldLabelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 0;
+                clipNode.FindPropertyRelative("delay").floatValue = EditorGUILayout.FloatField(GUIContent.none,
+                    clipNode.FindPropertyRelative("delay").floatValue, GUILayout.Width(15));
+                // EditorGUILayout.PropertyField(clipNode.FindPropertyRelative("delay"), GUIContent.none, GUILayout.MaxWidth(15));
+                EditorGUIUtility.labelWidth = oldLabelWidth;
+            }
             
-            void DrawNodeName()
+            GUILayout.EndHorizontal();
+
+            void DrawNodeName(params GUILayoutOption[] options)
             {
                 // changing editor styles and keeping their old states
                 var oldFontSize = EditorStyles.textField.fontSize;
@@ -162,8 +185,10 @@ namespace AnimFlex.Clipper.Editor
                 GUI.backgroundColor = Color.clear;
 
                 var clipNameProp = clipNode.FindPropertyRelative("name");
-                clipNameProp.stringValue = EditorGUILayout.TextField(clipNameProp.stringValue);
+                GUILayout.BeginVertical();
+                clipNameProp.stringValue = EditorGUILayout.TextField(clipNameProp.stringValue, options);
                 GUILayout.Space(5);
+                GUILayout.EndVertical();
 
                 // reverting the editor styles old states
                 EditorStyles.textField.fontSize = oldFontSize;
@@ -172,14 +197,50 @@ namespace AnimFlex.Clipper.Editor
                 EditorGUIUtility.labelWidth = oldLabelWidth;
                 GUI.backgroundColor = oldBackgroundColor;
             }
+            
+
+        }
+
+        private void DrawNextNodesGui(SerializedProperty clipNode)
+        {
+            var nextIndicesProp = clipNode.FindPropertyRelative("nextIndices");
+            var playNextAfterFinishProp = clipNode.FindPropertyRelative("playNextAfterFinish");
+
+
+            if (playNextAfterFinishProp.boolValue)
+            {
+                if (nextIndicesProp.arraySize > 0) nextIndicesProp.arraySize = 0;
+            }
+            
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            
+            
+            GUILayout.BeginHorizontal();
+            
+            GUILayout.Label("Next Clip Nodes", EditorStyles.boldLabel, GUILayout.MaxWidth(90));
+
+            GUILayout.FlexibleSpace();
+            
+            // draw "play next" toggle
+            var oldLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 80;
+            EditorGUILayout.PropertyField(playNextAfterFinishProp, new GUIContent("Play Next", "Plays next node whe finished"));
+            EditorGUIUtility.labelWidth = oldLabelWidth;
+            
+            GUILayout.EndHorizontal();
+
+            if (!playNextAfterFinishProp.boolValue)
+            {
+                DrawNextIndices();
+            }
+            
+            GUILayout.EndVertical();
+
 
             void DrawNextIndices()
             {
                 var currentLayoutWidth = EditorGUIUtility.currentViewWidth;
                 var widthLeft = currentLayoutWidth;
-
-                GUILayout.BeginVertical(EditorStyles.helpBox);
-                GUILayout.Label("Next Clip Nodes", EditorStyles.boldLabel);
 
                 GUILayout.BeginHorizontal();
                 for (var i = 0; i < nextIndicesProp.arraySize; i++)
@@ -187,13 +248,13 @@ namespace AnimFlex.Clipper.Editor
                     if (serializedObject.FindProperty("nodes").arraySize <=
                         nextIndicesProp.GetArrayElementAtIndex(i).intValue) continue;
 
-                    var nextIndexNodeName =
-                        serializedObject.FindProperty("nodes")
-                            .GetArrayElementAtIndex(nextIndicesProp.GetArrayElementAtIndex(i).intValue)
-                            .FindPropertyRelative("name").stringValue;
+                    var nextIndexNodeName = serializedObject.FindProperty("nodes")
+                        .GetArrayElementAtIndex(nextIndicesProp.GetArrayElementAtIndex(i).intValue)
+                        .FindPropertyRelative("name")
+                        .stringValue;
 
                     var estimatedWidth = EditorStyles.textField.CalcSize(new GUIContent(nextIndexNodeName)).x;
-                    if (estimatedWidth >= widthLeft - 20)
+                    if (estimatedWidth >= widthLeft - 40)
                     {
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal();
@@ -202,13 +263,13 @@ namespace AnimFlex.Clipper.Editor
 
                     // actual button
                     if (GUILayout.Button(new GUIContent(nextIndexNodeName, "Click to remove"),
-                            GUILayout.ExpandWidth(false))) nextIndicesProp.DeleteArrayElementAtIndex(i);
+                        GUILayout.ExpandWidth(false))) nextIndicesProp.DeleteArrayElementAtIndex(i);
                     widthLeft -= estimatedWidth;
                 }
 
                 // draw add button now
                 var estimatedAddButtonRect = EditorStyles.textField.CalcSize(new GUIContent("Add Next      ")).x;
-                if (estimatedAddButtonRect >= widthLeft - 20)
+                if (estimatedAddButtonRect >= widthLeft - 40)
                 {
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal();
@@ -216,13 +277,15 @@ namespace AnimFlex.Clipper.Editor
                 }
 
                 if (GUILayout.Button(new GUIContent("Add Next      ", "Click to add"), EditorStyles.toolbarDropDown,
-                        GUILayout.ExpandWidth(false)))
+                    GUILayout.ExpandWidth(false)))
                 {
                     var menu = new GenericMenu();
                     for (var i = 0; i < serializedObject.FindProperty("nodes").arraySize; i++)
                     {
-                        var clipNodeName = serializedObject.FindProperty("nodes").GetArrayElementAtIndex(i)
-                            .FindPropertyRelative("name").stringValue;
+                        var clipNodeName = serializedObject.FindProperty("nodes")
+                            .GetArrayElementAtIndex(i)
+                            .FindPropertyRelative("name")
+                            .stringValue;
                         var currentIndex = i; // copying the index to a local variable to avoid the closure issue
                         menu.AddItem(new GUIContent(clipNodeName), false, () =>
                         {
@@ -237,7 +300,7 @@ namespace AnimFlex.Clipper.Editor
                 }
 
                 GUILayout.EndHorizontal();
-                GUILayout.EndVertical();
+
             }
         }
 

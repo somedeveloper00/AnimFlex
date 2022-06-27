@@ -600,14 +600,14 @@ MonoBehaviour:
     delay: 0
     clip:
       id: 0
-    playNextAfterFinish: 0
-    nextIndices: 0100000002000000
+    playNextAfterFinish: 1
+    nextIndices: 
   - name: Loop Log
     delay: 1
     clip:
       id: 1
-    playNextAfterFinish: 0
-    nextIndices: 01000000
+    playNextAfterFinish: 1
+    nextIndices: 
   - name: Look At Cube
     delay: 1
     clip:
