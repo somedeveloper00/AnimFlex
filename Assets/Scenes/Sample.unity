@@ -311,6 +311,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &740806027
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 740806029}
+  - component: {fileID: 740806028}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &740806028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740806027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cce583af5144b8bcc8249a857640aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sequence: {fileID: 0}
+  myInts: 0c0000000e000000
+  myInt: 0
+--- !u!4 &740806029
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740806027}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.131034, y: 0.025997186, z: 0.32478714}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1001936792
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,77 +641,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playOnStart: 1
-  nodes:
-  - name: Hello World
-    delay: 0
-    clip:
-      id: 0
-    playNextAfterFinish: 1
-    nextIndices: 
-  - name: Loop Log
-    delay: 1
-    clip:
-      id: 1
-    playNextAfterFinish: 1
-    nextIndices: 
-  - name: Look At Cube
-    delay: 1
-    clip:
-      id: 2
-    playNextAfterFinish: 1
-    nextIndices: 
-  - name: Look At Capsule
-    delay: 1
-    clip:
-      id: 3
-    playNextAfterFinish: 0
-    nextIndices: 02000000
+  nodes: []
   references:
     version: 1
-    00000000:
-      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
-      data:
-        Message: Hello World!
-    00000001:
-      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
-      data:
-        Message: A second passed...
-    00000002:
-      type: {class: CEvent, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
-      data:
-        Event:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 11}
-              m_TargetAssemblyTypeName: UnityEngine.Transform, UnityEngine
-              m_MethodName: LookAt
-              m_Mode: 2
-              m_Arguments:
-                m_ObjectArgument: {fileID: 1298475371}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-    00000003:
-      type: {class: CEvent, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
-      data:
-        Event:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 11}
-              m_TargetAssemblyTypeName: UnityEngine.Transform, UnityEngine
-              m_MethodName: LookAt
-              m_Mode: 2
-              m_Arguments:
-                m_ObjectArgument: {fileID: 718048056}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
 --- !u!4 &2024217262
 Transform:
   m_ObjectHideFlags: 0
@@ -674,7 +652,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2024217260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.2962637, y: -1.3415256, z: -0.4452858}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

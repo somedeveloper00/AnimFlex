@@ -4,7 +4,7 @@ using System.Linq;
 using AnimFlex.Clipper.ClipModules;
 using UnityEngine;
 
-namespace AnimFlex.Clipper.Internal
+namespace AnimFlex.Clipper
 {
     public sealed class ClipSequence : MonoBehaviour
     {

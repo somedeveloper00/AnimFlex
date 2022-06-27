@@ -1,16 +1,15 @@
-﻿using System.ComponentModel;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AnimFlex.Clipper.Clips
 {
-    [DisplayName("Log")]
+    [System.ComponentModel.DisplayName("Log")]
     public class CLog : Clip
     {
-        public string Message;
+        public string message;
 
         protected override void OnStart()
         {
-            Debug.Log(Message);
+            Debug.Log(message);
             End();
         }
     }

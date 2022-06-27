@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using AnimFlex.Clipper.Internal;
 using UnityEditor;
 using UnityEngine;
+using Object = System.Object;
 
 namespace AnimFlex.Clipper.Editor
 {
@@ -35,30 +35,20 @@ namespace AnimFlex.Clipper.Editor
 
             if (GUILayout.Button("+ Add", EditorStyles.toolbarButton))
             {
-                var classTypes =
-                    from assemblyDomain in AppDomain.CurrentDomain.GetAssemblies()
-                    from type in assemblyDomain.GetTypes()
-                    where type.IsSubclassOf(typeof(Clip)) && !type.IsAbstract
-                    select type;
-
-                var menu = new GenericMenu();
-                foreach (var type in classTypes)
-                    menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(GetTypeName(type))), false, () =>
-                    {
-                        nodesList.arraySize++;
-                        var clip = nodesList.GetArrayElementAtIndex(nodesList.arraySize - 1)
-                            .FindPropertyRelative("clip");
-                        clip.managedReferenceValue = Activator.CreateInstance(type);
-                        serializedObject.ApplyModifiedProperties();
-                    });
-                menu.ShowAsContext();
+                ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((value) =>
+                {
+                    nodesList.arraySize++;
+                    var clip = nodesList.GetArrayElementAtIndex(nodesList.arraySize - 1)
+                        .FindPropertyRelative("clip");
+                    clip.managedReferenceValue = value;
+                    serializedObject.ApplyModifiedProperties();
+                });
             }
 
             serializedObject.ApplyModifiedProperties();
             RevertCustomEditorStyles();
         }
 
-   
 
         private void DrawClipNodes(SerializedProperty nodesList)
         {
@@ -76,22 +66,8 @@ namespace AnimFlex.Clipper.Editor
                 DrawClipNodeProperty(nodesList.GetArrayElementAtIndex(i));
                 EditorGUI.indentLevel--;
                 GUILayout.EndVertical();
-                if (GUILayout.Button("X", GUILayout.Width(30)))
-                {
-                    nodesList.DeleteArrayElementAtIndex(i);
-                    // resolve connected nodes
-                    for (int j = 0; j < nodesList.arraySize; j++)
-                    {
-                        var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
-                        for (int k = 0; k < nextIndicesProp.arraySize; k++)
-                        {
-                            if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
-                                nextIndicesProp.DeleteArrayElementAtIndex(k);
-                            else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue > i)
-                                nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
-                        }
-                    }
-                }
+                
+                DrawNodeTools(nodesList, i);
 
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
@@ -99,6 +75,79 @@ namespace AnimFlex.Clipper.Editor
                 GUI.color = oldColor;
                 GUI.backgroundColor = oldBackCol;
             }
+        }
+
+        private void DrawNodeTools(SerializedProperty nodesList, int i)
+        {
+            GUILayout.BeginVertical();
+            if (GUILayout.Button("X", GUILayout.Width(30)))
+            {
+                nodesList.DeleteArrayElementAtIndex(i);
+                // resolve connected nodes
+                for (int j = 0; j < nodesList.arraySize; j++)
+                {
+                    var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
+                    for (int k = 0; k < nextIndicesProp.arraySize; k++)
+                    {
+                        if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
+                            nextIndicesProp.DeleteArrayElementAtIndex(k);
+                        else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue > i)
+                            nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
+                    }
+                }
+                serializedObject.ApplyModifiedProperties();
+                Repaint();
+            }
+
+            GUILayout.Space(5);
+            
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            
+            EditorGUI.BeginDisabledGroup(i == 0);
+            if (GUILayout.Button("▲", GUILayout.Width(25)))
+            {
+                for (int j = 0; j < nodesList.arraySize; j++)
+                {
+                    var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
+                    for (int k = 0; k < nextIndicesProp.arraySize; k++)
+                    {
+                        if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
+                            nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
+                        else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i - 1)
+                            nextIndicesProp.GetArrayElementAtIndex(k).intValue++;
+                    }
+                }
+                // nodesList.MoveArrayElement(i, i - 1);
+                serializedObject.ApplyModifiedProperties();
+                (_clipSequence.nodes[i], _clipSequence.nodes[i - 1]) = (_clipSequence.nodes[i - 1], _clipSequence.nodes[i]);
+                serializedObject.Update();
+                Repaint();
+            }
+            EditorGUI.EndDisabledGroup();
+            
+            EditorGUI.BeginDisabledGroup(i == nodesList.arraySize - 1);
+            if (GUILayout.Button("▼", GUILayout.Width(25)))
+            {
+                for (int j = 0; j < nodesList.arraySize; j++)
+                {
+                    var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
+                    for (int k = 0; k < nextIndicesProp.arraySize; k++)
+                    {
+                        if(nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
+                            nextIndicesProp.GetArrayElementAtIndex(k).intValue ++;
+                        else if(nextIndicesProp.GetArrayElementAtIndex(k).intValue == i + 1)
+                            nextIndicesProp.GetArrayElementAtIndex(k).intValue --;
+                    }
+                }
+                nodesList.MoveArrayElement(i, i + 1);
+                serializedObject.ApplyModifiedProperties();
+                Repaint();
+            }
+            EditorGUI.EndDisabledGroup();
+            
+            GUILayout.EndVertical();
+            
+            GUILayout.EndVertical();
         }
 
         private void SetupCustomEditorStyles()
@@ -131,12 +180,18 @@ namespace AnimFlex.Clipper.Editor
             var oldCol = GUI.color;
             var oldBackCol = GUI.backgroundColor;
 
-            EditorGUILayout.PropertyField(clipNode.FindPropertyRelative("delay"));
-
             GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipColor;
             GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipBackgroundColor;
+            
             GUILayout.BeginVertical(EditorStyles.helpBox);
             var clip = clipNode.FindPropertyRelative("clip");
+            
+            // label
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            DrawClipDropdownLabel(clip);
+            GUILayout.EndHorizontal();
+            
             EditorGUILayout.PropertyField(clip, new GUIContent("Clip Parameters"), true);
             GUILayout.EndVertical();
 
@@ -144,10 +199,24 @@ namespace AnimFlex.Clipper.Editor
             GUI.backgroundColor = oldBackCol;
         }
 
+        private void DrawClipDropdownLabel(SerializedProperty clip)
+        {
+            var currentType = ClipEditorsUtility.FindType(clip.managedReferenceFullTypename.Split(' ').Last());
+            var typeButtonLabel = ClipEditorsUtility.GetTypeName(currentType);
+            if (GUILayout.Button($"  {typeButtonLabel} ", EditorStyles.toolbarDropDown, GUILayout.ExpandWidth(false)))
+            {
+                ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((value) =>
+                {
+                    clip.managedReferenceValue = value;
+                    serializedObject.ApplyModifiedProperties();
+                });
+            }
+        }
+
         private void DrawNodeLabel(SerializedProperty clipNode, out bool isExtended)
         {
             GUILayout.BeginHorizontal();
-            isExtended = _isExtended.ContainsKey(clipNode.propertyPath) ? _isExtended[clipNode.propertyPath] : true;
+            isExtended = !_isExtended.ContainsKey(clipNode.propertyPath) || _isExtended[clipNode.propertyPath];
             var label = isExtended ? "↓" : "→";
             if (GUILayout.Button(label, GUILayout.Width(20)))
             {
@@ -157,15 +226,10 @@ namespace AnimFlex.Clipper.Editor
 
             DrawNodeName();
 
-            if (!isExtended)
-            {
-                var oldLabelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = 0;
-                clipNode.FindPropertyRelative("delay").floatValue = EditorGUILayout.FloatField(GUIContent.none,
-                    clipNode.FindPropertyRelative("delay").floatValue, GUILayout.Width(15));
-                // EditorGUILayout.PropertyField(clipNode.FindPropertyRelative("delay"), GUIContent.none, GUILayout.MaxWidth(15));
-                EditorGUIUtility.labelWidth = oldLabelWidth;
-            }
+            var oldLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 60;
+            EditorGUILayout.PropertyField(clipNode.FindPropertyRelative("delay"), GUILayout.Width(100));
+            EditorGUIUtility.labelWidth = oldLabelWidth;
             
             GUILayout.EndHorizontal();
 
@@ -302,14 +366,6 @@ namespace AnimFlex.Clipper.Editor
                 GUILayout.EndHorizontal();
 
             }
-        }
-
-        private static string GetTypeName(Type type)
-        {
-            return type.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() is DisplayNameAttribute
-                displayNameAttr
-                ? displayNameAttr.DisplayName
-                : type.Name;
         }
     }
 }
