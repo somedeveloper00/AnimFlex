@@ -332,6 +332,7 @@ namespace AnimFlex.Clipper.Editor
                 serializedObject.Update();
             }
             EditorGUI.EndDisabledGroup();
+            GUILayout.EndVertical();
             
             GUILayout.FlexibleSpace();
 
@@ -346,7 +347,6 @@ namespace AnimFlex.Clipper.Editor
                 });
             }
             
-            GUILayout.EndVertical();
             
             GUILayout.EndVertical();
         }

@@ -215,6 +215,132 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 10}
   m_Enabled: 1
+--- !u!1 &186830565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 186830566}
+  - component: {fileID: 186830567}
+  m_Layer: 0
+  m_Name: Array set & check
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &186830566
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186830565}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.131034, y: 0.025997186, z: 0.32478714}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &186830567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186830565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8965c2b594e54cd6bf03c79ba9591c83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnStart: 0
+  nodes:
+  - inspectorColor: {r: 1, g: 0.23113209, b: 0.23113209, a: 0}
+    groupName: Start & wrong set
+    name: set list wrong
+    delay: 0
+    clip:
+      id: 0
+    playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 0, g: 0, b: 0, a: 0}
+    groupName: Start & wrong set
+    name: log
+    delay: 0
+    clip:
+      id: 1
+    playNextAfterFinish: 0
+    nextIndices: 0200000004000000
+  - inspectorColor: {r: 0.2688679, g: 0.8841036, b: 1, a: 0}
+    groupName: set right value
+    name: Set right value
+    delay: 1
+    clip:
+      id: 2
+    playNextAfterFinish: 0
+    nextIndices: 
+  - inspectorColor: {r: 0, g: 0, b: 0, a: 0}
+    groupName: set right value
+    name: log
+    delay: 0
+    clip:
+      id: 3
+    playNextAfterFinish: 0
+    nextIndices: 
+  - inspectorColor: {r: 0.9019475, g: 1, b: 0, a: 0}
+    groupName: Wait until right
+    name: wait until right
+    delay: 0
+    clip:
+      id: 4
+    playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 0.12673378, g: 1, b: 0, a: 0}
+    groupName: Wait until right
+    name: success log
+    delay: 0
+    clip:
+      id: 5
+    playNextAfterFinish: 0
+    nextIndices: 
+  references:
+    version: 1
+    00000000:
+      type: {class: CSetValuesListInt, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        component: {fileID: 740806028}
+        valueName: myInts
+        value: 0100000002000000
+    00000001:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: value set wrong
+    00000002:
+      type: {class: CSetValuesListInt, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        component: {fileID: 740806028}
+        valueName: myInts
+        value: 010000000200000003000000
+    00000003:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: value set right!
+    00000004:
+      type: {class: CWaitUntilListInt, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        valueName: myInts
+        component: {fileID: 740806028}
+        checkEvery: 2
+        value: 010000000200000003000000
+    00000005:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: SUCCESS
 --- !u!1 &718048052
 GameObject:
   m_ObjectHideFlags: 0

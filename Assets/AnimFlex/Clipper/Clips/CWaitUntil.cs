@@ -51,12 +51,12 @@ namespace AnimFlex.Clipper.Clips
             if(secondsPassed > checkEvery)
             {
                 startTicks = DateTime.UtcNow.Ticks;
-                return Equals(cachedFieldInfo.GetValue(component), value);
+                return IsEqual((T)cachedFieldInfo.GetValue(component), value);
             }
 
             return false;
         }
         
-        protected abstract bool Equals(T a, T b);
+        protected abstract bool IsEqual(T a, T b);
     }
 }

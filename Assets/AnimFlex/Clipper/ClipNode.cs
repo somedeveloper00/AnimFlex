@@ -8,7 +8,7 @@ namespace AnimFlex.Clipper
     {
 #if UNITY_EDITOR
         [SerializeField] private Color inspectorColor;
-        [SerializeField] private string groupName;
+        [SerializeField] internal string groupName;
 #endif
         public string name;
         public float delay;
