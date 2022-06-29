@@ -11,9 +11,8 @@ namespace AnimFlex.Clipper
         public bool playOnStart = true;
 
         [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
+
         private readonly List<(float t, int index)> _delayedNodesInQueue = new List<(float t, int index)>();
-
-
         private readonly List<(int id, Action action)> _onUpdates = new List<(int id, Action action)>();
         private int _lastID = -1;
 

@@ -342,7 +342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sequence: {fileID: 0}
   myInts: 0c0000000e000000
-  myInt: 0
+  myInt: 1
 --- !u!4 &740806029
 Transform:
   m_ObjectHideFlags: 0
@@ -622,7 +622,7 @@ GameObject:
   - component: {fileID: 2024217262}
   - component: {fileID: 2024217261}
   m_Layer: 0
-  m_Name: sequence
+  m_Name: Get & Set Value Sample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -640,35 +640,89 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8965c2b594e54cd6bf03c79ba9591c83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playOnStart: 1
+  playOnStart: 0
   nodes:
   - inspectorColor: {r: 0, g: 0, b: 0, a: 0}
-    name: Node 0
+    groupName: Start
+    name: Start
     delay: 0
     clip:
       id: 0
-    playNextAfterFinish: 0
-    nextIndices: 0100000000000000
-  - inspectorColor: {r: 1, g: 0.36320752, b: 0.7132716, a: 0}
-    name: Node 1
+    playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 1, g: 0.28773582, b: 0.28773582, a: 0}
+    groupName: Start
+    name: Set Wrong Value
     delay: 0
     clip:
       id: 1
+    playNextAfterFinish: 0
+    nextIndices: 0400000002000000
+  - inspectorColor: {r: 0.20091248, g: 1, b: 0, a: 0}
+    groupName: Setting The right value after delay
+    name: Set Right Value
+    delay: 2
+    clip:
+      id: 2
     playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 0, g: 0, b: 0, a: 0}
+    groupName: Setting The right value after delay
+    name: log
+    delay: 0
+    clip:
+      id: 3
+    playNextAfterFinish: 0
+    nextIndices: 
+  - inspectorColor: {r: 0.91523623, g: 1, b: 0.4009434, a: 0}
+    groupName: Check & Finish
+    name: Check...
+    delay: 0
+    clip:
+      id: 4
+    playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 1, g: 1, b: 1, a: 0}
+    groupName: Check & Finish
+    name: Finish
+    delay: 0
+    clip:
+      id: 5
+    playNextAfterFinish: 0
     nextIndices: 
   references:
     version: 1
     00000000:
       type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
       data:
-        message: 
+        message: Start
     00000001:
-      type: {class: CWaitUntilVector4, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      type: {class: CSetValuesInt, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
       data:
-        valueName: 
-        component: {fileID: 0}
-        checkEvery: 0.1
-        value: {x: 0, y: 0, z: 0, w: 0}
+        component: {fileID: 740806028}
+        valueName: myInt
+        value: 1
+    00000002:
+      type: {class: CSetValuesInt, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        component: {fileID: 740806028}
+        valueName: myInt
+        value: 3
+    00000003:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: value set to he right value
+    00000004:
+      type: {class: CWaitUntilInt, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        valueName: myInt
+        component: {fileID: 740806028}
+        checkEvery: 5
+        value: 3
+    00000005:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: FINISH
 --- !u!4 &2024217262
 Transform:
   m_ObjectHideFlags: 0

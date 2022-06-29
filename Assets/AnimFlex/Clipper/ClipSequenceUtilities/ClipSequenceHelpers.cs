@@ -43,7 +43,7 @@ namespace AnimFlex.Clipper
                 for (var i = 0; i < node.nextIndices.Length; i++)
                 {
                     if (node.nextIndices[i] == fromIndex) node.nextIndices[i] = toIndex;
-                    if (node.nextIndices[i] == toIndex) node.nextIndices[i] = fromIndex;
+                    else if (node.nextIndices[i] == toIndex) node.nextIndices[i] = fromIndex;
                 }
             }
         }
@@ -57,5 +57,26 @@ namespace AnimFlex.Clipper
             });
             nodes = tmp.ToArray();
         }
+
+        public void InsertNewClipAt(Clip clip, int index)
+        {
+            var tmp = nodes.ToList();
+            tmp.Insert(index, new ClipNode()
+            {
+                clip = clip,
+                name = $"Node {index}"
+            });
+            nodes = tmp.ToArray();
+            foreach (var node in nodes)
+            {
+                for (int i = 0; i < node.nextIndices.Length; i++)
+                {
+                    if(node.nextIndices[i] >= index) node.nextIndices[i]++;
+                }
+            }
+        }
+        public void Pause() => this.enabled = false;
+        public void Resume() => this.enabled = true;
+        public void StopAndDeleteComponent() => Destroy(this);
     }
 }

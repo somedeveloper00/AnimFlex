@@ -42,7 +42,7 @@ namespace AnimFlex.Clipper.Clips
         protected override void OnStart()
         {
             GetFieldInfo();
-            startTicks = DateTime.UtcNow.Ticks;
+            startTicks = 0; // so it checks in the first frame
         }
 
         public bool CanEnd()
@@ -50,7 +50,6 @@ namespace AnimFlex.Clipper.Clips
             var secondsPassed = (DateTime.UtcNow.Ticks - startTicks) * 0.000_000_1f;
             if(secondsPassed > checkEvery)
             {
-                Debug.Log("checking");
                 startTicks = DateTime.UtcNow.Ticks;
                 return Equals(cachedFieldInfo.GetValue(component), value);
             }

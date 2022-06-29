@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1d675e924bb4a37a2e7fb9bd8fc0336, type: 3}
   m_Name: ClipSequencerEditorPrefs
   m_EditorClassIdentifier: 
-  clipNodeColor: {r: 0.3443396, g: 1, b: 0.93665284, a: 1}
+  clipNodeColor: {r: 0.93675566, g: 1, b: 0.61, a: 1}
   clipNodeBackgroundColor: {r: 1, g: 1, b: 1, a: 1}
   clipColor: {r: 1, g: 1, b: 1, a: 1}
   clipBackgroundColor: {r: 1, g: 1, b: 1, a: 1}

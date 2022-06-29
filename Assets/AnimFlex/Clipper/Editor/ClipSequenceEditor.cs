@@ -15,6 +15,7 @@ namespace AnimFlex.Clipper.Editor
         static private Dictionary<string, bool> _isExtended = new Dictionary<string, bool>();
         
         private ClipSequence _clipSequence;
+        private GUIStyle _biggerButtons;
 
         private void OnEnable()
         {
@@ -44,47 +45,250 @@ namespace AnimFlex.Clipper.Editor
                 });
             }
 
+
+            EditorGUI.BeginDisabledGroup(!Application.isPlaying);
+            GUILayout.Space(15);
+            DrawPlaybackTools();
+            EditorGUI.EndDisabledGroup();
             RevertCustomEditorStyles();
             serializedObject.ApplyModifiedProperties();
         }
 
+        private void DrawPlaybackTools()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if(GUILayout.Button("Play", EditorStyles.toolbarButton))
+            {
+                _clipSequence.Play();
+            }
+            if (GUILayout.Button("Resume", EditorStyles.toolbarButton))
+            {
+                _clipSequence.Resume();
+            }
+            if(GUILayout.Button("Pause", EditorStyles.toolbarButton))
+            {
+                _clipSequence.Pause();
+            }
+            if(GUILayout.Button("Stop", EditorStyles.toolbarButton))
+            {
+                _clipSequence.StopAndDeleteComponent();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
 
+ 
         private void DrawClipNodes(SerializedProperty nodesList)
         {
+            var oldColor = GUI.color;
+            var oldBackCol = GUI.backgroundColor;
+            
+            string lastGroupName = String.Empty;
+            
+            
             for (var i = 0; i < nodesList.arraySize; i++)
             {
-                var oldColor = GUI.color;
-                var oldBackCol = GUI.backgroundColor;
-                GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
-                GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
-                
-                GUILayout.BeginHorizontal(EditorStyles.helpBox);
-                GUILayout.BeginVertical();
-                EditorGUI.indentLevel++;
-                
                 SerializedProperty clipNode = nodesList.GetArrayElementAtIndex(i);
-                DrawNodeLabel(clipNode, out bool isExtended);
-                if (isExtended)
+                
+                // start of group check
+                var groupNameProp = clipNode.FindPropertyRelative("groupName");
+                bool canAddGroup = false;
+                bool isFirstElementInGroup = false;
+                bool isLastElementInGroup = false;
+                bool isGroupExtended = _isExtended.ContainsKey(groupNameProp.stringValue) && _isExtended[groupNameProp.stringValue];
+                
+
+                GroupTopBar(groupNameProp, i, isGroupExtended, ref isFirstElementInGroup, ref canAddGroup, ref isLastElementInGroup);
+
+
+                if (groupNameProp.stringValue == String.Empty || isGroupExtended)
                 {
-                    GUI.color = oldColor;
-                    GUI.backgroundColor = oldBackCol;
-                    DrawClipBody(clipNode, i);
                     GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
                     GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+                    
+                    
+                    GUILayout.BeginHorizontal();
+                    DrawGroupToolbar(canAddGroup, groupNameProp, i, isFirstElementInGroup, isLastElementInGroup);
+
+                    GUILayout.Space(10);
+                    
+                    GUILayout.BeginHorizontal(EditorStyles.helpBox, GUILayout.ExpandHeight(false));
+                    
+                    
+                    GUILayout.BeginVertical();
+                    EditorGUI.indentLevel++;
+                    
+                    DrawNodeLabel(clipNode, out bool isExtended);
+                    if (isExtended)
+                    {
+                        GUI.color = oldColor;
+                        GUI.backgroundColor = oldBackCol;
+                        DrawClipBody(clipNode, i);
+                        GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
+                        GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+                    }
+                    
+                    DrawNextNodesGui(clipNode);
+                    
+                    EditorGUI.indentLevel--;
+                    GUILayout.EndVertical();
+                    
+                    DrawNodeTools(nodesList, i);
+
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10);
+                    
+                    GUI.color = oldColor;
+                    GUI.backgroundColor = oldBackCol;
                 }
                 
-                DrawNextNodesGui(clipNode);
                 
-                EditorGUI.indentLevel--;
-                GUILayout.EndVertical();
-                
-                DrawNodeTools(nodesList, i);
+                if(isLastElementInGroup) 
+                    GUILayout.EndVertical();
+            }
 
-                GUILayout.EndHorizontal();
-                GUILayout.Space(5);
-                
-                GUI.color = oldColor;
-                GUI.backgroundColor = oldBackCol;
+            void GroupTopBar(SerializedProperty groupNameProp, int i, bool isGroupExtended, ref bool isFirstElementInGroup, ref bool canAddGroup, ref bool isLastElementInGroup)
+            {
+                if (lastGroupName == String.Empty)
+                {
+                    if (groupNameProp.stringValue != string.Empty)
+                    {
+                        GUILayout.BeginVertical(EditorStyles.helpBox);
+                        lastGroupName = groupNameProp.stringValue;
+
+                        EditorGUI.BeginChangeCheck();
+
+                        EditorGUILayout.BeginHorizontal();
+                        DrawGroupLabel();
+                        GUILayout.EndHorizontal();
+
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            if (lastGroupName != groupNameProp.stringValue)
+                            {
+                                // emoty string is a specially invalid case
+                                if (groupNameProp.stringValue == String.Empty)
+                                    groupNameProp.stringValue = lastGroupName;
+                                
+                                // syncing the groupName of the rest of the group
+                                for (int k = i + 1; k < nodesList.arraySize; k++)
+                                {
+                                    var elementGroupNameProp = nodesList.GetArrayElementAtIndex(k).FindPropertyRelative("groupName");
+                                    if (elementGroupNameProp.stringValue == lastGroupName)
+                                        elementGroupNameProp.stringValue = groupNameProp.stringValue;
+                                }
+
+                                _isExtended[groupNameProp.stringValue] = isGroupExtended;
+                            }
+                        }
+
+                        isFirstElementInGroup = true;
+                    }
+                    else
+                    {
+                        canAddGroup = true;
+                    }
+                }
+
+                // check if last element in group
+                if (groupNameProp.stringValue != String.Empty)
+                {
+                    if (i == nodesList.arraySize - 1 ||
+                        nodesList.GetArrayElementAtIndex(i + 1).FindPropertyRelative("groupName").stringValue != groupNameProp.stringValue)
+                    {
+                        lastGroupName = String.Empty;
+                        isLastElementInGroup = true;
+                    }
+                }
+                void DrawGroupLabel()
+                {
+                    BigLabel("Group Name: ", FontStyle.Normal, GUILayout.MaxWidth(100));
+                    BigTextField(groupNameProp, GUILayout.ExpandWidth(true));
+                    if (GUILayout.Button(new GUIContent("/", "Show/Hide group"), GUILayout.Width(100)))
+                    {
+                        _isExtended[groupNameProp.stringValue] = !isGroupExtended;
+                    }
+                }
+            }
+
+            void DrawGroupToolbar(bool canAddGroup, SerializedProperty groupNameProp, int i, bool isFirstElementInGroup, bool isLastElementInGroup)
+            {
+                GUILayout.BeginVertical(GUILayout.Width(20), GUILayout.ExpandHeight(true));
+                if (canAddGroup)
+                {
+                    // add group button
+                    if (GUILayout.Button(new GUIContent("+", "Add a new group here"), _biggerButtons, GUILayout.Width(20),
+                            GUILayout.ExpandHeight(true)))
+                    {
+                        groupNameProp.stringValue = $"Group ({(i + 1)})";
+                        _isExtended[groupNameProp.stringValue] = true;
+                    }
+                }
+                else
+                {
+                    if (isFirstElementInGroup)
+                    {
+                        // expand button
+                        EditorGUI.BeginDisabledGroup(i == 0);
+                        if (GUILayout.Button(new GUIContent("+", "Add the below cip to this group"), _biggerButtons, GUILayout.Width(20)))
+                        {
+                            nodesList.GetArrayElementAtIndex(i - 1).FindPropertyRelative("groupName").stringValue =
+                                groupNameProp.stringValue;
+                        }
+
+                        EditorGUI.EndDisabledGroup();
+
+                        if (!isLastElementInGroup)
+                        {
+                            if (GUILayout.Button(new GUIContent("-", "Remove Top-most cip from this group"), _biggerButtons, GUILayout.Width(20)))
+                            {
+                                groupNameProp.stringValue = string.Empty;
+                            }
+                        }
+                    }
+
+                    if (isFirstElementInGroup && isLastElementInGroup)
+                    {
+                        // delete button
+                        if (GUILayout.Button(new GUIContent("X", "Delete group"), _biggerButtons, GUILayout.Width(20),
+                                GUILayout.ExpandHeight(true)))
+                        {
+                            groupNameProp.stringValue = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        GUILayout.FlexibleSpace();
+                    }
+
+                    if (isLastElementInGroup)
+                    {
+                        if (!isFirstElementInGroup)
+                        {
+                            // shrink button
+                            if (GUILayout.Button(new GUIContent("-", "Remove Bottom-most cip from this group"),
+                                    GUILayout.Width(20)))
+                            {
+                                groupNameProp.stringValue = String.Empty;
+                            }
+                        }
+
+                        // expand group
+                        EditorGUI.BeginDisabledGroup(i == nodesList.arraySize - 1);
+                        if (GUILayout.Button(new GUIContent("+", "Add the below cip to this group"), _biggerButtons, GUILayout.Width(20)))
+                        {
+                            nodesList.GetArrayElementAtIndex(i + 1).FindPropertyRelative("groupName").stringValue =
+                                groupNameProp.stringValue;
+                        }
+
+                        EditorGUI.EndDisabledGroup();
+                    }
+                }
+
+                GUILayout.EndVertical();
             }
         }
 
@@ -129,6 +333,19 @@ namespace AnimFlex.Clipper.Editor
             }
             EditorGUI.EndDisabledGroup();
             
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button(new GUIContent("+↯", "Insert a new clip below"), _biggerButtons, GUILayout.Width(30)))
+            {
+                ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((clip) =>
+                {
+                    serializedObject.ApplyModifiedProperties();
+                    Undo.RecordObject(_clipSequence, "Insert Clip");
+                    _clipSequence.InsertNewClipAt(clip, i + 1);
+                    serializedObject.Update();
+                });
+            }
+            
             GUILayout.EndVertical();
             
             GUILayout.EndVertical();
@@ -136,14 +353,20 @@ namespace AnimFlex.Clipper.Editor
 
         private void SetupCustomEditorStyles()
         {
+            _biggerButtons = new GUIStyle(GUI.skin.button)
+            {
+                fontSize = 18
+            };
             // centering alignments for editor fields
             EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
+            EditorStyles.label.alignment = TextAnchor.MiddleCenter;
             EditorStyles.numberField.alignment = TextAnchor.MiddleCenter;
         }
         private void RevertCustomEditorStyles()
         {
             // revert alignments for editor fields
             EditorStyles.textField.alignment = TextAnchor.MiddleLeft;
+            EditorStyles.label.alignment = TextAnchor.MiddleLeft;
             EditorStyles.numberField.alignment = TextAnchor.MiddleLeft;
         }
 
@@ -189,7 +412,7 @@ namespace AnimFlex.Clipper.Editor
         private void DrawNodeLabel(SerializedProperty clipNode, out bool isExtended)
         {
             GUILayout.BeginHorizontal();
-            isExtended = _isExtended.ContainsKey(clipNode.propertyPath) && _isExtended[clipNode.propertyPath];
+            isExtended = !_isExtended.ContainsKey(clipNode.propertyPath) || _isExtended[clipNode.propertyPath];
             var label = isExtended ? "↓" : "→";
             if (GUILayout.Button(label, GUILayout.Width(20)))
             {
@@ -197,7 +420,7 @@ namespace AnimFlex.Clipper.Editor
                 _isExtended[clipNode.propertyPath] = isExtended;
             }
 
-            DrawNodeName();
+            BigTextField(clipNode.FindPropertyRelative("name"));
 
             var oldLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 60;
@@ -205,37 +428,62 @@ namespace AnimFlex.Clipper.Editor
             EditorGUIUtility.labelWidth = oldLabelWidth;
             
             GUILayout.EndHorizontal();
+        }
 
-            void DrawNodeName(params GUILayoutOption[] options)
-            {
-                // changing editor styles and keeping their old states
-                var oldFontSize = EditorStyles.textField.fontSize;
-                EditorStyles.textField.fontSize = 14;
-                var oldFontStyle = EditorStyles.textField.fontStyle;
-                EditorStyles.textField.fontStyle = FontStyle.BoldAndItalic;
-                EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
-                var oldHeight = EditorStyles.textField.fixedHeight;
-                EditorStyles.textField.fixedHeight = 20;
-                var oldLabelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = 0;
-                var oldBackgroundColor = GUI.backgroundColor;
-                GUI.backgroundColor = Color.clear;
+        private void BigTextField(SerializedProperty stringProperty, params GUILayoutOption[] options)
+        {
+            // changing editor styles and keeping their old states
+            var oldFontSize = EditorStyles.textField.fontSize;
+            EditorStyles.textField.fontSize = 14;
+            var oldFontStyle = EditorStyles.textField.fontStyle;
+            EditorStyles.textField.fontStyle = FontStyle.BoldAndItalic;
+            EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
+            var oldHeight = EditorStyles.textField.fixedHeight;
+            EditorStyles.textField.fixedHeight = 20;
+            var oldLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 0;
+            var oldBackgroundColor = GUI.backgroundColor;
+            GUI.backgroundColor = Color.clear;
 
-                var clipNameProp = clipNode.FindPropertyRelative("name");
-                GUILayout.BeginVertical();
-                clipNameProp.stringValue = EditorGUILayout.TextField(clipNameProp.stringValue, options);
-                GUILayout.Space(5);
-                GUILayout.EndVertical();
+            GUILayout.BeginVertical();
+            stringProperty.stringValue = EditorGUILayout.TextField(stringProperty.stringValue, options);
+            GUILayout.Space(5);
+            GUILayout.EndVertical();
 
-                // reverting the editor styles old states
-                EditorStyles.textField.fontSize = oldFontSize;
-                EditorStyles.textField.fontStyle = oldFontStyle;
-                EditorStyles.textField.fixedHeight = oldHeight;
-                EditorGUIUtility.labelWidth = oldLabelWidth;
-                GUI.backgroundColor = oldBackgroundColor;
-            }
-            
+            // reverting the editor styles old states
+            EditorStyles.textField.fontSize = oldFontSize;
+            EditorStyles.textField.fontStyle = oldFontStyle;
+            EditorStyles.textField.fixedHeight = oldHeight;
+            EditorGUIUtility.labelWidth = oldLabelWidth;
+            GUI.backgroundColor = oldBackgroundColor;
+        }
+        
+        private void BigLabel(string label, FontStyle style, params GUILayoutOption[] options)
+        {
+            // changing editor styles and keeping their old states
+            var oldFontSize = EditorStyles.textField.fontSize;
+            EditorStyles.label.fontSize = 14;
+            var oldFontStyle = EditorStyles.label.fontStyle;
+            EditorStyles.label.fontStyle = style;
+            EditorStyles.label.alignment = TextAnchor.MiddleCenter;
+            var oldHeight = EditorStyles.label.fixedHeight;
+            EditorStyles.label.fixedHeight = 20;
+            var oldLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 0;
+            var oldBackgroundColor = GUI.backgroundColor;
+            GUI.backgroundColor = Color.clear;
 
+            GUILayout.BeginVertical();
+            EditorGUILayout.LabelField(label, options);
+            GUILayout.Space(5);
+            GUILayout.EndVertical();
+
+            // reverting the editor styles old states
+            EditorStyles.label.fontSize = oldFontSize;
+            EditorStyles.label.fontStyle = oldFontStyle;
+            EditorStyles.label.fixedHeight = oldHeight;
+            EditorGUIUtility.labelWidth = oldLabelWidth;
+            GUI.backgroundColor = oldBackgroundColor;
         }
 
         private void DrawNextNodesGui(SerializedProperty clipNode)
