@@ -370,6 +370,7 @@ Transform:
   m_Children:
   - {fileID: 2024217262}
   - {fileID: 186830566}
+  - {fileID: 1355970705}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -709,6 +710,129 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1355970704
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1355970705}
+  - component: {fileID: 1355970706}
+  m_Layer: 0
+  m_Name: readme sample
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &1355970705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355970704}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.3090568, y: 0.55117416, z: 1.2891693}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 204670335}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1355970706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355970704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8965c2b594e54cd6bf03c79ba9591c83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnStart: 1
+  nodes:
+  - inspectorColor: {r: 1, g: 0.6273585, b: 0.9850055, a: 0}
+    groupName: Initial logs
+    name: Hi Node
+    delay: 1
+    clip:
+      id: 0
+    playNextAfterFinish: 0
+    nextIndices: 01000000
+  - inspectorColor: {r: 0.1273585, g: 0.9911835, b: 1, a: 0}
+    groupName: Initial logs
+    name: the 2nd log
+    delay: 3
+    clip:
+      id: 1
+    playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 1, g: 0, b: 0.89411765, a: 0}
+    groupName: Look ats
+    name: Camera Look At Cube
+    delay: 0
+    clip:
+      id: 2
+    playNextAfterFinish: 1
+    nextIndices: 
+  - inspectorColor: {r: 1, g: 0, b: 0.8913307, a: 0}
+    groupName: Look ats
+    name: Cube Look Back
+    delay: 0
+    clip:
+      id: 3
+    playNextAfterFinish: 1
+    nextIndices: 
+  references:
+    version: 1
+    00000000:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: Hello World!
+    00000001:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: I'm the second one!
+    00000002:
+      type: {class: CEvent, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        Event:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 11}
+              m_TargetAssemblyTypeName: UnityEngine.Transform, UnityEngine
+              m_MethodName: LookAt
+              m_Mode: 2
+              m_Arguments:
+                m_ObjectArgument: {fileID: 1298475371}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+    00000003:
+      type: {class: CEvent, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        Event:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 1298475371}
+              m_TargetAssemblyTypeName: UnityEngine.Transform, UnityEngine
+              m_MethodName: LookAt
+              m_Mode: 2
+              m_Arguments:
+                m_ObjectArgument: {fileID: 11}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
 --- !u!1 &1746985411
 GameObject:
   m_ObjectHideFlags: 0
