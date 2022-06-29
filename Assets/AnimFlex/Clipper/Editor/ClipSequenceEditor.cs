@@ -37,16 +37,15 @@ namespace AnimFlex.Clipper.Editor
             {
                 ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((value) =>
                 {
-                    nodesList.arraySize++;
-                    var clip = nodesList.GetArrayElementAtIndex(nodesList.arraySize - 1)
-                        .FindPropertyRelative("clip");
-                    clip.managedReferenceValue = value;
                     serializedObject.ApplyModifiedProperties();
+                    Undo.RecordObject(_clipSequence, "Add Clip");
+                    _clipSequence.AddNewClipNode(value);
+                    serializedObject.Update();
                 });
             }
 
-            serializedObject.ApplyModifiedProperties();
             RevertCustomEditorStyles();
+            serializedObject.ApplyModifiedProperties();
         }
 
 
@@ -69,7 +68,7 @@ namespace AnimFlex.Clipper.Editor
                 {
                     GUI.color = oldColor;
                     GUI.backgroundColor = oldBackCol;
-                    DrawClipBody(clipNode);
+                    DrawClipBody(clipNode, i);
                     GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
                     GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
                 }
@@ -101,21 +100,9 @@ namespace AnimFlex.Clipper.Editor
             GUILayout.BeginVertical();
             if (GUILayout.Button("X", GUILayout.Width(30)))
             {
-                nodesList.DeleteArrayElementAtIndex(i);
-                // resolve connected nodes
-                for (int j = 0; j < nodesList.arraySize; j++)
-                {
-                    var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
-                    for (int k = 0; k < nextIndicesProp.arraySize; k++)
-                    {
-                        if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
-                            nextIndicesProp.DeleteArrayElementAtIndex(k);
-                        else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue >= i)
-                            nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
-                    }
-                }
                 serializedObject.ApplyModifiedProperties();
-                // Repaint();
+                _clipSequence.RemoveClipNodeAtIndex(i);
+                serializedObject.Update();
             }
 
             GUILayout.Space(5);
@@ -125,42 +112,20 @@ namespace AnimFlex.Clipper.Editor
             EditorGUI.BeginDisabledGroup(i == 0);
             if (GUILayout.Button("▲", GUILayout.Width(25)))
             {
-                for (int j = 0; j < nodesList.arraySize; j++)
-                {
-                    var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
-                    for (int k = 0; k < nextIndicesProp.arraySize; k++)
-                    {
-                        if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
-                            nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
-                        else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i - 1)
-                            nextIndicesProp.GetArrayElementAtIndex(k).intValue++;
-                    }
-                }
-                // nodesList.MoveArrayElement(i, i - 1);
+                Undo.RecordObject(_clipSequence, "Move Clip Up");
                 serializedObject.ApplyModifiedProperties();
-                (_clipSequence.nodes[i], _clipSequence.nodes[i - 1]) = (_clipSequence.nodes[i - 1], _clipSequence.nodes[i]);
+                _clipSequence.MoveClipNode(i, i - 1);
                 serializedObject.Update();
-                Repaint();
             }
             EditorGUI.EndDisabledGroup();
             
             EditorGUI.BeginDisabledGroup(i == nodesList.arraySize - 1);
             if (GUILayout.Button("▼", GUILayout.Width(25)))
             {
-                for (int j = 0; j < nodesList.arraySize; j++)
-                {
-                    var nextIndicesProp = nodesList.GetArrayElementAtIndex(j).FindPropertyRelative("nextIndices");
-                    for (int k = 0; k < nextIndicesProp.arraySize; k++)
-                    {
-                        if(nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
-                            nextIndicesProp.GetArrayElementAtIndex(k).intValue ++;
-                        else if(nextIndicesProp.GetArrayElementAtIndex(k).intValue == i + 1)
-                            nextIndicesProp.GetArrayElementAtIndex(k).intValue --;
-                    }
-                }
-                nodesList.MoveArrayElement(i, i + 1);
+                Undo.RecordObject(_clipSequence, "Move Clip Down");
                 serializedObject.ApplyModifiedProperties();
-                Repaint();
+                _clipSequence.MoveClipNode(i, i + 1);
+                serializedObject.Update();
             }
             EditorGUI.EndDisabledGroup();
             
@@ -182,7 +147,7 @@ namespace AnimFlex.Clipper.Editor
             EditorStyles.numberField.alignment = TextAnchor.MiddleLeft;
         }
 
-        private void DrawClipBody(SerializedProperty clipNode)
+        private void DrawClipBody(SerializedProperty clipNode, int index)
         {
             GUILayout.BeginVertical(EditorStyles.helpBox);
             var clip = clipNode.FindPropertyRelative("clip");
@@ -192,7 +157,7 @@ namespace AnimFlex.Clipper.Editor
             
             DrawColorNodePicker(clipNode);
             GUILayout.FlexibleSpace();
-            DrawClipDropdownLabel(clipData);
+            DrawClipDropdownLabel(index);
             GUILayout.EndHorizontal();
             
             EditorGUILayout.PropertyField(clip, new GUIContent("Clip Parameters"), true);
@@ -206,16 +171,18 @@ namespace AnimFlex.Clipper.Editor
                 GUILayout.MaxWidth(80));
         }
 
-        private void DrawClipDropdownLabel(SerializedProperty clip)
+        private void DrawClipDropdownLabel(int index)
         {
-            var currentType = ClipEditorsUtility.FindType(clip.managedReferenceFullTypename.Split(' ').Last());
+            var currentType = ClipEditorsUtility.FindType(_clipSequence.nodes[index].clip.GetType().FullName);
             var typeButtonLabel = ClipEditorsUtility.GetTypeName(currentType);
             if (GUILayout.Button($"  {typeButtonLabel} ", EditorStyles.toolbarDropDown, GUILayout.ExpandWidth(false)))
             {
-                ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((value) =>
+                ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((clip) =>
                 {
-                    clip.managedReferenceValue = value;
+                    Undo.RecordObject(_clipSequence, "Change Clip Type");
                     serializedObject.ApplyModifiedProperties();
+                    _clipSequence.nodes[index].clip = clip;
+                    serializedObject.Update();
                 });
             }
         }

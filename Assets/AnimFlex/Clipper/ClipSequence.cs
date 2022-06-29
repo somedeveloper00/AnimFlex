@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AnimFlex.Clipper
 {
-    public sealed class ClipSequence : MonoBehaviour
+    public sealed partial class ClipSequence : MonoBehaviour
     {
         public bool playOnStart = true;
 
@@ -40,10 +40,6 @@ namespace AnimFlex.Clipper
             foreach (var node in nodes)
                 if (node.nextIndices.Any(i => i >= nodes.Length))
                     RemoveExtraNextNodes();
-            // make node names identical
-            for (var i = nodes.Length - 1; i >= 0; i--)
-                if (nodes[i].name == string.Empty || nodes.Count(node => node.name == nodes[i].name) > 1)
-                    nodes[i].name = $"Node {i}";
         }
 
         public void Play()

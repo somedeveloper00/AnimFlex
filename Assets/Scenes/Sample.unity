@@ -641,9 +641,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playOnStart: 1
-  nodes: []
+  nodes:
+  - inspectorColor: {r: 0, g: 0, b: 0, a: 0}
+    name: Node 0
+    delay: 0
+    clip:
+      id: 0
+    playNextAfterFinish: 0
+    nextIndices: 0100000000000000
+  - inspectorColor: {r: 1, g: 0.36320752, b: 0.7132716, a: 0}
+    name: Node 1
+    delay: 0
+    clip:
+      id: 1
+    playNextAfterFinish: 1
+    nextIndices: 
   references:
     version: 1
+    00000000:
+      type: {class: CLog, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        message: 
+    00000001:
+      type: {class: CWaitUntilVector4, ns: AnimFlex.Clipper.Clips, asm: AnimFlex}
+      data:
+        valueName: 
+        component: {fileID: 0}
+        checkEvery: 0.1
+        value: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &2024217262
 Transform:
   m_ObjectHideFlags: 0
