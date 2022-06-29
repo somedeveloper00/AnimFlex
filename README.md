@@ -3,6 +3,9 @@
 An open source project to solve the problem of having to create performant inspectable sequences. There's Timeline now, but it's not as performant, and as designer friendly as one would like it to be; to create a custom event, you have to go through hell to get it there and ready to use for designers. 
 AnimFlex is a super-performant array-based sequencing solution to create custom event-based clips on the fly.
 
+# Installation
+Get the UnityPackage for free from https://github.com/somedeveloper00/AnimFlex/releases/download/main/AnimFlexPackage.unitypackage
+
 # Manual
 * you create a "Clip Sequence Component"
 
