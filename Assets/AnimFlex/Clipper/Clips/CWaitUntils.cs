@@ -53,10 +53,6 @@ namespace AnimFlex.Clipper.Clips
     }
     [DisplayName("Wait Until/int list")] public class CWaitUntilListInt : CWaitUntil<List<int>>
     {
-        protected override bool IsEqual(List<int> a, List<int> b)
-        {
-            Debug.Log($"checking {string.Join(", ", a)} == {string.Join(", ", b)}");
-            return a.SequenceEqual(b);
-        }
+        protected override bool IsEqual(List<int> a, List<int> b) => a.SequenceEqual(b);
     }
 }
