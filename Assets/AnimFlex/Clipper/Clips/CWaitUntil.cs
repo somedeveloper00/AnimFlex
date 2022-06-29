@@ -1,20 +1,25 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Reflection;
+using AnimFlex.Clipper.ClipModules;
 using UnityEngine;
-using Component = UnityEngine.Component;
 
 namespace AnimFlex.Clipper.Clips
 {
-    public abstract class CSetValue : Clip
+    public abstract class CWaitUntil : Clip
     {
-        public Component component;
         public string valueName;
+        public Component component;
+        [Tooltip("In Seconds")]
+        public float checkEvery = 0.1f;
+
+      
     }
-    public abstract class CSetValue<T> : CSetValue
+    public abstract class CWaitUntil<T> : CWaitUntil, IEndWhen
     {
         public T value;
-
+        
+        private long startTicks;
+        
         protected FieldInfo cachedFieldInfo;
         public FieldInfo GetFieldInfo()
         {
@@ -33,12 +38,26 @@ namespace AnimFlex.Clipper.Clips
             
             return cachedFieldInfo;
         }
-
-
+        
         protected override void OnStart()
         {
-            GetFieldInfo().SetValue(component, value);
-            End();
+            GetFieldInfo();
+            startTicks = DateTime.UtcNow.Ticks;
         }
+
+        public bool CanEnd()
+        {
+            var secondsPassed = (DateTime.UtcNow.Ticks - startTicks) * 0.000_000_1f;
+            if(secondsPassed > checkEvery)
+            {
+                Debug.Log("checking");
+                startTicks = DateTime.UtcNow.Ticks;
+                return Equals(cachedFieldInfo.GetValue(component), value);
+            }
+
+            return false;
+        }
+        
+        protected abstract bool Equals(T a, T b);
     }
 }

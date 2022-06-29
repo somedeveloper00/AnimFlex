@@ -56,14 +56,26 @@ namespace AnimFlex.Clipper.Editor
             {
                 var oldColor = GUI.color;
                 var oldBackCol = GUI.backgroundColor;
-                GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeColor;
+                GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
                 GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
-
                 
                 GUILayout.BeginHorizontal(EditorStyles.helpBox);
                 GUILayout.BeginVertical();
                 EditorGUI.indentLevel++;
-                DrawClipNodeProperty(nodesList.GetArrayElementAtIndex(i));
+                
+                SerializedProperty clipNode = nodesList.GetArrayElementAtIndex(i);
+                DrawNodeLabel(clipNode, out bool isExtended);
+                if (isExtended)
+                {
+                    GUI.color = oldColor;
+                    GUI.backgroundColor = oldBackCol;
+                    DrawClipBody(clipNode);
+                    GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
+                    GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+                }
+                
+                DrawNextNodesGui(clipNode);
+                
                 EditorGUI.indentLevel--;
                 GUILayout.EndVertical();
                 
@@ -75,6 +87,13 @@ namespace AnimFlex.Clipper.Editor
                 GUI.color = oldColor;
                 GUI.backgroundColor = oldBackCol;
             }
+        }
+
+        private Color GetColorOfClipNode(SerializedProperty clipNode)
+        {
+            var color = clipNode.FindPropertyRelative("inspectorColor").colorValue;
+            color.a = 1;
+            return color != Color.black ? color : ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeColor;
         }
 
         private void DrawNodeTools(SerializedProperty nodesList, int i)
@@ -91,12 +110,12 @@ namespace AnimFlex.Clipper.Editor
                     {
                         if (nextIndicesProp.GetArrayElementAtIndex(k).intValue == i)
                             nextIndicesProp.DeleteArrayElementAtIndex(k);
-                        else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue > i)
+                        else if (nextIndicesProp.GetArrayElementAtIndex(k).intValue >= i)
                             nextIndicesProp.GetArrayElementAtIndex(k).intValue--;
                     }
                 }
                 serializedObject.ApplyModifiedProperties();
-                Repaint();
+                // Repaint();
             }
 
             GUILayout.Space(5);
@@ -163,40 +182,28 @@ namespace AnimFlex.Clipper.Editor
             EditorStyles.numberField.alignment = TextAnchor.MiddleLeft;
         }
 
-        private void DrawClipNodeProperty(SerializedProperty clipNode)
-        {
-            DrawNodeLabel(clipNode, out bool isExtended);
-            if (isExtended)
-            {
-                DrawClipBody(clipNode);
-            }
-            DrawNextNodesGui(clipNode);
-
-        }
-
-        
         private void DrawClipBody(SerializedProperty clipNode)
         {
-            var oldCol = GUI.color;
-            var oldBackCol = GUI.backgroundColor;
-
-            GUI.color = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipColor;
-            GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipBackgroundColor;
-            
             GUILayout.BeginVertical(EditorStyles.helpBox);
             var clip = clipNode.FindPropertyRelative("clip");
             
             // label
             GUILayout.BeginHorizontal();
+            
+            DrawColorNodePicker(clipNode);
             GUILayout.FlexibleSpace();
-            DrawClipDropdownLabel(clip);
+            DrawClipDropdownLabel(clipData);
             GUILayout.EndHorizontal();
             
             EditorGUILayout.PropertyField(clip, new GUIContent("Clip Parameters"), true);
             GUILayout.EndVertical();
+        }
 
-            GUI.color = oldCol;
-            GUI.backgroundColor = oldBackCol;
+        private void DrawColorNodePicker(SerializedProperty clip)
+        {
+            EditorGUILayout.PropertyField(clip.FindPropertyRelative("inspectorColor"),
+                new GUIContent("", "Set the color of this clipData node"), 
+                GUILayout.MaxWidth(80));
         }
 
         private void DrawClipDropdownLabel(SerializedProperty clip)
@@ -212,11 +219,10 @@ namespace AnimFlex.Clipper.Editor
                 });
             }
         }
-
         private void DrawNodeLabel(SerializedProperty clipNode, out bool isExtended)
         {
             GUILayout.BeginHorizontal();
-            isExtended = !_isExtended.ContainsKey(clipNode.propertyPath) || _isExtended[clipNode.propertyPath];
+            isExtended = _isExtended.ContainsKey(clipNode.propertyPath) && _isExtended[clipNode.propertyPath];
             var label = isExtended ? "↓" : "→";
             if (GUILayout.Button(label, GUILayout.Width(20)))
             {
@@ -267,6 +273,7 @@ namespace AnimFlex.Clipper.Editor
 
         private void DrawNextNodesGui(SerializedProperty clipNode)
         {
+            var nodesProp = serializedObject.FindProperty("nodes");
             var nextIndicesProp = clipNode.FindPropertyRelative("nextIndices");
             var playNextAfterFinishProp = clipNode.FindPropertyRelative("playNextAfterFinish");
 
@@ -306,16 +313,17 @@ namespace AnimFlex.Clipper.Editor
                 var currentLayoutWidth = EditorGUIUtility.currentViewWidth;
                 var widthLeft = currentLayoutWidth;
 
+                var oldCol = GUI.color;
+
                 GUILayout.BeginHorizontal();
                 for (var i = 0; i < nextIndicesProp.arraySize; i++)
                 {
-                    if (serializedObject.FindProperty("nodes").arraySize <=
-                        nextIndicesProp.GetArrayElementAtIndex(i).intValue) continue;
+                    var nextNodeIndex = nextIndicesProp.GetArrayElementAtIndex(i).intValue;
+                    if (nodesProp.arraySize <= nextNodeIndex) continue;
+                    
 
-                    var nextIndexNodeName = serializedObject.FindProperty("nodes")
-                        .GetArrayElementAtIndex(nextIndicesProp.GetArrayElementAtIndex(i).intValue)
-                        .FindPropertyRelative("name")
-                        .stringValue;
+                    var node = nodesProp.GetArrayElementAtIndex(nextNodeIndex);
+                    var nextIndexNodeName = node.FindPropertyRelative("name").stringValue;
 
                     var estimatedWidth = EditorStyles.textField.CalcSize(new GUIContent(nextIndexNodeName)).x;
                     if (estimatedWidth >= widthLeft - 40)
@@ -326,8 +334,12 @@ namespace AnimFlex.Clipper.Editor
                     }
 
                     // actual button
+                    GUI.color = GetColorOfClipNode(node);
+                    
                     if (GUILayout.Button(new GUIContent(nextIndexNodeName, "Click to remove"),
                         GUILayout.ExpandWidth(false))) nextIndicesProp.DeleteArrayElementAtIndex(i);
+                    
+                    GUI.color = oldCol;
                     widthLeft -= estimatedWidth;
                 }
 
