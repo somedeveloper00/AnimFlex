@@ -1,11 +1,11 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Clipper.Editor
+namespace AnimFlex.Sequencer.Editor
 {
     internal class ClipSequencerEditorPrefs : ScriptableObject
     {
-        private const string ClipSequenceEditorPrefsPath = "Assets/AnimFlex/Clipper/Editor/ClipSequencerEditorPrefs.asset";
+        private const string ClipSequenceEditorPrefsPath = "Assets/ClipSequencerEditorPrefs.asset";
         public Color clipNodeColor = Color.white;
         public Color clipNodeBackgroundColor = Color.white;
         public Color clipColor = Color.white;

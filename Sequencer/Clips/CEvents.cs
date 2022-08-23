@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using UnityEngine.Events;
 
-namespace AnimFlex.Clipper.Clips
+namespace AnimFlex.Sequencer.Clips
 {
     [DisplayName("Events/Void")]
     public sealed class CEvent : Clip

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
-namespace AnimFlex.Clipper.Clips
+namespace AnimFlex.Sequencer.Clips
 {
     [DisplayName("Wait Until/Int")]
     public class CWaitUntilInt : CWaitUntil<int>

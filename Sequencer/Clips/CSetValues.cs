@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using UnityEngine;
 
-namespace AnimFlex.Clipper.Clips
+namespace AnimFlex.Sequencer.Clips
 {
     [DisplayName("Set Value/Int")] public class CSetValuesInt : CSetValue<int> { }
     [DisplayName("Set Value/Float")] public class CSetValuesFloat : CSetValue<float> { }

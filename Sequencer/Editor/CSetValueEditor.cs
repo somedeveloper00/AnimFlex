@@ -1,18 +1,18 @@
-﻿using AnimFlex.Clipper.Clips;
+﻿using System.Linq;
+using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Clipper.Editor
+namespace AnimFlex.Sequencer.Editor
 {
-    [CustomPropertyDrawer(typeof(CWaitUntil))]
-    public class CWaitUntilEditor : PropertyDrawer
+    [CustomPropertyDrawer(typeof(CSetValue))]
+    public class CSetValueEditor : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var componentProp = property.FindPropertyRelative("component");
             var valueNameProp = property.FindPropertyRelative("valueName");
             var newValueProp = property.FindPropertyRelative("value");
-            var checkEveryProp = property.FindPropertyRelative("checkEvery");
 
             EditorGUI.BeginProperty(position, label, property);
 
@@ -30,9 +30,6 @@ namespace AnimFlex.Clipper.Editor
             
             EditorGUI.PropertyField(pos, valueNameProp);
             pos.y += EditorGUI.GetPropertyHeight(valueNameProp) + EditorGUIUtility.standardVerticalSpacing;
-            
-            EditorGUI.PropertyField(pos, checkEveryProp);
-            pos.y += EditorGUI.GetPropertyHeight(checkEveryProp) + EditorGUIUtility.standardVerticalSpacing;
             
             EditorGUI.PropertyField(pos, newValueProp, true);
             pos.height = EditorGUI.GetPropertyHeight(newValueProp, true);

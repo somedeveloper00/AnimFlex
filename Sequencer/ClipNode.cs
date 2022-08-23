@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace AnimFlex.Clipper
+namespace AnimFlex.Sequencer
 {
     [Serializable]
     public class ClipNode

@@ -6,20 +6,20 @@ using UnityEditor;
 using UnityEngine;
 using Object = System.Object;
 
-namespace AnimFlex.Clipper.Editor
+namespace AnimFlex.Sequencer.Editor
 {
-    [CustomEditor(typeof(ClipSequence))]
+    [CustomEditor(typeof(AnimFlexSequence))]
     public class ClipSequenceEditor : UnityEditor.Editor
     {
         // key: serializedProperty's path
         static private Dictionary<string, bool> _isExtended = new Dictionary<string, bool>();
         
-        private ClipSequence _clipSequence;
+        private AnimFlexSequence _clipSequence;
         private GUIStyle _biggerButtons;
 
         private void OnEnable()
         {
-            _clipSequence = target as ClipSequence;
+            _clipSequence = target as AnimFlexSequence;
         }
 
         public override void OnInspectorGUI()

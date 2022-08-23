@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using Component = UnityEngine.Component;
 
-namespace AnimFlex.Clipper.Editor
+namespace AnimFlex.Sequencer.Editor
 {
     public static class ClipEditorsUtility
     {

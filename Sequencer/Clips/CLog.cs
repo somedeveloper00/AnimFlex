@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace AnimFlex.Clipper.Clips
+namespace AnimFlex.Sequencer.Clips
 {
     [System.ComponentModel.DisplayName("Log")]
     public class CLog : Clip

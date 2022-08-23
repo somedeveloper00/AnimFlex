@@ -1,4 +1,4 @@
-﻿namespace AnimFlex.Clipper.ClipModules
+﻿namespace AnimFlex.Sequencer.ClipModules
 {
     public interface IHasUpdate
     {

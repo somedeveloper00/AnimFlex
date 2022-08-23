@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AnimFlex.Clipper.ClipModules;
+using AnimFlex.Sequencer.ClipModules;
 using UnityEngine;
 
-namespace AnimFlex.Clipper
+namespace AnimFlex.Sequencer
 {
-    public sealed partial class ClipSequence : MonoBehaviour
+    public sealed partial class AnimFlexSequence : MonoBehaviour
     {
         public bool playOnStart = true;
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace AnimFlex.Clipper
+namespace AnimFlex.Sequencer
 {
-    public sealed partial class ClipSequence
+    public sealed partial class AnimFlexSequence
     {
         public void RemoveClipNodeAtIndex(int index)
         {
@@ -31,7 +31,7 @@ namespace AnimFlex.Clipper
 
         public void MoveClipNode(int fromIndex, int toIndex)
         {
-            if (fromIndex < 0 || nodes.Length <= fromIndex || 
+            if (fromIndex < 0 || nodes.Length <= fromIndex ||
                 toIndex < 0 || nodes.Length <= toIndex)
             {
                 return;
@@ -47,6 +47,7 @@ namespace AnimFlex.Clipper
                 }
             }
         }
+
         public void AddNewClipNode(Clip clip)
         {
             var tmp = nodes.ToList();
@@ -65,17 +66,18 @@ namespace AnimFlex.Clipper
             {
                 clip = clip,
                 name = $"Node {index}",
-                groupName = index == 0 ? String.Empty : nodes[index-1].groupName 
+                groupName = index == 0 ? String.Empty : nodes[index - 1].groupName
             });
             nodes = tmp.ToArray();
             foreach (var node in nodes)
             {
                 for (int i = 0; i < node.nextIndices.Length; i++)
                 {
-                    if(node.nextIndices[i] >= index) node.nextIndices[i]++;
+                    if (node.nextIndices[i] >= index) node.nextIndices[i]++;
                 }
             }
         }
+
         public void Pause() => this.enabled = false;
         public void Resume() => this.enabled = true;
         public void StopAndDeleteComponent() => Destroy(this);

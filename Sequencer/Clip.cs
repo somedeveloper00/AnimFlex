@@ -1,6 +1,6 @@
 using System;
 
-namespace AnimFlex.Clipper
+namespace AnimFlex.Sequencer
 {
     [Serializable]
     public abstract class Clip
