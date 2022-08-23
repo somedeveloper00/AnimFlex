@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using AnimFlex.EditorPrefs;
 using UnityEditor;
 using UnityEngine;
-using Object = System.Object;
 
 namespace AnimFlex.Sequencer.Editor
 {
@@ -105,7 +103,7 @@ namespace AnimFlex.Sequencer.Editor
                 if (groupNameProp.stringValue == String.Empty || isGroupExtended)
                 {
                     GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
-                    GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+                    GUI.backgroundColor = SequencerEditorPrefs.Instance.clipNodeBackgroundColor;
                     
                     
                     GUILayout.BeginHorizontal();
@@ -126,7 +124,7 @@ namespace AnimFlex.Sequencer.Editor
                         GUI.backgroundColor = oldBackCol;
                         DrawClipBody(clipNode, i);
                         GUI.color = GetColorOfClipNode(nodesList.GetArrayElementAtIndex(i));
-                        GUI.backgroundColor = ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeBackgroundColor;
+                        GUI.backgroundColor = SequencerEditorPrefs.Instance.clipNodeBackgroundColor;
                     }
                     
                     DrawNextNodesGui(clipNode);
@@ -296,7 +294,7 @@ namespace AnimFlex.Sequencer.Editor
         {
             var color = clipNode.FindPropertyRelative("inspectorColor").colorValue;
             color.a = 1;
-            return color != Color.black ? color : ClipSequencerEditorPrefs.GetOrCreatePrefs().clipNodeColor;
+            return color != Color.black ? color : SequencerEditorPrefs.Instance.clipNodeColor;
         }
 
         private void DrawNodeTools(SerializedProperty nodesList, int i)
