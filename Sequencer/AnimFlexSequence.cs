@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnimFlex.Core;
 using AnimFlex.Sequencer.ClipModules;
 using UnityEngine;
 
@@ -18,6 +19,10 @@ namespace AnimFlex.Sequencer
 
         private void Start()
         {
+            if (AnimFlexInitializer.Instance == null)
+            {
+                Debug.LogError("There's no class with AnimFlexInitializer present. you should create one.");
+            }
             if (playOnStart) Play();
         }
 

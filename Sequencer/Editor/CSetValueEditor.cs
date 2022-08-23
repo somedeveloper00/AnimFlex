@@ -19,13 +19,13 @@ namespace AnimFlex.Sequencer.Editor
             var pos = new Rect(position);
             pos.x += 10; pos.width -= 20;
             pos.height = EditorGUIUtility.singleLineHeight;
-            
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(pos, componentProp);
-            pos.y += EditorGUI.GetPropertyHeight(componentProp) + EditorGUIUtility.standardVerticalSpacing;
-            if (EditorGUI.EndChangeCheck())
+
+            using (var check = new EditorGUI.ChangeCheckScope())
             {
-                ClipEditorsUtility.OpenComponentReferenceSelectionMenu(componentProp);
+                EditorGUI.PropertyField(pos, componentProp);
+                pos.y += EditorGUI.GetPropertyHeight(componentProp) + EditorGUIUtility.standardVerticalSpacing;
+                if (check.changed) 
+                    ClipEditorsUtility.OpenComponentReferenceSelectionMenu(componentProp);
             }
             
             EditorGUI.PropertyField(pos, valueNameProp);

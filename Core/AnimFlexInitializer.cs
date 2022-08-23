@@ -6,8 +6,9 @@ namespace AnimFlex.Core
     public class AnimFlexInitializer : MonoBehaviour
     {
         [SerializeField]
-        private AnimFlexSettings m_animFlexSettings;
-        
+        internal AnimFlexSettings m_animFlexSettings;
+
+        public static AnimFlexInitializer Instance => m_instance;
         private static AnimFlexInitializer m_instance;
 
         private void Awake()
