@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -70,7 +71,7 @@ namespace AnimFlex.Sequencer.Editor
 
             var menu = new GenericMenu();
             foreach (var type in classTypes)
-                menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(ClipEditorsUtility.GetTypeName(type))),
+                menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(GetTypeName(type))),
                     false, () =>
                     {
                         var val = Activator.CreateInstance(type);
@@ -80,3 +81,4 @@ namespace AnimFlex.Sequencer.Editor
         }
     }
 }
+#endif

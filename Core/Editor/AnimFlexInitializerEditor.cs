@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using AnimFlex.Tweener;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace AnimFlex.Core
                     CreateNewSettings();
                 }
             }
+            GUILayout.Label("count: " + (TweenerController._tweeners?.Count.ToString() ?? "00"));
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -31,7 +33,7 @@ namespace AnimFlex.Core
                 "AnimFlexSettings", 
                 "asset", 
                 "Select where to save the new AnimFlexSettings");
-            instance.m_animFlexSettings = ScriptableObject.CreateInstance<AnimFlexSettings>();
+            instance.m_animFlexSettings = CreateInstance<AnimFlexSettings>();
 
             try
             {
@@ -46,3 +48,4 @@ namespace AnimFlex.Core
         }
     }
 }
+#endif

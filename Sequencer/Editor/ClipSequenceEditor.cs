@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using AnimFlex.EditorPrefs;
 using UnityEditor;
@@ -550,7 +551,7 @@ namespace AnimFlex.Sequencer.Editor
                     GUI.color = GetColorOfClipNode(node);
                     
                     if (GUILayout.Button(new GUIContent(nextIndexNodeName, "Click to remove"),
-                        GUILayout.ExpandWidth(false))) nextIndicesProp.DeleteArrayElementAtIndex(i);
+                            GUILayout.ExpandWidth(false))) nextIndicesProp.DeleteArrayElementAtIndex(i);
                     
                     GUI.color = oldCol;
                     widthLeft -= estimatedWidth;
@@ -566,7 +567,7 @@ namespace AnimFlex.Sequencer.Editor
                 }
 
                 if (GUILayout.Button(new GUIContent("Add Next      ", "Click to add"), EditorStyles.toolbarDropDown,
-                    GUILayout.ExpandWidth(false)))
+                        GUILayout.ExpandWidth(false)))
                 {
                     var menu = new GenericMenu();
                     for (var i = 0; i < serializedObject.FindProperty("nodes").arraySize; i++)
@@ -594,3 +595,4 @@ namespace AnimFlex.Sequencer.Editor
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using AnimFlex.Sequencer.Clips;
+﻿#if UNITY_EDITOR
+using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,3 +49,4 @@ namespace AnimFlex.Sequencer.Editor
         }
     }
 }
+#endif

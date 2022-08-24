@@ -13,20 +13,28 @@ namespace AnimFlex.Sequencer
 
         [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
 
-        private readonly List<(float t, int index)> _delayedNodesInQueue = new List<(float t, int index)>();
-        private readonly List<(int id, Action action)> _onUpdates = new List<(int id, Action action)>();
+        private readonly List<(float t, int index)> _delayedNodesInQueue = new();
+        private readonly List<(int id, Action action)> _onUpdates = new();
         private int _lastID = -1;
-
-        private void Start()
+        
+        private void OnEnable()
         {
-            if (AnimFlexInitializer.Instance == null)
-            {
-                Debug.LogError("There's no class with AnimFlexInitializer present. you should create one.");
-            }
+            AnimFlexInitializer.onStart += OnStart;
+            AnimFlexInitializer.onTick += OnTick;
+        }
+
+        private void OnDisable()
+        {
+            AnimFlexInitializer.onStart -= OnStart;
+            AnimFlexInitializer.onTick -= OnTick;
+        }
+
+        private void OnStart()
+        {
             if (playOnStart) Play();
         }
 
-        private void Update()
+        private void OnTick()
         {
             for (var i = 0; i < _onUpdates.Count; i++) _onUpdates[i].action();
 

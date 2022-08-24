@@ -6,10 +6,10 @@ namespace AnimFlex.Sequencer
     [Serializable]
     public class ClipNode
     {
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
         [SerializeField] private Color inspectorColor;
         [SerializeField] internal string groupName;
-#endif
+// #endif
         public string name;
         public float delay;
         [SerializeReference] public Clip clip;
