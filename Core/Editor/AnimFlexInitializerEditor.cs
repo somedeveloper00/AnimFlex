@@ -23,7 +23,6 @@ namespace AnimFlex.Core
                     CreateNewSettings();
                 }
             }
-            GUILayout.Label("count: " + (TweenerController._tweeners?.Count.ToString() ?? "00"));
             serializedObject.ApplyModifiedProperties();
         }
 

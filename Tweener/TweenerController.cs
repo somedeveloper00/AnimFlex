@@ -1,35 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AnimFlex.Core;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Tweener
 {
     internal static class TweenerController
     {
-        #region events
-        /// <summary>
-        /// gets called right at the start of each Tick
-        /// </summary>
-        internal static event Action onBeforeTick = delegate { };
-        #endregion
-
-
-        #region local variables
-        #endregion
-        
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void BindToAnimFlexInitializer()
         {
-            AnimFlexInitializer.onStart += Init;
+            AnimFlexInitializer.onInit += Init;
             AnimFlexInitializer.onTick += Tick;
         }
 
 
-        internal static List<Tweener> _tweeners;
+        internal static Tweener[] _activeTweeners;
+        private static int _activeTweenersLength = 0; // real length of active tweens
+        
+        internal static List<Tweener> _deletingTweeners = new List<Tweener>(2 * 2 * 2 * 2 * 2 * 2 * 2);
+        
         
         /// <summary>
         /// initializes the tweener controller
@@ -37,16 +29,16 @@ namespace AnimFlex.Tweener
         public static void Init()
         {
             // check if the session already had activities
-            if(_tweeners != null)
+            if(_activeTweeners != null)
             {
-                foreach (var tweener in _tweeners)
+                foreach (var tweener in _activeTweeners)
                 {
                     tweener?.Revert();
                 }
-                _tweeners.Clear();
-            }
 
-            _tweeners = new List<Tweener>();
+            }
+            _activeTweeners = new Tweener[AnimFlexSettings.Instance.maxTweenCount];
+            _deletingTweeners.Clear();
         }
 
         /// <summary>
@@ -54,12 +46,11 @@ namespace AnimFlex.Tweener
         /// </summary>
         public static void Tick()
         {
-            onBeforeTick();
-            onBeforeTick = delegate { };
-
+            
             initialize_phase:
-            foreach (var tweener in _tweeners)
+            for (var i = 0; i < _activeTweenersLength; i++)
             {
+                var tweener = _activeTweeners[i];
                 if (tweener.flag.HasFlag(TweenerFlag.Initialized) == false)
                 {
                     tweener.Init();
@@ -68,35 +59,22 @@ namespace AnimFlex.Tweener
                 }
             }
 
-            // deletion phase
-            deletion_phase:
-            for (var i = 0; i < _tweeners.Count; i++)
-            {
-                var tweener = _tweeners[i];
-                // check if contains a delete flag
-                if (tweener.flag.HasFlag(TweenerFlag.Deleting))
-                {
-                    _tweeners[i].OnKill();
-                    _tweeners.RemoveAt(i--);
-                }
-            }
-
             setter_phase:
-            // ignore this phase if this frame is slow
-            if (Time.deltaTime > AnimFlexSettings.Instance.deltaTimeIgnoreThreshold)
-                return;
-
             bool _c = false; // mark for tweener's completion
-            for (var i = 0; i < _tweeners.Count; i++)
+            for (var i = 0; i < _activeTweenersLength; i++)
             {
-                var tweener = _tweeners[i];
+                var tweener = _activeTweeners[i];
                 var t = tweener._t + Time.deltaTime;
+                
+                // to avoid repeated evaluations
+                if(tweener._t == t) continue;
+                
                 tweener._t = t; // save for next Ticks
 
                 _c = t >= tweener.duration + tweener.delay; // completion check
                 t = _c ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration;
 
-                tweener.Set(t); // applying delay
+                tweener.Set(EaseUtility.EvaluateEase(tweener.ease, tweener.easeQuality, t, null));
                 tweener.OnUpdate();
 
                 // check for completion
@@ -107,26 +85,45 @@ namespace AnimFlex.Tweener
                         tweener.OnComplete();
                 }
             }
+            
+            deletion_phase:
+            for (var i = 0; i < _activeTweenersLength; i++)
+            {
+                // check if contains a delete flag
+                if (_activeTweeners[i].flag.HasFlag(TweenerFlag.Deleting))
+                {
+                    _activeTweeners[i].OnKill();
+
+                    _activeTweeners[i] = _activeTweeners[_activeTweenersLength - 1];
+                    _activeTweenersLength--;
+                    i--;
+                }
+            }
+            // actual deletion
         }
 
         public static void AddTweener(Tweener tweener)
         {
-                if (tweener.flag.HasFlag(TweenerFlag.Created))
-                {
-                    onBeforeTick += () =>
-                    {
-                        Debug.LogWarning("Tweener already exists. Removing the previous one...");
-                        _tweeners.Remove(tweener);
-                        tweener._t = 0; // resetting for new usage
-                    };
-                }
+            if (tweener.flag.HasFlag(TweenerFlag.Created))
+            {
+                Debug.LogWarning("Tweener already created! we'll remove it.");
+                tweener.flag |= TweenerFlag.Deleting;
+                return;
+            }
 
-                onBeforeTick += () =>
-                {
-                    tweener.flag |= TweenerFlag.Created;
-                    _tweeners.Add(tweener);
-                    // Debug.Log($"Tweener Added. Total count: {_tweeners.Count}");
-                };
+            tweener.flag |= TweenerFlag.Created;
+
+            if (_activeTweeners.Length == _activeTweenersLength)
+            {
+                Debug.LogWarning(
+                    $"maximum capacity reached: automatically increasing " +
+                    $"from {_activeTweeners.Length} to {_activeTweeners.Length * 2}");
+                var _tmp = new Tweener[_activeTweeners.Length * 2];
+                for (int i = 0; i < _activeTweeners.Length; i++) 
+                    _tmp[i] = _activeTweeners[i];
+                _activeTweeners = _tmp;
+            }
+            _activeTweeners[_activeTweenersLength++] = tweener;
         }
 
         public static void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true)

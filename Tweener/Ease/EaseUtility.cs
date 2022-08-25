@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using AnimFlex.Core;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Tweener
 {
@@ -7,7 +10,61 @@ namespace AnimFlex.Tweener
     {
         public const Ease CUSTOM_ANIMATION_CURVE_EASE = (Ease)35;
 
-        public static float EvaluateEase(Ease ease, float t, AnimationCurve customCurve)
+        private static float[][] _cachedEvals_low;
+        private static float[][] _cachedEvals_medium;
+        private static float[][] _cachedEvals_high;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        private static void Init()
+        {
+            
+            // cache everything...
+            AnimFlexInitializer.onInit += () =>
+            {
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+                // bad
+                _cachedEvals_low = new float[22][];
+                for (int i = 0; i < 22; i++)
+                    CacheEase((Ease)i, AnimFlexSettings.Instance.easeLowQualitySampleCount, out _cachedEvals_low[i]);
+
+                // medium
+                _cachedEvals_medium = new float[22][];
+                for (int i = 0; i < 22; i++)
+                    CacheEase((Ease)i, AnimFlexSettings.Instance.easeMediumQualitySampleCount, out _cachedEvals_medium[i]);
+
+                // hard
+                _cachedEvals_high = new float[22][];
+                for (int i = 0; i < 22; i++)
+                    CacheEase((Ease)i, AnimFlexSettings.Instance.easeHighQualitySampleCount, out _cachedEvals_high[i]);
+                
+                stopWatch.Stop();
+                Debug.Log(stopWatch.Elapsed.TotalMilliseconds);
+            };
+        }
+        
+        public static float EvaluateEase(Ease ease, EaseQuality quality, float t, AnimationCurve customCurve)
+        {
+            switch (quality)
+            {
+                case EaseQuality.Medium:
+                    return _cachedEvals_medium[(int)ease][Mathf.RoundToInt(t * (_cachedEvals_medium[(int)ease].Length - 1))];
+                case EaseQuality.Low:
+                    return _cachedEvals_low[(int)ease][Mathf.RoundToInt(t * (_cachedEvals_low[(int)ease].Length - 1))];
+                case EaseQuality.High:
+                    return _cachedEvals_high[(int)ease][Mathf.RoundToInt(t * (_cachedEvals_high[(int)ease].Length - 1))];
+            }
+            return ExactEvaluateEase(ease, t, customCurve);
+        }
+
+        private static void CacheEase(Ease ease, int sampleCount, out float[] array)
+        {
+            array = new float[sampleCount];
+            for (int i = 0; i < sampleCount; i++) 
+                array[i] = ExactEvaluateEase(ease, (float)i / sampleCount, null);
+        }
+        
+        private static float ExactEvaluateEase(Ease ease, float t, AnimationCurve customCurve)
         {
             switch (ease)
             {

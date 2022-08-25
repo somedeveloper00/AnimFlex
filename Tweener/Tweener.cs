@@ -23,7 +23,12 @@ namespace AnimFlex.Tweener
         /// <summary>
         /// forces the tweener to not call to onComplete while completed
         /// </summary>
-        ForceNoOnComplete = 1 << 3
+        ForceNoOnComplete = 1 << 3,
+    }
+
+    internal enum EaseQuality
+    {
+        Low, Medium, High, Max
     }
     
     public abstract partial class Tweener
@@ -48,10 +53,21 @@ namespace AnimFlex.Tweener
         /// </summary>
         internal float delay;
         
+        /// <summary>
+        /// the type of ease function
+        /// </summary>
+        internal Ease ease;
+
+        /// <summary>
+        /// the quality of the tween. by default a medium quality is used.
+        /// the lower the quality, the more performant it becomes. 
+        /// </summary>
+        internal EaseQuality easeQuality = EaseQuality.Medium;
         
-        public abstract void Init();
-        public abstract void Set(float t);
-        public abstract void Revert();
+        
+        internal abstract void Init();
+        internal abstract void Set(float t);
+        internal abstract void Revert();
         
         
         internal Tweener()
@@ -88,27 +104,23 @@ namespace AnimFlex.Tweener
         #endregion
     }
 
-    public class Tweener<T> : Tweener
+    public abstract class Tweener<T> : Tweener
     {
         internal T startValue, endValue;
-        internal Action<float> setter;
+        internal Action<T> setter;
         internal Func<T> getter;
-        internal Ease ease;
 
 
-        public override void Revert()
+        internal override void Revert()
         {
-            setter(0);
+            setter(startValue);
         }
         
-        public override void Init()
+        internal override void Init()
         {
             startValue = getter();
         }
         
-        public override void Set(float t)
-        {
-            setter(t);
-        }
+        internal void SwapStartAndEnd() => (startValue, endValue) = (endValue, startValue);
     }
 }

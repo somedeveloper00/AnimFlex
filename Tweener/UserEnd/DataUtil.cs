@@ -94,7 +94,12 @@ namespace AnimFlex.Tweener
                 case GeneratorData.TweenerType.Fade:
                 {
                     var target = data.targetFloat;
-                    if (data.fromObject.TryGetComponent<Renderer>(out var renderer))
+                    if (data.fromObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
+                    {
+                        if (data.relative) target += canvasGroup.alpha;
+                        tweener = canvasGroup.AnimFadeTo(target, data.ease, data.duration, data.delay);
+                    }
+                    else if (data.fromObject.TryGetComponent<Renderer>(out var renderer))
                     {
                         if (data.relative) target += renderer.material.color.a;
                         tweener = renderer.AnimFadeTo(target, data.ease, data.duration, data.delay);
@@ -103,11 +108,6 @@ namespace AnimFlex.Tweener
                     {
                         if (data.relative) target += graphic.color.a;
                         tweener = graphic.AnimFadeTo(target, data.ease, data.duration, data.delay);
-                    }
-                    else if (data.fromObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
-                    {
-                        if (data.relative) target += canvasGroup.alpha;
-                        tweener = canvasGroup.AnimFadeTo(target, data.ease, data.duration, data.delay);
                     }
                     else if (data.fromObject.TryGetComponent<Material>(out var material))
                     {

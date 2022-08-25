@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace AnimFlex.Tweener
 {
@@ -9,19 +10,41 @@ namespace AnimFlex.Tweener
         [SerializeField] internal bool playOnStart;
 
         private Tweener m_tweener;
-        
+
+        #region wrappers
         public float delay
         {
             get => generatorData.delay;
             set => generatorData.delay = value;
         }
-
         public float duration
         {
             get => generatorData.duration;
             set => generatorData.duration = value;
         }
 
+        public UnityEvent onStart => generatorData.onStart;
+        public UnityEvent onComplete => generatorData.onComplete;
+        public UnityEvent onKill => generatorData.onKill;
+        public UnityEvent onUpdate => generatorData.onUpdate;
+
+        /// <summary>
+        /// returns the last generated Tweener, if it's active.
+        /// </summary>
+        public bool TryGetTweener(out Tweener tweener)
+        {
+            if (m_tweener != null && 
+                !m_tweener.flag.HasFlag(TweenerFlag.Deleting))
+            {
+                tweener = m_tweener;
+                return true;
+            }
+
+            tweener = null;
+            return false;
+        }
+        #endregion
+        
         private void Start()
         {
             if (playOnStart)

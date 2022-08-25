@@ -19,17 +19,15 @@ namespace AnimFlex.Sequencer
         
         private void OnEnable()
         {
-            AnimFlexInitializer.onStart += OnStart;
             AnimFlexInitializer.onTick += OnTick;
         }
 
         private void OnDisable()
         {
-            AnimFlexInitializer.onStart -= OnStart;
             AnimFlexInitializer.onTick -= OnTick;
         }
 
-        private void OnStart()
+        private void Start()
         {
             if (playOnStart) Play();
         }
@@ -81,7 +79,7 @@ namespace AnimFlex.Sequencer
             var id = ++_lastID;
 
             Action onFinishCallback = delegate { PlayNextClips(index); };
-            Action onUpdateCallback = null;
+            Action onUpdateCallback = null; 
 
             // check for update module
             if (nodes[index].clip is IHasUpdate)

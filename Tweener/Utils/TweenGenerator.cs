@@ -9,122 +9,110 @@ namespace AnimFlex.Tweener
     public partial class Tweener
     {
         public static Tweener<float> Generate(
-            Func<float> getter, Action<float> setter, float endValue, Ease ease, float duration = 1, float delay = 0)
+            Func<float> getter, Action<float> setter, float endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0)
         {
-            var tweener = new Tweener<float>()
+            var tweener = new TweenerFloat
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t =>
-                setter(Mathf.Lerp(tweener.startValue, tweener.endValue, EaseUtility.EvaluateEase(ease, t, null)));
             return tweener;
         }
 
         public static Tweener<int> Generate(
-            Func<int> getter, Action<int> setter, int endValue, Ease ease, float duration = 1, float delay = 0)
+            Func<int> getter, Action<int> setter, int endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0)
         {
-            var tweener = new Tweener<int>()
+            var tweener = new TweenerInt
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t =>
-                setter(Mathf.RoundToInt(Mathf.Lerp(tweener.startValue, tweener.endValue,
-                    EaseUtility.EvaluateEase(ease, t, null))));
             return tweener;
         }
 
         public static Tweener<Vector2> Generate(
-            Func<Vector2> getter, Action<Vector2> setter, Vector2 endValue, Ease ease, float duration = 1,
+            Func<Vector2> getter, Action<Vector2> setter, Vector2 endValue, Ease ease = Ease.InOutSine, float duration = 1,
             float delay = 0)
         {
-            var tweener = new Tweener<Vector2>()
+            var tweener = new TweenerVector2
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t =>
-                setter(Vector2.Lerp(tweener.startValue, tweener.endValue, EaseUtility.EvaluateEase(ease, t, null)));
             return tweener;
         }
 
         public static Tweener<Vector3> Generate(
-            Func<Vector3> getter, Action<Vector3> setter, Vector3 endValue, Ease ease, float duration = 1,
+            Func<Vector3> getter, Action<Vector3> setter, Vector3 endValue, Ease ease = Ease.InOutSine, float duration = 1,
             float delay = 0)
         {
-            var tweener = new Tweener<Vector3>()
+            var tweener = new TweenerVector3
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t =>
-                setter(Vector3.Lerp(tweener.startValue, tweener.endValue, EaseUtility.EvaluateEase(ease, t, null)));
             return tweener;
         }
 
         public static Tweener<Quaternion> Generate(
-            Func<Quaternion> getter, Action<Quaternion> setter, Quaternion endValue, Ease ease, float duration = 1,
+            Func<Quaternion> getter, Action<Quaternion> setter, Quaternion endValue, Ease ease = Ease.InOutSine, float duration = 1,
             float delay = 0)
         {
-            var tweener = new Tweener<Quaternion>()
+            var tweener = new TweenerQuaternion
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t =>
-                setter(Quaternion.Lerp(tweener.startValue, tweener.endValue, EaseUtility.EvaluateEase(ease, t, null)));
             return tweener;
         }
 
         public static Tweener<Rect> Generate(
-            Func<Rect> getter, Action<Rect> setter, Rect endValue, Ease ease, float duration = 1, float delay = 0)
+            Func<Rect> getter, Action<Rect> setter, Rect endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0)
         {
-            var tweener = new Tweener<Rect>()
+            var tweener = new TweenerRect
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t => setter(new Rect(
-                Mathf.Lerp(tweener.startValue.x, tweener.endValue.x, t),
-                Mathf.Lerp(tweener.startValue.y, tweener.endValue.y, t),
-                Mathf.Lerp(tweener.startValue.width, tweener.endValue.width, t),
-                Mathf.Lerp(tweener.startValue.height, tweener.endValue.height, EaseUtility.EvaluateEase(ease, t, null)))
-            );
             return tweener;
         }
 
         public static Tweener<Color> Generate(
-            Func<Color> getter, Action<Color> setter, Color endValue, Ease ease, float duration = 1, float delay = 0)
+            Func<Color> getter, Action<Color> setter, Color endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0)
         {
-            var tweener = new Tweener<Color>()
+            var tweener = new TweenerColor
             {
                 getter = getter,
+                setter = setter,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
                 delay = delay
             };
-            tweener.setter = t =>
-                setter(Color.Lerp(tweener.startValue, tweener.endValue, EaseUtility.EvaluateEase(ease, t, null)));
             return tweener;
         }
     }

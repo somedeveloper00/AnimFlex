@@ -18,7 +18,7 @@ namespace AnimFlex.Core
         private static AnimFlexInitializer m_instance;
 
         public static event Action onTick = delegate { };
-        public static event Action onStart = delegate { };
+        public static event Action onInit = delegate { };
 
         private void Awake()
         {
@@ -31,18 +31,8 @@ namespace AnimFlex.Core
             }
 
             m_instance = this;
+            onInit();
         }
-
-        private void Start() => onStart();
-        private void Update()
-        {
-            // var watch = new Stopwatch();
-            // watch.Start();
-            Profiler.BeginSample("AnimFlex Tick");
-            onTick();
-            Profiler.EndSample();
-            // watch.Stop();
-            // Debug.Log("animflex tick (ms): " + watch.ElapsedMilliseconds.ToString("N"));
-        }
+        private void Update() => onTick();
     }
 }
