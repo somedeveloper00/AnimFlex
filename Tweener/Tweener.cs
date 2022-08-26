@@ -65,7 +65,7 @@ namespace AnimFlex.Tweener
         internal abstract void Revert();
         
         
-        internal Tweener() => TweenerController.AddTweener(this);
+        internal Tweener() => TweenerController.Instance.AddTweener(this);
 
         #region events
 

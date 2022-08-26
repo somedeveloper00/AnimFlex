@@ -1,38 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AnimFlex.Core;
 using AnimFlex.Sequencer.ClipModules;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer
 {
-    public sealed partial class AnimFlexSequence : MonoBehaviour
+    [Flags]
+    internal enum SequenceFlags
     {
-        public bool playOnStart = true;
-
+        Created = 1 << 0,
+        Paused = 1 << 1,
+        Deleting = 1 << 2
+    }
+    [Serializable]
+    public sealed partial class Sequence
+    {
         [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
+        
+        internal SequenceFlags flags;
 
         private readonly List<(float t, int index)> _delayedNodesInQueue = new();
         private readonly List<(int id, Action action)> _onUpdates = new();
         private int _lastID = -1;
         
-        private void OnEnable()
+        internal void Kill() => flags |= SequenceFlags.Deleting;
+
+        public void Play()
         {
-            AnimFlexCore.onTick += OnTick;
+            SequenceController.Instance.AddSequence(this);
+            if (nodes.Length <= 0) return;
+            PlayClip(0);
         }
 
-        private void OnDisable()
-        {
-            AnimFlexCore.onTick -= OnTick;
-        }
-
-        private void Start()
-        {
-            if (playOnStart) Play();
-        }
-
-        private void OnTick()
+        internal void Tick()
         {
             for (var i = 0; i < _onUpdates.Count; i++) _onUpdates[i].action();
 
@@ -44,7 +45,7 @@ namespace AnimFlex.Sequencer
                 }
         }
 
-        private void OnValidate()
+        internal void EditorValidate()
         {
             // check for invalid next indices
             foreach (var node in nodes)
@@ -52,11 +53,6 @@ namespace AnimFlex.Sequencer
                     RemoveExtraNextNodes();
         }
 
-        public void Play()
-        {
-            if (nodes.Length <= 0) return;
-            PlayClip(0);
-        }
 
         private void RemoveExtraNextNodes()
         {

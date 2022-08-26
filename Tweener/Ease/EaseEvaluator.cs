@@ -9,33 +9,28 @@ using UnityEditor;
 
 namespace AnimFlex.Tweener
 {
-    internal static class EaseUtility
+    internal class EaseEvaluator
     {
+        public static EaseEvaluator Instance => AnimFlexCore.Instance.EaseEvaluator;
+        
         public const Ease CUSTOM_ANIMATION_CURVE_EASE = (Ease)256;
 
-        private static float[][] _cachedEvals = new float[28][];
+        private float[][] _cachedEvals = new float[28][];
 
-#if UNITY_EDITOR
-        [InitializeOnLoadMethod]
-#endif
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-        private static void Init()
+        public EaseEvaluator()
         {
             // cache everything...
-            AnimFlexCore.onInit += () =>
-            {
-                var stopWatch = new Stopwatch();
-                stopWatch.Start();
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-                for (int i = 0; i < _cachedEvals.Length; i++)
-                    CacheEase((Ease)i, AnimFlexSettings.Instance.easeSampleCount, out _cachedEvals[i]);
+            for (int i = 0; i < _cachedEvals.Length; i++)
+                CacheEase((Ease)i, AnimFlexSettings.Instance.easeSampleCount, out _cachedEvals[i]);
 
-                stopWatch.Stop();
-                Debug.Log($"Cached all ease in : {stopWatch.Elapsed.TotalMilliseconds}");
-            };
+            stopWatch.Stop();
+            Debug.Log($"Cached all ease in : {stopWatch.Elapsed.TotalMilliseconds}");
         }
 
-        public static float EvaluateEase(Ease ease, float t, AnimationCurve customCurve)
+        public float EvaluateEase(Ease ease, float t, AnimationCurve customCurve)
         {
             // var _ease_index = (int)ease;
             // float indx = t * (_cachedEvals[_ease_index].Length - 1);
@@ -56,7 +51,7 @@ namespace AnimFlex.Tweener
             for (int i = 0; i < sampleCount; i++)
                 array[i] = ExactEvaluateEase(ease, (float)i / sampleCount, null);
         }
-
+        
         private static float ExactEvaluateEase(Ease ease, float t, AnimationCurve customCurve)
         {
             switch (ease)

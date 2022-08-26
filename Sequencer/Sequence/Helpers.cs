@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace AnimFlex.Sequencer
 {
-    public sealed partial class AnimFlexSequence
+    public sealed partial class Sequence
     {
         public void RemoveClipNodeAtIndex(int index)
         {
@@ -78,8 +78,7 @@ namespace AnimFlex.Sequencer
             }
         }
 
-        public void Pause() => this.enabled = false;
-        public void Resume() => this.enabled = true;
-        public void StopAndDeleteComponent() => Destroy(this);
+        public void Pause() => flags |= SequenceFlags.Paused;
+        public void Resume() => flags &= ~SequenceFlags.Paused;
     }
 }

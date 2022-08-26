@@ -4,54 +4,27 @@ using AnimFlex.Core;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace AnimFlex.Tweener
 {
-    internal static class TweenerController
+    internal class TweenerController
     {
+        public static TweenerController Instance => AnimFlexCore.Instance.TweenerController;
         
-#if UNITY_EDITOR
-        [InitializeOnLoadMethod]
-#endif
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-        private static void BindToAnimFlexInitializer()
+        internal TweenerController()
         {
-            AnimFlexCore.onInit += Init;
-            AnimFlexCore.onTick += Tick;
-        }
-
-
-        internal static Tweener[] _activeTweeners;
-        private static int _activeTweenersLength = 0; // real length of active tweens
-        private static int _newTweenersInQueue = 0; // the amount of tweeners after _activeTweenersLength in queue for the next frame
-        internal static List<Tweener> _deletingTweeners = new List<Tweener>(2 * 2 * 2 * 2 * 2 * 2 * 2);
-        
-        
-        /// <summary>
-        /// initializes the tweener controller
-        /// </summary>
-        public static void Init()
-        {
-            // check if the session already had activities
-            if(_activeTweeners != null)
-            {
-                foreach (var tweener in _activeTweeners)
-                {
-                    tweener?.Revert();
-                }
-
-            }
             _activeTweeners = new Tweener[AnimFlexSettings.Instance.maxTweenCount];
-            _deletingTweeners.Clear();
         }
+
+        private Tweener[] _activeTweeners;
+        private int _activeTweenersLength = 0; // real length of active tweens
+        private int _newTweenersInQueue = 0; // the amount of tweeners after _activeTweenersLength in queue for the next frame
+        private List<Tweener> _deletingTweeners = new List<Tweener>(2 * 2 * 2 * 2 * 2 * 2 * 2);
+        
 
         /// <summary>
         /// updates all active tweens. heart of the tweener
         /// </summary>
-        public static void Tick()
+        public void Tick()
         {
             _activeTweenersLength += _newTweenersInQueue;
             _newTweenersInQueue = 0;
@@ -83,7 +56,7 @@ namespace AnimFlex.Tweener
                 _c = t >= tweener.duration + tweener.delay; // completion check
                 t = _c ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration;
 
-                tweener.Set(EaseUtility.EvaluateEase(tweener.ease, t, null));
+                tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, null));
                 tweener.OnUpdate();
 
                 // check for completion
@@ -115,7 +88,7 @@ namespace AnimFlex.Tweener
             }
         }
 
-        public static void AddTweener(Tweener tweener)
+        public void AddTweener(Tweener tweener)
         {
             if (tweener.flag.HasFlag(TweenerFlag.Created))
             {
@@ -141,7 +114,7 @@ namespace AnimFlex.Tweener
             _activeTweeners[_activeTweenersLength + _newTweenersInQueue - 1] = tweener;
         }
 
-        public static void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true)
+        public void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true)
         {
             if (tweener == null)
                 throw new NullReferenceException("tweener");

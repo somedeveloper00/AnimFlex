@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using AnimFlex.EditorPrefs;
+using AnimFlex.Sequencer.UserEnd;
 using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer.Editor
 {
-    [CustomEditor(typeof(AnimFlexSequence))]
+    [CustomEditor(typeof(SequenceAnim))]
     public class ClipSequenceEditor : UnityEditor.Editor
     {
         // key: serializedProperty's path
         static private Dictionary<string, bool> _isExtended = new Dictionary<string, bool>();
-        
-        private AnimFlexSequence _clipSequence;
+
+        private SequenceAnim _sequenceAnim;
+        private Sequence _sequence;
         private GUIStyle _biggerButtons;
 
+        private SerializedProperty _sequenceProp;
+        
         private void OnEnable()
         {
-            _clipSequence = target as AnimFlexSequence;
+            _sequenceAnim = target as SequenceAnim;
+            _sequence = _sequenceAnim.sequence;
         }
 
         public override void OnInspectorGUI()
@@ -27,8 +32,9 @@ namespace AnimFlex.Sequencer.Editor
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("playOnStart"));
+            _sequenceProp = serializedObject.FindProperty("sequence");
 
-            var nodesList = serializedObject.FindProperty("nodes");
+            var nodesList = _sequenceProp.FindPropertyRelative("nodes");
 
             DrawClipNodes(nodesList);
 
@@ -37,8 +43,8 @@ namespace AnimFlex.Sequencer.Editor
                 ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((value) =>
                 {
                     serializedObject.ApplyModifiedProperties();
-                    Undo.RecordObject(_clipSequence, "Add Clip");
-                    _clipSequence.AddNewClipNode(value);
+                    Undo.RecordObject(_sequenceAnim, "Add Clip");
+                    _sequence.AddNewClipNode(value);
                     serializedObject.Update();
                 });
             }
@@ -58,19 +64,19 @@ namespace AnimFlex.Sequencer.Editor
             GUILayout.FlexibleSpace();
             if(GUILayout.Button("Play", EditorStyles.toolbarButton))
             {
-                _clipSequence.Play();
+                _sequence.Play();
             }
             if (GUILayout.Button("Resume", EditorStyles.toolbarButton))
             {
-                _clipSequence.Resume();
+                _sequence.Resume();
             }
             if(GUILayout.Button("Pause", EditorStyles.toolbarButton))
             {
-                _clipSequence.Pause();
+                _sequence.Pause();
             }
             if(GUILayout.Button("Stop", EditorStyles.toolbarButton))
             {
-                _clipSequence.StopAndDeleteComponent();
+                throw new NotImplementedException();
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -303,7 +309,7 @@ namespace AnimFlex.Sequencer.Editor
             if (GUILayout.Button("X", GUILayout.Width(30)))
             {
                 serializedObject.ApplyModifiedProperties();
-                _clipSequence.RemoveClipNodeAtIndex(i);
+                _sequence.RemoveClipNodeAtIndex(i);
                 serializedObject.Update();
             }
 
@@ -314,9 +320,9 @@ namespace AnimFlex.Sequencer.Editor
             EditorGUI.BeginDisabledGroup(i == 0);
             if (GUILayout.Button("▲", GUILayout.Width(25)))
             {
-                Undo.RecordObject(_clipSequence, "Move Clip Up");
+                Undo.RecordObject(_sequenceAnim, "Move Clip Up");
                 serializedObject.ApplyModifiedProperties();
-                _clipSequence.MoveClipNode(i, i - 1);
+                _sequence.MoveClipNode(i, i - 1);
                 serializedObject.Update();
             }
             EditorGUI.EndDisabledGroup();
@@ -324,9 +330,9 @@ namespace AnimFlex.Sequencer.Editor
             EditorGUI.BeginDisabledGroup(i == nodesList.arraySize - 1);
             if (GUILayout.Button("▼", GUILayout.Width(25)))
             {
-                Undo.RecordObject(_clipSequence, "Move Clip Down");
+                Undo.RecordObject(_sequenceAnim, "Move Clip Down");
                 serializedObject.ApplyModifiedProperties();
-                _clipSequence.MoveClipNode(i, i + 1);
+                _sequence.MoveClipNode(i, i + 1);
                 serializedObject.Update();
             }
             EditorGUI.EndDisabledGroup();
@@ -339,8 +345,8 @@ namespace AnimFlex.Sequencer.Editor
                 ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((clip) =>
                 {
                     serializedObject.ApplyModifiedProperties();
-                    Undo.RecordObject(_clipSequence, "Insert Clip");
-                    _clipSequence.InsertNewClipAt(clip, i + 1);
+                    Undo.RecordObject(_sequenceAnim, "Insert Clip");
+                    _sequence.InsertNewClipAt(clip, i + 1);
                     serializedObject.Update();
                 });
             }
@@ -394,15 +400,15 @@ namespace AnimFlex.Sequencer.Editor
 
         private void DrawClipDropdownLabel(int index)
         {
-            var currentType = ClipEditorsUtility.FindType(_clipSequence.nodes[index].clip.GetType().FullName);
+            var currentType = ClipEditorsUtility.FindType(_sequence.nodes[index].clip.GetType().FullName);
             var typeButtonLabel = ClipEditorsUtility.GetTypeName(currentType);
             if (GUILayout.Button($"  {typeButtonLabel} ", EditorStyles.toolbarDropDown, GUILayout.ExpandWidth(false)))
             {
                 ClipEditorsUtility.CreateTypeInstanceFromHierarchy<Clip>((clip) =>
                 {
-                    Undo.RecordObject(_clipSequence, "Change Clip Type");
+                    Undo.RecordObject(_sequenceAnim, "Change Clip Type");
                     serializedObject.ApplyModifiedProperties();
-                    _clipSequence.nodes[index].clip = clip;
+                    _sequence.nodes[index].clip = clip;
                     serializedObject.Update();
                 });
             }
@@ -486,7 +492,7 @@ namespace AnimFlex.Sequencer.Editor
 
         private void DrawNextNodesGui(SerializedProperty clipNode)
         {
-            var nodesProp = serializedObject.FindProperty("nodes");
+            var nodesProp = _sequenceProp.FindPropertyRelative("nodes");
             var nextIndicesProp = clipNode.FindPropertyRelative("nextIndices");
             var playNextAfterFinishProp = clipNode.FindPropertyRelative("playNextAfterFinish");
 
@@ -569,9 +575,9 @@ namespace AnimFlex.Sequencer.Editor
                         GUILayout.ExpandWidth(false)))
                 {
                     var menu = new GenericMenu();
-                    for (var i = 0; i < serializedObject.FindProperty("nodes").arraySize; i++)
+                    for (var i = 0; i < _sequenceProp.FindPropertyRelative("nodes").arraySize; i++)
                     {
-                        var clipNodeName = serializedObject.FindProperty("nodes")
+                        var clipNodeName = _sequenceProp.FindPropertyRelative("nodes")
                             .GetArrayElementAtIndex(i)
                             .FindPropertyRelative("name")
                             .stringValue;
