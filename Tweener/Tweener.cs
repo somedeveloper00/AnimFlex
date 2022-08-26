@@ -25,11 +25,6 @@ namespace AnimFlex.Tweener
         /// </summary>
         ForceNoOnComplete = 1 << 3,
     }
-
-    internal enum EaseQuality
-    {
-        Low, Medium, High, Max
-    }
     
     public abstract partial class Tweener
     {
@@ -57,12 +52,6 @@ namespace AnimFlex.Tweener
         /// the type of ease function
         /// </summary>
         internal Ease ease;
-
-        /// <summary>
-        /// the quality of the tween. by default a medium quality is used.
-        /// the lower the quality, the more performant it becomes. 
-        /// </summary>
-        internal EaseQuality easeQuality = EaseQuality.Medium;
         
         
         internal abstract void Init();

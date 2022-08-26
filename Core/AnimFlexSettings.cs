@@ -17,11 +17,12 @@ namespace AnimFlex.Core
         [Tooltip("Maximum amount of tweens at once")]
         public int maxTweenCount = 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
 
-        [Space]
-        [Header("Ease Quality")]
-        public int easeLowQualitySampleCount = 50;
-        public int easeMediumQualitySampleCount = 100;
-        public int easeHighQualitySampleCount = 200;
+        [Space] 
+        [Header("Ease")] 
+
+        public int easeSampleCount = 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
+        public float period = 0;
+        public float overShoot = 1.70158f;
     }
     
     
