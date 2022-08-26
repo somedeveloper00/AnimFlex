@@ -30,7 +30,7 @@
         InBack = 25,
         OutBack = 26,
         InOutBack = 27,
-        // AnimationClip = 35
+        // AnimationClip = 256
     }
     
 }

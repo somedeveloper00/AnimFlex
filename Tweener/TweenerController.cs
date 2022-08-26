@@ -2,24 +2,31 @@
 using System.Collections.Generic;
 using AnimFlex.Core;
 using UnityEngine;
-using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace AnimFlex.Tweener
 {
     internal static class TweenerController
     {
+        
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+#endif
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void BindToAnimFlexInitializer()
         {
-            AnimFlexInitializer.onInit += Init;
-            AnimFlexInitializer.onTick += Tick;
+            AnimFlexCore.onInit += Init;
+            AnimFlexCore.onTick += Tick;
         }
 
 
         internal static Tweener[] _activeTweeners;
         private static int _activeTweenersLength = 0; // real length of active tweens
-        
+        private static int _newTweenersInQueue = 0; // the amount of tweeners after _activeTweenersLength in queue for the next frame
         internal static List<Tweener> _deletingTweeners = new List<Tweener>(2 * 2 * 2 * 2 * 2 * 2 * 2);
         
         
@@ -46,6 +53,8 @@ namespace AnimFlex.Tweener
         /// </summary>
         public static void Tick()
         {
+            _activeTweenersLength += _newTweenersInQueue;
+            _newTweenersInQueue = 0;
             
             initialize_phase:
             for (var i = 0; i < _activeTweenersLength; i++)
@@ -53,8 +62,8 @@ namespace AnimFlex.Tweener
                 var tweener = _activeTweeners[i];
                 if (tweener.flag.HasFlag(TweenerFlag.Initialized) == false)
                 {
-                    tweener.Init();
                     tweener.flag |= TweenerFlag.Initialized;
+                    tweener.Init();
                     tweener.OnStart();
                 }
             }
@@ -93,13 +102,17 @@ namespace AnimFlex.Tweener
                 if (_activeTweeners[i].flag.HasFlag(TweenerFlag.Deleting))
                 {
                     _activeTweeners[i].OnKill();
-
+                    
+                    // paste last active tween here and length--
                     _activeTweeners[i] = _activeTweeners[_activeTweenersLength - 1];
                     _activeTweenersLength--;
+                    
+                    // paste last new queued tween to the duplicate last active tween and queue length--
+                    _activeTweeners[_activeTweenersLength] = _activeTweeners[_activeTweenersLength + _newTweenersInQueue];
+                    
                     i--;
                 }
             }
-            // actual deletion
         }
 
         public static void AddTweener(Tweener tweener)
@@ -113,7 +126,7 @@ namespace AnimFlex.Tweener
 
             tweener.flag |= TweenerFlag.Created;
 
-            if (_activeTweeners.Length == _activeTweenersLength)
+            if (_activeTweeners.Length == _activeTweenersLength + _newTweenersInQueue)
             {
                 Debug.LogWarning(
                     $"maximum capacity reached: automatically increasing " +
@@ -123,13 +136,17 @@ namespace AnimFlex.Tweener
                     _tmp[i] = _activeTweeners[i];
                 _activeTweeners = _tmp;
             }
-            _activeTweeners[_activeTweenersLength++] = tweener;
+
+            _newTweenersInQueue++;
+            _activeTweeners[_activeTweenersLength + _newTweenersInQueue - 1] = tweener;
         }
 
         public static void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true)
         {
             if (tweener == null)
                 throw new NullReferenceException("tweener");
+            if (tweener.flag.HasFlag(TweenerFlag.Deleting))
+                throw new Exception("Tweener has already been destroyed!");
             
             tweener.flag |= TweenerFlag.Deleting;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace AnimFlex.Tweener
 {
@@ -52,17 +53,19 @@ namespace AnimFlex.Tweener
         /// the type of ease function
         /// </summary>
         internal Ease ease;
-        
-        
+
+        /// <summary>
+        /// custom curve used for special cases where user wants to use their specific curve as the Ease
+        /// </summary>
+        internal AnimationCurve customCurve;
+
+
         internal abstract void Init();
         internal abstract void Set(float t);
         internal abstract void Revert();
         
         
-        internal Tweener()
-        {
-            TweenerController.AddTweener(this);
-        }
+        internal Tweener() => TweenerController.AddTweener(this);
 
         #region events
 
@@ -99,12 +102,11 @@ namespace AnimFlex.Tweener
         internal Action<T> setter;
         internal Func<T> getter;
 
-
         internal override void Revert()
         {
             setter(startValue);
         }
-        
+
         internal override void Init()
         {
             startValue = getter();

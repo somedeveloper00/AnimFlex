@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +23,7 @@ namespace AnimFlex.EditorPrefs
                 if (_instance != null) return _instance;
                 
                 // create a new one
-                _instance = ScriptableObject.CreateInstance<SequencerEditorPrefs>();
+                _instance = CreateInstance<SequencerEditorPrefs>();
                 if (!AssetDatabase.IsValidFolder("Assets/Editor")) // validate folder
                     AssetDatabase.CreateFolder("Assets", "Editor");
                 AssetDatabase.CreateAsset(_instance, k_SequencerEditorPrefsPath);
@@ -58,4 +57,3 @@ namespace AnimFlex.EditorPrefs
         }
     }
 }
-#endif

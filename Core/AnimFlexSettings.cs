@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace AnimFlex.Core
 {
     internal class AnimFlexSettings : ScriptableObject
     {
-        public static AnimFlexSettings Instance => AnimFlexInitializer.Instance.m_animFlexSettings;
-        
-        [Header("Tweener")]
-        
+        private static AnimFlexSettings m_instance;
+        public static AnimFlexSettings Instance => m_instance;
+
+        private void OnEnable() => m_instance = this;
+
+        [Header("Tweener")] 
         [Tooltip("If a frame takes more time than this, Tweener will ignore it")]
         public float deltaTimeIgnoreThreshold = 0.2f;
 
@@ -19,11 +22,8 @@ namespace AnimFlex.Core
 
         [Space] 
         [Header("Ease")] 
-
         public int easeSampleCount = 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
         public float period = 0;
         public float overShoot = 1.70158f;
     }
-    
-    
 }

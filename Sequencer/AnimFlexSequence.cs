@@ -19,12 +19,12 @@ namespace AnimFlex.Sequencer
         
         private void OnEnable()
         {
-            AnimFlexInitializer.onTick += OnTick;
+            AnimFlexCore.onTick += OnTick;
         }
 
         private void OnDisable()
         {
-            AnimFlexInitializer.onTick -= OnTick;
+            AnimFlexCore.onTick -= OnTick;
         }
 
         private void Start()

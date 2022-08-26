@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System.Linq;
+﻿using System.Linq;
 using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
@@ -46,4 +45,3 @@ namespace AnimFlex.Sequencer.Editor
         }
     }
 }
-#endif

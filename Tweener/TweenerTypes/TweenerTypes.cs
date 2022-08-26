@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using AnimFlex.Core;
+using UnityEngine;
 
 namespace AnimFlex.Tweener
 {
@@ -17,9 +18,10 @@ namespace AnimFlex.Tweener
         internal override void Set(float t) => setter(startValue + (endValue - startValue) * t);
     }
 
+    
     internal class TweenerVector3 : Tweener<Vector3>
     {
-        internal override void Set(float t) => setter(startValue + (endValue - startValue) * t);
+        internal override void Set(float t) => setter(Vector3.Lerp(startValue, endValue, t));
     }
 
     internal class TweenerRect : Tweener<Rect>

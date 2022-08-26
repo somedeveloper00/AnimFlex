@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using System.Collections.Generic;
 using AnimFlex.EditorPrefs;
 using UnityEditor;
@@ -595,4 +594,3 @@ namespace AnimFlex.Sequencer.Editor
         }
     }
 }
-#endif

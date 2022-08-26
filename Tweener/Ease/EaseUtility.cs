@@ -3,19 +3,26 @@ using AnimFlex.Core;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace AnimFlex.Tweener
 {
     internal static class EaseUtility
     {
-        public const Ease CUSTOM_ANIMATION_CURVE_EASE = (Ease)29;
+        public const Ease CUSTOM_ANIMATION_CURVE_EASE = (Ease)256;
 
         private static float[][] _cachedEvals = new float[28][];
 
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+#endif
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void Init()
         {
             // cache everything...
-            AnimFlexInitializer.onInit += () =>
+            AnimFlexCore.onInit += () =>
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -30,15 +37,15 @@ namespace AnimFlex.Tweener
 
         public static float EvaluateEase(Ease ease, float t, AnimationCurve customCurve)
         {
-            var _ease_index = (int)ease;
-            float indx = t * (_cachedEvals[_ease_index].Length - 1);
-            int indx_floor = (int)indx;
-            int indx_ceil = Mathf.CeilToInt(indx);
-
-            // linear interpolate between the closest two evaluations
-            var a = _cachedEvals[_ease_index][indx_floor];
-            var b = _cachedEvals[_ease_index][indx_ceil];
-            return Mathf.Lerp(a, b, Mathf.InverseLerp(indx_floor, indx_ceil, indx));
+            // var _ease_index = (int)ease;
+            // float indx = t * (_cachedEvals[_ease_index].Length - 1);
+            // int indx_floor = (int)indx;
+            // int indx_ceil = Mathf.CeilToInt(indx);
+            //
+            // // linear interpolate between the closest two evaluations
+            // var a = _cachedEvals[_ease_index][indx_floor];
+            // var b = _cachedEvals[_ease_index][indx_ceil];
+            // return Mathf.Lerp(a, b, Mathf.InverseLerp(indx_floor, indx_ceil, indx));
 
             return ExactEvaluateEase(ease, t, customCurve);
         }
@@ -183,11 +190,9 @@ namespace AnimFlex.Tweener
                 case Ease.OutBack:
                     return (t -= 1f) * t * ((AnimFlexSettings.Instance.overShoot + 1f) * t + AnimFlexSettings.Instance.overShoot) + 1f;
                 case Ease.InOutBack:
-                    return (t /= 1 * 0.5f) < 1f
-                        ? 0.5f * (t * t *
-                                  (((AnimFlexSettings.Instance.overShoot *= 1.525f) + 1f) * t - AnimFlexSettings.Instance.overShoot))
-                        : 0.5f * ((t -= 2f) * t *
-                            (((AnimFlexSettings.Instance.overShoot *= 1.525f) + 1f) * t + AnimFlexSettings.Instance.overShoot) + 2f);
+                    return (t /= 1 * 0.5f) < 1.0
+                        ? (float)(0.5 * (t * (double)t * (((AnimFlexSettings.Instance.overShoot *= 1.525f) + 1.0) * t - AnimFlexSettings.Instance.overShoot)))
+                        : (float)(0.5 * ((t -= 2f) * (double)t * (((AnimFlexSettings.Instance.overShoot *= 1.525f) + 1.0) * t + AnimFlexSettings.Instance.overShoot) + 2.0));
 
                 case CUSTOM_ANIMATION_CURVE_EASE:
                     return customCurve.Evaluate(t);

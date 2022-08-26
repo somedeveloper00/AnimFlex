@@ -16,6 +16,7 @@ namespace AnimFlex.Tweener
         public Color targetColor;
         public Transform targetTransform;
         public Quaternion targetQuaternion;
+        public AnimationCurve customCurve;
         
         public bool useQuaternion;
         public bool relative;

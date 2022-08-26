@@ -6,23 +6,12 @@ namespace AnimFlex.Tweener
 {
     public sealed class TweenerAnim : MonoBehaviour
     {
-        [SerializeField] internal GeneratorData generatorData;
+        [SerializeField] public GeneratorData generatorData;
         [SerializeField] internal bool playOnStart;
 
         private Tweener m_tweener;
 
         #region wrappers
-        public float delay
-        {
-            get => generatorData.delay;
-            set => generatorData.delay = value;
-        }
-        public float duration
-        {
-            get => generatorData.duration;
-            set => generatorData.duration = value;
-        }
-
         public UnityEvent onStart => generatorData.onStart;
         public UnityEvent onComplete => generatorData.onComplete;
         public UnityEvent onKill => generatorData.onKill;
@@ -43,6 +32,7 @@ namespace AnimFlex.Tweener
             tweener = null;
             return false;
         }
+        
         #endregion
         
         private void Start()
@@ -60,11 +50,11 @@ namespace AnimFlex.Tweener
         public void PlayOrRestart()
         {
             // kill if already running
-            if (m_tweener != null)
+            if (m_tweener != null && !m_tweener.flag.HasFlag(TweenerFlag.Deleting))
                 Kill(false, false);
             
             // generate new tweener if possible
-            if (DataUtil.TryGenerateTweener(generatorData, out m_tweener))
+            if (GeneratorDataUtil.TryGenerateTweener(generatorData, out m_tweener))
             {
                 if (m_tweener == null)
                 {
