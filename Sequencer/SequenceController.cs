@@ -17,17 +17,26 @@ namespace AnimFlex.Sequencer
             _sequences = new Sequence[AnimFlexSettings.Instance.sequenceMaxCapacity];
         }
 
-        public void Tick()
+        public void Tick(float deltaTime)
         {
             // adding queued sequences to the active list
             _activeSequencesCount += _queuedSequencesCount;
             _queuedSequencesCount = 0;
 
+            init_phase:
+            for (int i = 0; i < _activeSequencesCount; i++)
+            {
+                if (!_sequences[i].flags.HasFlag(SequenceFlags.Initialized))
+                {
+                    _sequences[i].OnPlay();
+                }
+            }
+
             tick_phase:
             for (int i = 0; i < _activeSequencesCount; i++)
             {
                 if(!_sequences[i].flags.HasFlag(SequenceFlags.Paused))
-                    _sequences[i].Tick();
+                    _sequences[i].Tick(deltaTime);
             }
             
             remove_phase:
@@ -35,6 +44,7 @@ namespace AnimFlex.Sequencer
             {
                 if (_sequences[i].flags.HasFlag(SequenceFlags.Deleting))
                 {
+                    _sequences[i].OnKill();
                     // copy last active in the deleting one
                     _sequences[i] = _sequences[_activeSequencesCount - 1];
                     _activeSequencesCount--;

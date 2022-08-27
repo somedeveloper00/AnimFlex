@@ -9,7 +9,7 @@ namespace AnimFlex.Sequencer
     [Flags]
     internal enum SequenceFlags
     {
-        Created = 1 << 0,
+        Initialized = 1 << 0, // for OnPlay event
         Paused = 1 << 1,
         Deleting = 1 << 2
     }
@@ -17,12 +17,21 @@ namespace AnimFlex.Sequencer
     public sealed partial class Sequence
     {
         [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
+
+        public event Action onPlay = delegate { };
+        public event Action onKill = delegate { };
+        public event Action onComplete = delegate { };
+
+        internal void OnPlay() => onPlay();
+        internal void OnKill() => onKill();
+        internal void OnComplete() => onComplete();
         
         internal SequenceFlags flags;
 
         private readonly List<(float t, int index)> _delayedNodesInQueue = new();
         private readonly List<(int id, Action action)> _onUpdates = new();
         private int _lastID = -1;
+        private float time = 0;
         
         internal void Kill() => flags |= SequenceFlags.Deleting;
 
@@ -33,16 +42,23 @@ namespace AnimFlex.Sequencer
             PlayClip(0);
         }
 
-        internal void Tick()
+        internal void Tick(float deltaTime)
         {
+            time += deltaTime;
+            
             for (var i = 0; i < _onUpdates.Count; i++) _onUpdates[i].action();
 
             for (var i = 0; i < _delayedNodesInQueue.Count; i++)
-                if (Time.time >= _delayedNodesInQueue[i].t)
+                if (time >= _delayedNodesInQueue[i].t)
                 {
                     PlayClip(_delayedNodesInQueue[i].index);
                     _delayedNodesInQueue.RemoveAt(i--);
                 }
+
+            if (_onUpdates.Count == 0 && _delayedNodesInQueue.Count == 0)
+            {
+                onComplete();
+            }
         }
 
         internal void EditorValidate()
@@ -141,7 +157,7 @@ namespace AnimFlex.Sequencer
                 if (nodes[nextIndex].delay <= 0)
                     PlayClip(nextIndex);
                 else
-                    _delayedNodesInQueue.Add((Time.time + nodes[nextIndex].delay, nextIndex));
+                    _delayedNodesInQueue.Add((time + nodes[nextIndex].delay, nextIndex));
             }
         }
     }

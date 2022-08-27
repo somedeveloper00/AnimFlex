@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace AnimFlex.Tweener
 {
-    public static class Extentions
+    public static class TweenGeneratorExtentions
     {
         #region AnimPositionTo
 

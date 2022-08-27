@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnimFlex.Editor;
 using AnimFlex.EditorPrefs;
 using AnimFlex.Sequencer.UserEnd;
 using UnityEditor;
@@ -50,36 +51,40 @@ namespace AnimFlex.Sequencer.Editor
             }
 
 
-            EditorGUI.BeginDisabledGroup(!Application.isPlaying);
             GUILayout.Space(15);
-            DrawPlaybackTools();
-            EditorGUI.EndDisabledGroup();
+            if(DrawPlaybackTools())
+                return;
             RevertCustomEditorStyles();
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawPlaybackTools()
+        /// <summary>
+        /// returns true if the editor needs to stop
+        /// </summary>
+        private bool DrawPlaybackTools()
         {
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if(GUILayout.Button("Play", EditorStyles.toolbarButton))
+
+            using (new EditorGUI.DisabledGroupScope(PreviewUtils.isActive))
             {
-                _sequence.Play();
+                if(GUILayout.Button("Play", EditorStyles.toolbarButton))
+                {
+                    PreviewUtils.PreviewSequence(_sequence);
+                }
             }
-            if (GUILayout.Button("Resume", EditorStyles.toolbarButton))
+
+            using (new EditorGUI.DisabledGroupScope(!PreviewUtils.isActive))
             {
-                _sequence.Resume();
-            }
-            if(GUILayout.Button("Pause", EditorStyles.toolbarButton))
-            {
-                _sequence.Pause();
-            }
-            if(GUILayout.Button("Stop", EditorStyles.toolbarButton))
-            {
-                throw new NotImplementedException();
+                if(GUILayout.Button("Stop", EditorStyles.toolbarButton))
+                {
+                    PreviewUtils.StopPreviewMode();
+                    return true;
+                }
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+            return false;
         }
 
  

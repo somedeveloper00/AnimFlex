@@ -19,12 +19,11 @@ namespace AnimFlex.Tweener
         private int _activeTweenersLength = 0; // real length of active tweens
         private int _newTweenersInQueue = 0; // the amount of tweeners after _activeTweenersLength in queue for the next frame
         private List<Tweener> _deletingTweeners = new List<Tweener>(2 * 2 * 2 * 2 * 2 * 2 * 2);
-        
 
         /// <summary>
         /// updates all active tweens. heart of the tweener
         /// </summary>
-        public void Tick()
+        public void Tick(float deltaTime)
         {
             _activeTweenersLength += _newTweenersInQueue;
             _newTweenersInQueue = 0;
@@ -46,7 +45,7 @@ namespace AnimFlex.Tweener
             for (var i = 0; i < _activeTweenersLength; i++)
             {
                 var tweener = _activeTweeners[i];
-                var t = tweener._t + Time.deltaTime;
+                var t = tweener._t + deltaTime;
                 
                 // to avoid repeated evaluations
                 if(tweener._t == t) continue;

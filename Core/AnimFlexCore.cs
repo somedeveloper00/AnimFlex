@@ -43,25 +43,29 @@ namespace AnimFlex.Core
             // setup the controller gameObject
             var go = new GameObject("_AnimFlex_mgr");
             go.isStatic = true;
-            go.AddComponent<AnimFlexCore>();
+            var core = go.AddComponent<AnimFlexCore>();
+            
+            // initializing locally
+            {
+                m_instance = core;
+            
+                // initialize systems in order
+                core.Settings = AnimFlexSettings.Initialize();
+                core.TweenerController = new TweenerController();
+                core.EaseEvaluator = new EaseEvaluator();
+                core.SequenceController = new SequenceController();
+            }
+            
+#if UNITY_EDITOR
+            if(Application.isPlaying)
+#endif
             DontDestroyOnLoad(go);
         }
 
-        private void Awake()
+        public void Tick(float deltaTime)
         {
-            m_instance = this;
-            
-            // initialize systems in order
-            Settings = AnimFlexSettings.Initialize();
-            TweenerController = new TweenerController();
-            EaseEvaluator = new EaseEvaluator();
-            SequenceController = new SequenceController();
-        }
-
-        private void Update()
-        {
-            SequenceController.Tick();
-            TweenerController.Tick();
+            SequenceController.Tick(deltaTime);
+            TweenerController.Tick(deltaTime);
         }
     }
 }

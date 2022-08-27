@@ -29,7 +29,6 @@ namespace AnimFlex.Tweener
     
     public abstract partial class Tweener
     {
-        
         /// per-tween T value for evaluation
         internal float _t = 0;
         
@@ -63,6 +62,7 @@ namespace AnimFlex.Tweener
         internal abstract void Init();
         internal abstract void Set(float t);
         internal abstract void Revert();
+        internal abstract void SwapStartAndEnd();
         
         
         internal Tweener() => TweenerController.Instance.AddTweener(this);
@@ -94,6 +94,10 @@ namespace AnimFlex.Tweener
         internal void OnComplete() => onComplete();
         internal void OnKill() => onKill();
         #endregion
+
+        #region helpers
+        public void Kill(bool complete, bool onKillCallback) => TweenerController.Instance.KillTweener(this, complete, onKillCallback);
+        #endregion
     }
 
     public abstract class Tweener<T> : Tweener
@@ -112,6 +116,6 @@ namespace AnimFlex.Tweener
             startValue = getter();
         }
         
-        internal void SwapStartAndEnd() => (startValue, endValue) = (endValue, startValue);
+        internal override void SwapStartAndEnd() => (startValue, endValue) = (endValue, startValue);
     }
 }
