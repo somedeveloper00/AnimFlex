@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using AnimFlex.Core;
+using AnimFlex.Tweener;
 using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -21,6 +21,11 @@ namespace AnimFlex.Editor
 
         public static void StartPreviewMode()
         {
+            if (EditorApplication.isPlaying)
+            {
+                Debug.LogError("Can't start preview mode while in play mode!");
+                return;
+            }
             if (isActive)
             {
                 StopPreviewMode();
@@ -45,6 +50,20 @@ namespace AnimFlex.Editor
             isActive = true;
             Debug.Log("Preview started.");
 
+            // handling sudden play mode
+            EditorApplication.playModeStateChanged += change =>
+            {
+                if (isActive)
+                {
+                    if (change == PlayModeStateChange.ExitingEditMode)
+                    {
+                        EditorApplication.isPlaying = false;
+                        Debug.LogError($"You shouldn't enter playmode while in preview mode!");
+                        StopPreviewMode();
+                    }
+                }
+            };
+
         }
 
         private static void EditorTick()
@@ -55,6 +74,8 @@ namespace AnimFlex.Editor
 
         public static void StopPreviewMode()
         {
+            if(!isActive) return;
+            
             EditorApplication.update -= EditorTick;
             stopWatch.Stop();
             isActive = false;
@@ -86,11 +107,25 @@ namespace AnimFlex.Editor
 
         public static void PreviewSequence(Sequence sequence)
         {
-            if(isActive)
+            if (isActive)
+            {
                 StopPreviewMode();
+                return;
+            }
             StartPreviewMode();
             sequence.Play();
             sequence.onComplete += StopPreviewMode;
+        }
+
+        public static void PreviewTweener(TweenerAnim tweenerAnim)
+        {
+            if (isActive)
+            {
+                StopPreviewMode();
+                return;
+            }
+            StartPreviewMode();
+            tweenerAnim.PlayOrRestart();
         }
     }
 }

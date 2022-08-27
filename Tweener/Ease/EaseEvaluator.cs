@@ -2,9 +2,7 @@
 using AnimFlex.Core;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-
 #if UNITY_EDITOR
-using UnityEditor;
 #endif
 
 namespace AnimFlex.Tweener
@@ -20,14 +18,14 @@ namespace AnimFlex.Tweener
         public EaseEvaluator()
         {
             // cache everything...
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            for (int i = 0; i < _cachedEvals.Length; i++)
-                CacheEase((Ease)i, AnimFlexSettings.Instance.easeSampleCount, out _cachedEvals[i]);
-
-            stopWatch.Stop();
-            Debug.Log($"Cached all ease in : {stopWatch.Elapsed.TotalMilliseconds}");
+            // var stopWatch = new Stopwatch();
+            // stopWatch.Start();
+            //
+            // for (int i = 0; i < _cachedEvals.Length; i++)
+            //     CacheEase((Ease)i, AnimFlexSettings.Instance.easeSampleCount, out _cachedEvals[i]);
+            //
+            // stopWatch.Stop();
+            // Debug.Log($"Cached all ease in : {stopWatch.Elapsed.TotalMilliseconds}");
         }
 
         public float EvaluateEase(Ease ease, float t, AnimationCurve customCurve)
@@ -54,6 +52,12 @@ namespace AnimFlex.Tweener
         
         private static float ExactEvaluateEase(Ease ease, float t, AnimationCurve customCurve)
         {
+            if (customCurve is not null)
+                return customCurve.Evaluate(t);
+
+            float overshoot = AnimFlexSettings.Instance.overShoot;
+            float period = AnimFlexSettings.Instance.period;
+            
             switch (ease)
             {
                 case Ease.Linear:
@@ -69,16 +73,14 @@ namespace AnimFlex.Tweener
                 case Ease.OutQuad:
                     return -t * (t - 2.0f);
                 case Ease.InOutQuad:
-                    return t * 0.5f < 1.0f
-                        ? 0.5f * t * t
-                        : -0.5f * (--t * (t - 2.0f) - 1.0f);
+                    return (t /= 0.5f) < 1.0f ? 0.5f * t * t : -0.5f * (--t * (t - 2.0f) - 1.0f);
                 case Ease.InCubic:
                     return t * t * t;
                 case Ease.OutCubic:
                     return (t -= 1.0f) * t *
                         t + 1.0f;
                 case Ease.InOutCubic:
-                    return t * 0.5f < 1.0f
+                    return (t /= 0.5f) < 1.0f
                         ? 0.5f * t * t * t
                         : 0.5f * ((t -= 2f) * t * t + 2.0f);
                 case Ease.InQuart:
@@ -112,7 +114,7 @@ namespace AnimFlex.Tweener
                         return 0.0f;
                     if (t == 1)
                         return 1f;
-                    return t * 0.5f < 1.0f
+                    return (t /= 0.5f) < 1.0f
                         ? 0.5f * Mathf.Pow(2.0f, 10.0f * (t - 1.0f))
                         : 0.5f * (-Mathf.Pow(2.0f, -10.0f * --t) + 2.0f);
                 case Ease.InCirc:
@@ -128,66 +130,63 @@ namespace AnimFlex.Tweener
                         return 0.0f;
                     if (t == 1.0f)
                         return 1f;
-                    if (AnimFlexSettings.Instance.period == 0.0f)
-                        AnimFlexSettings.Instance.period = 0.3f;
+                    if ((double)period == 0.0f)
+                        period = 1 * 0.3f;
                     float num1;
-                    if (AnimFlexSettings.Instance.overShoot < 1.0f)
+                    if (overshoot < 1.0f)
                     {
-                        AnimFlexSettings.Instance.overShoot = 1f;
-                        num1 = AnimFlexSettings.Instance.period / 4f;
+                        overshoot = 1f;
+                        num1 = period / 4f;
                     }
                     else
-                        num1 = AnimFlexSettings.Instance.period / 6.283185f * Mathf.Asin(1.0f / AnimFlexSettings.Instance.overShoot);
+                        num1 = period / 6.283185f * Mathf.Asin(1.0f / overshoot);
 
-                    return -(AnimFlexSettings.Instance.overShoot * Mathf.Pow(2.0f, 10.0f * --t) *
-                             Mathf.Sin((t - num1) * 6.28318548202515f / AnimFlexSettings.Instance.period));
+                    return -(overshoot * Mathf.Pow(2.0f, 10.0f * --t) *
+                                    Mathf.Sin((t - num1) * 6.28318548202515f / period));
                 case Ease.OutElastic:
                     if (t == 0.0f)
                         return 0.0f;
                     if (t == 1.0f)
                         return 1f;
-                    if (AnimFlexSettings.Instance.period == 0.0f)
-                        AnimFlexSettings.Instance.period = 0.3f;
+                    if (period == 0.0f)
+                        period = 0.3f;
                     float num2;
-                    if (AnimFlexSettings.Instance.overShoot < 1f)
+                    if (overshoot < 1.0f)
                     {
-                        AnimFlexSettings.Instance.overShoot = 1f;
-                        num2 = AnimFlexSettings.Instance.period / 4f;
+                        overshoot = 1f;
+                        num2 = period / 4f;
                     }
                     else
-                        num2 = AnimFlexSettings.Instance.period / 6.283185f * Mathf.Asin(1.0f / AnimFlexSettings.Instance.overShoot);
-
-                    return AnimFlexSettings.Instance.overShoot * Mathf.Pow(2f, -10f * t) *
-                        Mathf.Sin((t - num2) * 6.28318548202515f / AnimFlexSettings.Instance.period) + 1f;
+                        num2 = period / 6.283185f * Mathf.Asin(1.0f / overshoot);
+                    return overshoot * Mathf.Pow(2.0f, -10.0f * t) * Mathf.Sin((t - num2) * 6.28318548202515f / period) + 1.0f;
                 case Ease.InOutElastic:
-                    if (t == 0f)
-                        return 0f;
-                    if (t * 0.5f == 2f)
+                    if (t == 0.0f)
+                        return 0.0f;
+                    if ((t /= 0.5f) == 2.0f)
                         return 1f;
-                    if (AnimFlexSettings.Instance.period == 0f)
-                        AnimFlexSettings.Instance.period = 0.45f;
+                    if (period == 0.0f)
+                        period = 0.45f;
                     float num3;
-                    if (AnimFlexSettings.Instance.overShoot < 1f)
+                    if (overshoot < 1.0f)
                     {
-                        AnimFlexSettings.Instance.overShoot = 1f;
-                        num3 = AnimFlexSettings.Instance.period / 4f;
+                        overshoot = 1f;
+                        num3 = period / 4f;
                     }
                     else
-                        num3 = AnimFlexSettings.Instance.period / 6.283185f * Mathf.Asin(1f / AnimFlexSettings.Instance.overShoot);
+                        num3 = period / 6.283185f * Mathf.Asin(1.0f / overshoot);
 
-                    return t < 1f
-                        ? -0.5f * (AnimFlexSettings.Instance.overShoot * Mathf.Pow(2f, 10f * --t) *
-                                   Mathf.Sin((t - num3) * 6.28318548202515f / AnimFlexSettings.Instance.period))
-                        : AnimFlexSettings.Instance.overShoot * Mathf.Pow(2f, -10f * --t) *
-                        Mathf.Sin((t - num3) * 6.28318548202515f / AnimFlexSettings.Instance.period) * 0.5f + 1f;
+                    return t < 1.0f
+                        ? -0.5f * (overshoot * Mathf.Pow(2.0f, 10.0f * --t) * Mathf.Sin((t - num3) * 6.28318548202515f / period))
+                        : overshoot * Mathf.Pow(2.0f, -10.0f * --t) * Mathf.Sin((t - num3) * 6.28318548202515f / period) * 0.5f + 1.0f;
+        
                 case Ease.InBack:
-                    return t * t * ((AnimFlexSettings.Instance.overShoot + 1f) * t - AnimFlexSettings.Instance.overShoot);
+                    return t * t * ((overshoot + 1.0f) * t - overshoot);
                 case Ease.OutBack:
-                    return (t -= 1f) * t * ((AnimFlexSettings.Instance.overShoot + 1f) * t + AnimFlexSettings.Instance.overShoot) + 1f;
+                    return (t -= 1f) * t * ((overshoot + 1f) * t + overshoot) + 1f;
                 case Ease.InOutBack:
-                    return (t /= 1 * 0.5f) < 1.0
-                        ? (float)(0.5 * (t * (double)t * (((AnimFlexSettings.Instance.overShoot *= 1.525f) + 1.0) * t - AnimFlexSettings.Instance.overShoot)))
-                        : (float)(0.5 * ((t -= 2f) * (double)t * (((AnimFlexSettings.Instance.overShoot *= 1.525f) + 1.0) * t + AnimFlexSettings.Instance.overShoot) + 2.0));
+                    return (t /= 0.5f) < 1.0f
+                        ? 0.5f * (t * t * (((overshoot *= 1.525f) + 1.0f) * t - overshoot))
+                        : 0.5f * ((t -= 2f) * t * (((overshoot *= 1.525f) + 1.0f) * t + overshoot) + 2.0f);
 
                 case CUSTOM_ANIMATION_CURVE_EASE:
                     return customCurve.Evaluate(t);

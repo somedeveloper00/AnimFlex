@@ -58,6 +58,7 @@ namespace AnimFlex.Tweener
         /// </summary>
         internal AnimationCurve customCurve;
 
+        internal bool useCurve = false;
 
         internal abstract void Init();
         internal abstract void Set(float t);

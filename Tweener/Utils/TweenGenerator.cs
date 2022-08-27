@@ -19,7 +19,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }
@@ -35,7 +36,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }
@@ -52,7 +54,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }
@@ -69,7 +72,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }
@@ -86,7 +90,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }
@@ -102,7 +107,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }
@@ -118,7 +124,8 @@ namespace AnimFlex.Tweener
                 ease = ease,
                 duration = duration,
                 delay = delay,
-                customCurve = customCurve
+                customCurve = customCurve,
+                useCurve = customCurve is not null
             };
             return tweener;
         }

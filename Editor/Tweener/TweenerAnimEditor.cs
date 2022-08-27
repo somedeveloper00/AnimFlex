@@ -1,8 +1,10 @@
-﻿using UnityEditor;
+﻿using AnimFlex.Editor;
+using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Tweener.Editor
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(TweenerAnim))]
     public class TweenerAnimEditor : UnityEditor.Editor
     {
@@ -12,12 +14,12 @@ namespace AnimFlex.Tweener.Editor
 
             if (GUILayout.Button("Play"))
             {
-                
+                PreviewUtils.PreviewTweener(target as TweenerAnim);
             }
 
             if (GUILayout.Button("Stop"))
             {
-                
+                PreviewUtils.StopPreviewMode();
             }
         }
     }

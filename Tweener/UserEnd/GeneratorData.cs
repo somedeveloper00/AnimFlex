@@ -17,7 +17,8 @@ namespace AnimFlex.Tweener
         public Transform targetTransform;
         public Quaternion targetQuaternion;
         public AnimationCurve customCurve;
-        
+
+        public bool useCurve = false;
         public bool useQuaternion;
         public bool relative;
 

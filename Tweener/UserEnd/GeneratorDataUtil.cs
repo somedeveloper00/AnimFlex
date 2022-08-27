@@ -20,7 +20,7 @@ namespace AnimFlex.Tweener
                 {
                     var target = data.targetVector3;
                     if (data.relative) target += data.fromObject.transform.localPosition;
-                    tweener = data.fromObject.transform.AnimLocalPositionTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                    tweener = data.fromObject.transform.AnimLocalPositionTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     break;
                 }
                 
@@ -29,7 +29,7 @@ namespace AnimFlex.Tweener
                 {
                     var target = data.targetVector3;
                     if (data.relative) target += data.fromObject.transform.position;
-                    tweener = data.fromObject.transform.AnimPositionTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                    tweener = data.fromObject.transform.AnimPositionTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     break;
                 }
                 
@@ -43,7 +43,7 @@ namespace AnimFlex.Tweener
                         {
                             target = Quaternion.Euler(target.eulerAngles + data.fromObject.transform.localRotation.eulerAngles);
                         }
-                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else
                     {
@@ -52,7 +52,7 @@ namespace AnimFlex.Tweener
                         {
                             target += data.fromObject.transform.localRotation.eulerAngles;
                         }
-                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     break;
                 }
@@ -68,7 +68,7 @@ namespace AnimFlex.Tweener
                         {
                             target = Quaternion.Euler(target.eulerAngles + data.fromObject.transform.localRotation.eulerAngles);
                         }
-                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else
                     {
@@ -77,7 +77,7 @@ namespace AnimFlex.Tweener
                         {
                             target += data.fromObject.transform.localRotation.eulerAngles;
                         }
-                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = data.fromObject.transform.AnimLocalRotationTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     break;
                 }
@@ -88,7 +88,7 @@ namespace AnimFlex.Tweener
                 {
                     var target = data.targetVector3;
                     if (data.relative) target += data.fromObject.transform.localScale;
-                    tweener = data.fromObject.transform.AnimScaleTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                    tweener = data.fromObject.transform.AnimScaleTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     break;
                 }
                 case GeneratorData.TweenerType.Fade:
@@ -97,22 +97,22 @@ namespace AnimFlex.Tweener
                     if (data.fromObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
                     {
                         if (data.relative) target += canvasGroup.alpha;
-                        tweener = canvasGroup.AnimFadeTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = canvasGroup.AnimFadeTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else if (data.fromObject.TryGetComponent<Renderer>(out var renderer))
                     {
                         if (data.relative) target += renderer.material.color.a;
-                        tweener = renderer.AnimFadeTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = renderer.AnimFadeTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else if (data.fromObject.TryGetComponent<Graphic>(out var graphic))
                     {
                         if (data.relative) target += graphic.color.a;
-                        tweener = graphic.AnimFadeTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = graphic.AnimFadeTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else if (data.fromObject.TryGetComponent<Material>(out var material))
                     {
                         if (data.relative) target += material.color.a;
-                        tweener = material.AnimFadeTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = material.AnimFadeTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else
                     {
@@ -128,17 +128,17 @@ namespace AnimFlex.Tweener
                     if (data.fromObject.TryGetComponent<Renderer>(out var renderer))
                     {
                         if (data.relative) target += renderer.material.color;
-                        tweener = renderer.AnimColorTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = renderer.AnimColorTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else if (data.fromObject.TryGetComponent<Graphic>(out var graphic))
                     {
                         if (data.relative) target += graphic.color;
-                        tweener = graphic.AnimColorTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = graphic.AnimColorTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else if (data.fromObject.TryGetComponent<Material>(out var material))
                     {
                         if (data.relative) target += material.color;
-                        tweener = material.AnimColorTo(target, data.ease, data.duration, data.delay, data.customCurve);
+                        tweener = material.AnimColorTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
                     }
                     else
                     {

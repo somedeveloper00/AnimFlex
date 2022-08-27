@@ -55,7 +55,7 @@ namespace AnimFlex.Tweener
                 _c = t >= tweener.duration + tweener.delay; // completion check
                 t = _c ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration;
 
-                tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, null));
+                tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
                 tweener.OnUpdate();
 
                 // check for completion

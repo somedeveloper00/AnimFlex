@@ -1,19 +1,14 @@
-﻿using System;
-using System.Diagnostics;
-using System.Dynamic;
-using AnimFlex.Sequencer;
+﻿using AnimFlex.Sequencer;
 using AnimFlex.Tweener;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Profiling;
-using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Core
 {
     /// <summary>
     /// the first entry point for AnimFlex functionality
     /// </summary>
-    [AddComponentMenu("")]
+    [AddComponentMenu("core")]
     internal sealed class AnimFlexCore : MonoBehaviour
     {
         public AnimFlexSettings Settings { get; private set; }
@@ -61,6 +56,21 @@ namespace AnimFlex.Core
 #endif
             DontDestroyOnLoad(go);
         }
+
+        private void Update()
+        {
+            Tick(Time.deltaTime);
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!Application.isPlaying && this != m_instance)
+            {
+                EditorApplication.delayCall += () => DestroyImmediate(gameObject);
+            }
+        }
+#endif
 
         public void Tick(float deltaTime)
         {
