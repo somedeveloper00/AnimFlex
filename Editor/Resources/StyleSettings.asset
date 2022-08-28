@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 859f53b6587045209dc05ede6b4fc62c, type: 3}
   m_Name: StyleSettings
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
-  font: {fileID: 12800000, guid: f59352b8346e7d94c8372662fabae595, type: 3}
-  fontSize: 13
+  font: {fileID: 12800000, guid: 29eefaaa5ed57904a8a3b86c16aadd8c, type: 3}
+  fontSize: 17
   height: 24
   verticalSpace: 6
   buttonDefCol: {r: 1, g: 1, b: 1, a: 0.6509804}
   buttonYellowCol: {r: 0.8988769, g: 1, b: 0, a: 0.70980394}
   labelCol: {r: 1, g: 0, b: 0, a: 0.9372549}
-  tweeerBoxCol: {r: 0, g: 0, b: 0, a: 1}
+  tweeerBoxCol: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
   onButtonCol: {r: 0, g: 0, b: 0, a: 0}
   offButtonCol: {r: 0, g: 0, b: 0, a: 0}
   popupCol: {r: 0.8980392, g: 1, b: 0, a: 0.77254903}

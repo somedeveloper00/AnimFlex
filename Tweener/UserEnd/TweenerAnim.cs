@@ -7,7 +7,17 @@ namespace AnimFlex.Tweener
     public sealed class TweenerAnim : MonoBehaviour
     {
         [SerializeField] public GeneratorData generatorData;
+        
+        [Tooltip("If checked, it'll play right when the game object activates")]
         [SerializeField] internal bool playOnStart;
+
+        private void Reset()
+        {
+            playOnStart = true;
+            generatorData.fromObject = gameObject;
+            generatorData.duration = 1;
+            generatorData.delay = 0.5f;
+        }
 
         private Tweener m_tweener;
 

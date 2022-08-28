@@ -6,6 +6,9 @@ namespace AnimFlex.Tweener
 {
     internal static class GeneratorDataUtil
     {
+        /// <summary>
+        /// generates a new tween, and plays it right away
+        /// </summary>
         public static bool TryGenerateTweener(GeneratorData data, out Tweener tweener)
         {
             if (data.fromObject == null)
@@ -38,15 +41,22 @@ namespace AnimFlex.Tweener
                     {
                         // tween a float, and move towards the target transform
                         float t = 0;
-                        Vector3 startPos = data.fromObject.transform.position;
+                        Transform fromTrans = data.fromObject.transform;
+                        Vector3 startPos = fromTrans.position;
+                        Transform targetTrans = data.targetTransform;
+                        
                         tweener = Tweener.Generate(
                             () => t,
                             (val) =>
                             {
                                 t = val;
-                                data.fromObject.transform.position =
-                                    Vector3.LerpUnclamped(startPos, data.targetTransform.position, t);
-                            }, 1, data.ease, data.duration, data.duration, data.customCurve);
+                                if (fromTrans == null)
+                                {
+                                    Debug.LogError($"Unexpected error: the fromTransform was null. probably destroyed");
+                                    return;
+                                }
+                                fromTrans.position = Vector3.LerpUnclamped(startPos, targetTrans.position, t);
+                            }, 1, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
 
                     }
                     

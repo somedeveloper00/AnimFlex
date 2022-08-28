@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +7,35 @@ namespace AnimFlex.Editor
 {
     public static partial class Styles
     {
+        public class CenteredEditorStyles : IDisposable
+        {
+            public CenteredEditorStyles()
+            {
+                EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.numberField.alignment = TextAnchor.MiddleCenter;
+            }
+            public void Dispose()
+            {
+                EditorStyles.textField.alignment = TextAnchor.UpperLeft;
+                EditorStyles.numberField.alignment = TextAnchor.UpperLeft;
+            }
+        }
+
+        public class EditorLabelWidth : IDisposable
+        {
+            private float width;
+            public EditorLabelWidth(float width = 10)
+            {
+                this.width = width;
+                EditorGUIUtility.labelWidth = width;
+            }
+
+            public void Dispose()
+            {
+                EditorGUIUtility.labelWidth = width;
+            }
+        }
+        
         public static void Refresh()
         {
             _button = _yellowButton = _label = _boolButtonON = _boolButtonOFF = _popup = null;
@@ -103,6 +133,28 @@ namespace AnimFlex.Editor
             }        
         }
 
+        public static void DrawHelpBox(Rect position, string message, MessageType messageType)
+        {
+            var GetHelpIcon = 
+                typeof(EditorGUIUtility).GetMethod("GetHelpIcon", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Default);
+            if (GetHelpIcon != null)
+            {
+                var texture = (Texture)GetHelpIcon.Invoke(null, new object[] { messageType });
+                var guiContent = new GUIContent(message, texture);
+
+                var style = new GUIStyle(EditorStyles.helpBox);
+                style.font = StyleSettings.Instance.font;
+                style.fontSize = StyleSettings.Instance.fontSize;
+                style.alignment = TextAnchor.MiddleCenter;
+                style.wordWrap = false;
+
+                var col = GUI.color;
+                GUI.color = Color.yellow;
+                GUI.Label(position, guiContent, style);
+                GUI.color = col;
+            }
+        }
+        
         public static float Height => StyleSettings.Instance.height;
         public static float VerticalSpace => StyleSettings.Instance.verticalSpace;
         public static Color TweenerBoxColor => StyleSettings.Instance.tweeerBoxCol;

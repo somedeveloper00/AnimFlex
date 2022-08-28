@@ -75,6 +75,28 @@ namespace AnimFlex.Tweener
                 (value) => transform.localRotation = value,
                 endRotation, ease, duration, delay, curve);
         }
+        public static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, AnimationCurve curve, float duration = 1, float delay = 0) =>
+            AnimLocalRotationTo(transform, endRotation, EaseEvaluator.CUSTOM_ANIMATION_CURVE_EASE, duration, delay, curve);
+
+        public static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0) =>
+            AnimLocalRotationTo(transform, endRotation, ease, duration, delay, null);
+        
+        internal static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, Ease ease, float duration, float delay, AnimationCurve curve)
+        {
+            var fromVec = transform.localRotation.eulerAngles;
+            var vec = fromVec;
+            float t = 0;
+            
+            return Tweener.Generate(
+                () => t,
+                value =>
+                {
+                    t = value;
+                    vec = Vector3.Lerp(fromVec, endRotation, t);
+                    transform.rotation = Quaternion.Euler(vec);
+                },
+                1, ease, duration, delay, curve);
+        }
 
         #endregion
 
@@ -88,26 +110,23 @@ namespace AnimFlex.Tweener
         
         internal static Tweener AnimRotationTo(this Transform transform, Vector3 endRotation, Ease ease, float duration, float delay, AnimationCurve curve)
         {
+            
+            var fromVec = transform.rotation.eulerAngles;
+            var vec = fromVec;
+            float t = 0;
+            
             return Tweener.Generate(
-                () => transform.rotation,
-                (value) => transform.rotation = value,
-                Quaternion.Euler(endRotation), ease, duration, delay, curve);
+                () => t,
+                value =>
+                {
+                    t = value;
+                    vec = Vector3.Lerp(fromVec, endRotation, t);
+                    transform.rotation = Quaternion.Euler(vec);
+                },
+                1, ease, duration, delay, curve);
         }
 
 
-        public static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, AnimationCurve curve, float duration = 1, float delay = 0) =>
-            AnimLocalRotationTo(transform, endRotation, EaseEvaluator.CUSTOM_ANIMATION_CURVE_EASE, duration, delay, curve);
-
-        public static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0) =>
-            AnimLocalRotationTo(transform, endRotation, ease, duration, delay, null);
-        
-        internal static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, Ease ease, float duration, float delay, AnimationCurve curve)
-        {
-            return Tweener.Generate(
-                () => transform.localRotation,
-                (value) => transform.localRotation = value,
-                Quaternion.Euler(endRotation), ease, duration, delay, curve);
-        }
 
         #endregion
 

@@ -67,15 +67,18 @@ namespace AnimFlex.Core
         {
             if (!Application.isPlaying && this != m_instance)
             {
-                EditorApplication.delayCall += () => DestroyImmediate(gameObject);
+                EditorApplication.delayCall += () =>
+                {
+                    // if (gameObject != null) DestroyImmediate(gameObject);
+                };
             }
         }
 #endif
 
         public void Tick(float deltaTime)
         {
-            SequenceController.Tick(deltaTime);
             TweenerController.Tick(deltaTime);
+            SequenceController.Tick(deltaTime);
         }
     }
 }

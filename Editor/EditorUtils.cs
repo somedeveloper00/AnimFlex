@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -35,5 +36,36 @@ namespace AnimFlex.Editor
                 $"The indexer file not found: " +
                 $"create a file named AnimFlexEditor.ind at the root of the editor resources of AnimFlex.");
         }
+
+        /// <summary>
+        /// Gets value from SerializedProperty, even if it's nested
+        /// thanks to vedram : https://forum.unity.com/threads/get-a-general-object-value-from-serializedproperty.327098/#post-4098484
+        /// </summary>
+        public static object GetValue(this SerializedProperty property)
+        {
+            object obj = property.serializedObject.targetObject;
+            
+            var split = property.propertyPath.Split('.');
+            for (var i = 0; i < split.Length; i++)
+            {
+                object parent_obj = obj;
+                
+                var path = split[i];
+                var type = obj.GetType();
+                var field = type.GetField(path,
+                    BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            
+                obj = field.GetValue(obj);
+                if (field.FieldType.IsArray)
+                {
+                    i += 2;
+                    path = split[i].Replace("data[", "").Replace("]", "");
+                    obj = (field.GetValue(parent_obj) as Array).GetValue(int.Parse(path));
+                }
+            }
+            
+            return obj;
+        }
+    
     }
 }
