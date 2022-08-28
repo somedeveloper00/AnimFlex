@@ -8,19 +8,35 @@ namespace AnimFlex.Tweener.Editor
     [CustomEditor(typeof(TweenerAnim))]
     public class TweenerAnimEditor : UnityEditor.Editor
     {
+        private TweenerAnim _tweenerAnim;
+        private SerializedProperty _generatorDataProp;
+        private SerializedProperty _playOnStartProp;
+        
+        private void OnEnable()
+        {
+            _tweenerAnim = target as TweenerAnim;
+            _generatorDataProp = serializedObject.FindProperty(nameof(TweenerAnim.generatorData));
+            _playOnStartProp = serializedObject.FindProperty(nameof(TweenerAnim.playOnStart));
+            
+        }
+
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            serializedObject.Update();
 
-            if (GUILayout.Button("Play"))
+            GUI.color = Styles.TweenerBoxColor;
+            using (new GUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                PreviewUtils.PreviewTweener(target as TweenerAnim);
+                GUI.color = Color.white;
+                EditorGUILayout.PropertyField(_playOnStartProp);
+                EditorGUILayout.PropertyField(_generatorDataProp);
             }
 
-            if (GUILayout.Button("Stop"))
-            {
-                PreviewUtils.StopPreviewMode();
-            }
+            if(!PreviewUtils.isActive)
+                serializedObject.ApplyModifiedProperties();
         }
+
+
+        
     }
 }

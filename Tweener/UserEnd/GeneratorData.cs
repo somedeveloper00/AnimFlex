@@ -21,6 +21,8 @@ namespace AnimFlex.Tweener
         public bool useCurve = false;
         public bool useQuaternion;
         public bool relative;
+        public bool useTargetTransform = false;
+        public bool from = false;
 
         public Ease ease;
         public float duration;

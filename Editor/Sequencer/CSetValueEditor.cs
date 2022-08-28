@@ -35,7 +35,7 @@ namespace AnimFlex.Sequencer.Editor
             pos.height = EditorGUI.GetPropertyHeight(newValueProp, true);
             pos.y += pos.height + EditorGUIUtility.standardVerticalSpacing;
             
-            position.height = pos.y + pos.height - position.y;
+            // position.height = pos.y + pos.height - position.y + 200;
             EditorGUI.EndProperty();
         }
 

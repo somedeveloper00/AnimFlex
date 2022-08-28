@@ -29,7 +29,27 @@ namespace AnimFlex.Tweener
                 {
                     var target = data.targetVector3;
                     if (data.relative) target += data.fromObject.transform.position;
-                    tweener = data.fromObject.transform.AnimPositionTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
+
+                    if (!data.useTargetTransform)
+                    {
+                        tweener = data.fromObject.transform.AnimPositionTo(target, data.ease, data.duration, data.delay, data.useCurve ? data.customCurve : null);
+                    }
+                    else
+                    {
+                        // tween a float, and move towards the target transform
+                        float t = 0;
+                        Vector3 startPos = data.fromObject.transform.position;
+                        tweener = Tweener.Generate(
+                            () => t,
+                            (val) =>
+                            {
+                                t = val;
+                                data.fromObject.transform.position =
+                                    Vector3.LerpUnclamped(startPos, data.targetTransform.position, t);
+                            }, 1, data.ease, data.duration, data.duration, data.customCurve);
+
+                    }
+                    
                     break;
                 }
                 
