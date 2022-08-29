@@ -13,6 +13,7 @@ namespace AnimFlex.Sequencer.Clips
             Event.Invoke();
             End();
         }
+
     }
 
     public abstract class CEvent<T> : Clip

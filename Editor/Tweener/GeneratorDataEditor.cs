@@ -48,44 +48,45 @@ namespace AnimFlex.Tweener.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            using var enteredEditorStyles = new AFStyles.CenteredEditorStyles();
+            using var guiBackgroundColor = new AFStyles.GuiBackgroundColor(Color.white);
+            using var guiColor = new AFStyles.GuiColor(Color.white);
+            
             targetObject = property.serializedObject.targetObject;
             
             SaveProperties(property);
 
             EditorGUI.BeginProperty(position, label, property);
-            using (new AFStyles.GuiColor(Color.white))
-            {
-                position.width = Mathf.Max(position.width, MIN_WIDTH);
-                position.height = AFStyles.Height;
+            position.width = Mathf.Max(position.width, MIN_WIDTH);
+            position.height = AFStyles.Height;
 
-                Rect linePos;
-                DrawFromObject(position);
+            Rect linePos;
+            DrawFromObject(position);
 
-                position.y += position.height + AFStyles.VerticalSpace;
+            position.y += position.height + AFStyles.VerticalSpace;
 
-                DrawTweenerType(position);
+            DrawTweenerType(position);
 
-                position.y += position.height + AFStyles.VerticalSpace;
-                var height = DrawValue(position);
+            position.y += position.height + AFStyles.VerticalSpace;
+            var height = DrawValue(position);
 
-                position.y += height + AFStyles.VerticalSpace;
-                DrawCurve(position);
+            position.y += height + AFStyles.VerticalSpace;
+            DrawCurve(position);
 
-                position.y += position.height + AFStyles.VerticalSpace;
-                DrawTimings(position);
-                
-                position.y += position.height + AFStyles.VerticalSpace;
-                DrawLoop(position);
-            
-                position.y += position.height + AFStyles.VerticalSpace;
-                position.y += 20;
-                height = DrawEvents(position);
-            
-                position.y += height + AFStyles.VerticalSpace;
-                if(DrawPlayback(position))
-                    return;
-                
-            }
+            position.y += position.height + AFStyles.VerticalSpace;
+            DrawTimings(position);
+
+            position.y += position.height + AFStyles.VerticalSpace;
+            DrawLoop(position);
+
+            position.y += position.height + AFStyles.VerticalSpace;
+            position.y += 20;
+            height = DrawEvents(position);
+
+            position.y += height + AFStyles.VerticalSpace;
+            if (DrawPlayback(position))
+                return;
+
             EditorGUI.EndProperty();
         }
 
@@ -93,29 +94,23 @@ namespace AnimFlex.Tweener.Editor
         {
             var linePos = new Rect(position);
             linePos.width = 80;
-            GUI.Label(linePos, new GUIContent("Loop :", _loopProp.tooltip), AFStyles.Label);
+            GUI.Label(linePos, new GUIContent("Loop :", _loopProp.tooltip), AFStyles.SpecialLabel);
             linePos.x += linePos.width;
 
             linePos.width = (position.width - 80 - 80 - 80) / 2;
             using (new AFStyles.EditorLabelWidth())
-            {
-                using (var check = new EditorGUI.ChangeCheckScope())
-                {
-                    EditorGUI.PropertyField(linePos, _loopProp, new GUIContent("    "));
-                    if(check.changed) 
-                        _loopProp.intValue = Mathf.Max(0, _loopProp.intValue);
-                }
-            }
+                _loopProp.intValue = EditorGUI.IntField(linePos, new GUIContent("    "), _loopProp.intValue);
             linePos.x += linePos.width;
 
             using (new EditorGUI.DisabledGroupScope(_loopProp.intValue <= 0))
             {
-                linePos.width = 80;
-                GUI.Label(linePos, new GUIContent("Loop-delay :", _loopDelayProp.tooltip), AFStyles.Label);
+                linePos.x += 5;
+                linePos.width = 80 - 5;
+                GUI.Label(linePos, new GUIContent("Loop-delay :", _loopDelayProp.tooltip), AFStyles.SpecialLabel);
                 linePos.x += linePos.width;
                 linePos.width = (position.width - 80 - 80 - 80) / 2;
                 using (new AFStyles.EditorLabelWidth())
-                    EditorGUI.PropertyField(linePos, _loopDelayProp, new GUIContent("    "));
+                    _loopDelayProp.floatValue = EditorGUI.FloatField(linePos, new GUIContent("    "), _loopDelayProp.floatValue);
             }
             
 
@@ -131,21 +126,21 @@ namespace AnimFlex.Tweener.Editor
         {
             var linePos = new Rect(position);
             linePos.width = 80;
-            GUI.Label(linePos, new GUIContent("Duration :", _durationProp.tooltip), AFStyles.Label);
+            GUI.Label(linePos, new GUIContent("Duration :", _durationProp.tooltip), AFStyles.SpecialLabel);
 
             linePos.x += 80;
             linePos.width = position.width / 2f - 80;
             using (new AFStyles.EditorLabelWidth())
-                EditorGUI.PropertyField(linePos, _durationProp, new GUIContent("   "));
+                _durationProp.floatValue = EditorGUI.FloatField(linePos, new GUIContent("   "), _durationProp.floatValue);
 
             linePos.x += linePos.width;
             linePos.width = 80;
-            GUI.Label(linePos, new GUIContent("Delay :", _delayProp.tooltip), AFStyles.Label);
+            GUI.Label(linePos, new GUIContent("Delay :", _delayProp.tooltip), AFStyles.SpecialLabel);
             
             linePos.x += 80;
             linePos.width = position.width / 2f - 80;
             using (new AFStyles.EditorLabelWidth())
-                EditorGUI.PropertyField(linePos, _delayProp, new GUIContent("   "));
+                _delayProp.floatValue = EditorGUI.FloatField(linePos, new GUIContent("   "), _delayProp.floatValue);
         }
 
         private float DrawEvents(Rect position)
@@ -188,7 +183,7 @@ namespace AnimFlex.Tweener.Editor
         {
             var linePos = new Rect(position);
             linePos.width = 80;
-            GUI.Label(linePos, new GUIContent("Curve :", _easeProp.tooltip), AFStyles.Label);
+            GUI.Label(linePos, new GUIContent("Curve :", _easeProp.tooltip), AFStyles.SpecialLabel);
 
             linePos.x += linePos.width;
             linePos.width = position.width - 80 - 80;
@@ -226,7 +221,7 @@ namespace AnimFlex.Tweener.Editor
 
             using (new EditorGUI.DisabledGroupScope(PreviewUtils.isActive))
             {
-                if (GUI.Button(linePos, "Play"))
+                if (GUI.Button(linePos, "Play", AFStyles.Button))
                 {
                     PreviewUtils.PreviewTweener((GeneratorData)_property.GetValue());
                     return true;
@@ -293,7 +288,7 @@ namespace AnimFlex.Tweener.Editor
                         var message = "You're using Quaternions! " +
                             "it's highly recommended to use Vector3 instead.\n" +
                             "(to not see this message, change it in Preferences.)";
-                        linePos.height = AFStyles.VerticalSpace * 2 + AFStyles.Label.CalcHeight(new GUIContent(message), position.width);
+                        linePos.height = AFStyles.VerticalSpace * 2 + AFStyles.SpecialLabel.CalcHeight(new GUIContent(message), position.width);
                         AFStyles.DrawHelpBox(linePos, message, MessageType.Warning);
                     }
                     break;
@@ -322,7 +317,7 @@ namespace AnimFlex.Tweener.Editor
         {
             var linePos = new Rect(position);
             linePos.width = 80;
-            GUI.Label(linePos, new GUIContent("Type :", _tweenerTypeProp.tooltip), AFStyles.Label);
+            GUI.Label(linePos, new GUIContent("Type :", _tweenerTypeProp.tooltip), AFStyles.SpecialLabel);
             linePos.x += linePos.width;
             
             var enumValue = (GeneratorData.TweenerType)_tweenerTypeProp.enumValueIndex;
@@ -345,7 +340,7 @@ namespace AnimFlex.Tweener.Editor
                     linePos.x += 20;
                     linePos.x += linePos.width;
                     linePos.width = 80;
-                    GUI.Label(linePos, new GUIContent("Relative", _relativeProp.tooltip), AFStyles.Label);
+                    GUI.Label(linePos, new GUIContent("Relative", _relativeProp.tooltip), AFStyles.SpecialLabel);
                     linePos.x += linePos.width;
                     linePos.width = 50;
                     EditorGUI.PropertyField(linePos, _relativeProp, GUIContent.none);
@@ -365,7 +360,7 @@ namespace AnimFlex.Tweener.Editor
                     if (_useTargetTransformProp.boolValue == false)
                     {
                         linePos.width = 80;
-                        GUI.Label(linePos, new GUIContent("Relative", _relativeProp.tooltip), AFStyles.Label);
+                        GUI.Label(linePos, new GUIContent("Relative", _relativeProp.tooltip), AFStyles.SpecialLabel);
                         linePos.x += linePos.width;
                         linePos.width = 50;
                         EditorGUI.PropertyField(linePos, _relativeProp, GUIContent.none);
@@ -381,7 +376,7 @@ namespace AnimFlex.Tweener.Editor
         {
             var linePos = new Rect(position);
             linePos.width = 80;
-            GUI.Label(linePos, new GUIContent("From :", _fromObjectProp.tooltip), AFStyles.Label);
+            GUI.Label(linePos, new GUIContent("From :", _fromObjectProp.tooltip), AFStyles.SpecialLabel);
 
             linePos.x += linePos.width;
             linePos.width = position.width - 80 - 80;

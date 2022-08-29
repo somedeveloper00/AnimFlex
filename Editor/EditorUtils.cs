@@ -90,11 +90,13 @@ namespace AnimFlex.Editor
         /// <summary>
         /// gets the type name based on the given Type
         /// </summary>
-        public static string GetTypeName(Type type)
+        public static string GetTypeName(Type type, bool groupsRemoved = true)
         {
-            return type.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() is DisplayNameAttribute
-                displayNameAttr
-                ? displayNameAttr.DisplayName
+            return type.GetCustomAttributes(typeof(DisplayNameAttribute), true)
+                    .FirstOrDefault() is DisplayNameAttribute displayNameAttr
+                ? groupsRemoved 
+                    ? displayNameAttr.DisplayName.Substring(Mathf.Max(0, 1 + displayNameAttr.DisplayName.LastIndexOf("/")))
+                    : displayNameAttr.DisplayName
                 : type.Name;
         }
 
@@ -141,7 +143,7 @@ namespace AnimFlex.Editor
 
             var menu = new GenericMenu();
             foreach (var type in classTypes)
-                menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(GetTypeName(type))),
+                menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(GetTypeName(type, false))),
                     false, () =>
                     {
                         var val = Activator.CreateInstance(type);

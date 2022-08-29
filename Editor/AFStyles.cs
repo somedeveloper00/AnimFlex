@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AnimFlex.Editor
 {
-    public static partial class AFStyles
+    public static class AFStyles
     {
         public class CenteredEditorStyles : IDisposable
         {
@@ -27,12 +27,12 @@ namespace AnimFlex.Editor
             private float width;
             public EditorLabelWidth(float width = 10)
             {
-                this.width = width;
+                this.width = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = width;
             }
 
             public void Dispose()
-            {
+            { 
                 EditorGUIUtility.labelWidth = width;
             }
         }
@@ -47,6 +47,7 @@ namespace AnimFlex.Editor
             }
             public void Dispose() => GUI.color = oldCol;
         }
+        
         public class GuiBackgroundColor : IDisposable
         {
             private Color oldCol;
@@ -60,7 +61,7 @@ namespace AnimFlex.Editor
         
         public static void Refresh()
         {
-            _button = _yellowButton = _label = _bigButton = _textField = _bigTextField = _popup = null;
+            _button = _yellowButton = _specialLabel = _bigButton = _textField = _bigTextField = _popup = null;
         }
 
         private static GUIStyle _button;
@@ -69,7 +70,7 @@ namespace AnimFlex.Editor
             get
             {
                 if (_button != null) return _button;
-                _button = GUI.skin.button;
+                _button = new GUIStyle(GUI.skin.button);
                 _button.normal.textColor = StyleSettings.Instance.buttonDefCol;
                 _button.font = StyleSettings.Instance.font;
                 _button.fontSize = StyleSettings.Instance.fontSize;
@@ -103,6 +104,22 @@ namespace AnimFlex.Editor
             }
         }
 
+        private static GUIStyle _specialLabel;
+        public static GUIStyle SpecialLabel
+        {
+            get
+            {
+                if (_specialLabel != null) return _specialLabel;
+                _specialLabel = new GUIStyle(GUI.skin.label);
+                _specialLabel.font = StyleSettings.Instance.font;
+                _specialLabel.alignment = TextAnchor.MiddleCenter;
+                _specialLabel.fontSize = StyleSettings.Instance.fontSize;
+                _specialLabel.normal.textColor = _specialLabel.hover.textColor = _specialLabel.active.textColor =
+                    _specialLabel.focused.textColor = StyleSettings.Instance.labelCol;
+                return _specialLabel;
+            }
+        }
+
         private static GUIStyle _label;
         public static GUIStyle Label
         {
@@ -113,8 +130,6 @@ namespace AnimFlex.Editor
                 _label.font = StyleSettings.Instance.font;
                 _label.alignment = TextAnchor.MiddleCenter;
                 _label.fontSize = StyleSettings.Instance.fontSize;
-                _label.normal.textColor = _label.hover.textColor = _label.active.textColor =
-                    _label.focused.textColor = StyleSettings.Instance.labelCol;
                 return _label;
             }
         }
@@ -127,6 +142,7 @@ namespace AnimFlex.Editor
                 if (_bigTextField != null) return _bigTextField;
                 _bigTextField = new GUIStyle(EditorStyles.textField);
                 _bigTextField.font = StyleSettings.Instance.font;
+                // _bigTextField.fontStyle = FontStyle.Bold;
                 _bigTextField.alignment = TextAnchor.MiddleCenter;
                 _bigTextField.fontSize = StyleSettings.Instance.bigFontSize;
                 _bigTextField.fixedHeight = 0;
@@ -168,6 +184,7 @@ namespace AnimFlex.Editor
             }        
         }
 
+        
         public static void DrawHelpBox(Rect position, string message, MessageType messageType)
         {
             var GetHelpIcon = 
@@ -194,10 +211,10 @@ namespace AnimFlex.Editor
             EditorStyles.textField.fontSize = StyleSettings.Instance.bigFontSize;
             EditorStyles.textField.font = StyleSettings.Instance.font;
             EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
-            EditorStyles.textField.fixedHeight = StyleSettings.Instance.bigHeight;
+            EditorStyles.textField.fixedHeight = AFStyles.BigHeight;
 
             var list = options.ToList();
-            list.Add(GUILayout.Height(StyleSettings.Instance.bigHeight));
+            list.Add(GUILayout.Height(AFStyles.BigHeight));
             options = list.ToArray();
             
             GUI.backgroundColor = Color.clear;
@@ -222,7 +239,9 @@ namespace AnimFlex.Editor
         }
         
         public static float Height => StyleSettings.Instance.height;
+        public static float BigHeight => StyleSettings.Instance.bigHeight;
         public static float VerticalSpace => StyleSettings.Instance.verticalSpace;
-        public static Color TweenerBoxColor => StyleSettings.Instance.tweeerBoxCol;
+        public static Color BoxColor => StyleSettings.Instance.BoxCol;
+        public static Color BoxColorDarker => StyleSettings.Instance.BoxColDarker;
     }
 }

@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AnimFlex.Editor
 {
@@ -31,13 +32,15 @@ namespace AnimFlex.Editor
         public Font font;
         public int fontSize;
         public int bigFontSize;
-        public int bigHeight;
+        public float bigHeight;
         public float height;
         public float verticalSpace;
         public Color buttonDefCol;
         public Color buttonYellowCol;
         public Color labelCol;
-        public Color tweeerBoxCol;
+        [FormerlySerializedAs("tweeerBoxCol")] public Color BoxCol;
+        [FormerlySerializedAs("tweeerBoxCol")] public Color BoxColDarker;
+        public Color backgroundBoxCol;
         public Color popupCol;
 
         // refresh

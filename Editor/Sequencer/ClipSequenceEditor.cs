@@ -44,11 +44,9 @@ namespace AnimFlex.Editor.Sequencer
 
         private void DrawClipNodes()
         {
-            _nodeClipList.DoLayoutList();
-            for (int i = 0; i < _clipNodesProp.arraySize; i++)
-            {
-                // DrawClipBody(_clipNodesProp.GetArrayElementAtIndex(i), i);
-            }
+            using var _ = new AFStyles.GuiColor(AFStyles.BoxColor);
+            using (new AFStyles.GuiBackgroundColor(StyleSettings.Instance.backgroundBoxCol))
+                _nodeClipList.DoLayoutList();
         }
 
         private void SetupNodeListDrawer()
@@ -59,19 +57,22 @@ namespace AnimFlex.Editor.Sequencer
             _nodeClipList.drawElementCallback = (rect, index, active, focused) =>
             {
                 var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
-                // DrawClipBody(nodeProp, index);
                 EditorGUI.PropertyField(rect, nodeProp, GUIContent.none, true);
+                rect.y += EditorGUI.GetPropertyHeight(nodeProp, true);
+                rect.height = AFStyles.Height;
+                if (nodeProp.isExpanded)
+                {
+                    GUI.Label(rect, "Next :", AFStyles.Label);
+                }
             };
             _nodeClipList.elementHeightCallback = index =>
             {
                 var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
-                return EditorGUI.GetPropertyHeight(nodeProp, true);
+                var height = EditorGUI.GetPropertyHeight(nodeProp, true);
+                if (nodeProp.isExpanded)
+                    height += AFStyles.Height;
+                return height;
             };
-            _nodeClipList.onSelectCallback = list =>
-            {
-                _nodeClipList.ClearSelection();
-            };
-            // _nodeClipList.
         }
 
         private void DrawAddButton()
@@ -92,28 +93,6 @@ namespace AnimFlex.Editor.Sequencer
                 }
 
                 GUILayout.Space(20);
-            }
-        }
-
-        private void DrawClipBody(SerializedProperty clipNode, int index)
-        {
-            using (new AFStyles.GuiColor(StyleSettings.Instance.tweeerBoxCol))
-            {
-                using (new GUILayout.VerticalScope(EditorStyles.helpBox))
-                {
-                    var clip = clipNode.FindPropertyRelative(nameof(ClipNode.clip));
-                    
-                    // label
-                    GUILayout.BeginHorizontal();
-                    
-                    // DrawColorNodePicker(clipNode);
-                    GUILayout.FlexibleSpace();
-                    // DrawClipDropdownLabel(index);
-                    GUILayout.EndHorizontal();
-                    
-                    EditorGUILayout.PropertyField(clip, GUIContent.none, true);
-                    
-                }
             }
         }
 

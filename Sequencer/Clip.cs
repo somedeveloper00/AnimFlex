@@ -8,11 +8,14 @@ namespace AnimFlex.Sequencer
         internal event Action onEndCallback;
         protected abstract void OnStart();
 
-        public void Play(Action onEndCallback)
+        internal void Play(Action onEndCallback)
         {
             this.onEndCallback = onEndCallback;
             OnStart();
         }
+
+        public virtual bool hasUpdate() => false;
+        public virtual void Update() { }
 
         public void End()
         {

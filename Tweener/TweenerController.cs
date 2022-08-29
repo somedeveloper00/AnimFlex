@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AnimFlex.Core;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Tweener
@@ -12,12 +11,10 @@ namespace AnimFlex.Tweener
         
         internal TweenerController()
         {
-            _activeTweeners = new Tweener[AnimFlexSettings.Instance.maxTweenCount];
+            _tweeners = new PreservedArray<Tweener>(AnimFlexSettings.Instance.maxTweenCount);
         }
 
-        private Tweener[] _activeTweeners;
-        private int _activeTweenersLength = 0; // real length of active tweens
-        private int _newTweenersInQueue = 0; // the amount of tweeners after _activeTweenersLength in queue for the next frame
+        private PreservedArray<Tweener> _tweeners;
         private List<Tweener> _deletingTweeners = new List<Tweener>(2 * 2 * 2 * 2 * 2 * 2 * 2);
 
         /// <summary>
@@ -25,13 +22,12 @@ namespace AnimFlex.Tweener
         /// </summary>
         public void Tick(float deltaTime)
         {
-            _activeTweenersLength += _newTweenersInQueue;
-            _newTweenersInQueue = 0;
+            _tweeners.LetEveryoneIn();
             
             initialize_phase:
-            for (var i = 0; i < _activeTweenersLength; i++)
+            for (var i = 0; i < _tweeners.Length; i++)
             {
-                var tweener = _activeTweeners[i];
+                var tweener = _tweeners[i];
                 if (tweener.flag.HasFlag(TweenerFlag.Initialized) == false)
                 {
                     tweener.flag |= TweenerFlag.Initialized;
@@ -42,9 +38,10 @@ namespace AnimFlex.Tweener
 
             setter_phase:
             bool _c = false; // mark for tweener's completion
-            for (var i = 0; i < _activeTweenersLength; i++)
+            // for (var i = 0; i < _activeTweenersLength; i++)
+            for (var i = 0; i < _tweeners.Length; i++)
             {
-                var tweener = _activeTweeners[i];
+                var tweener = _tweeners[i];
                 var totalTime = tweener.duration + tweener.delay;
                 
                 var t = tweener._t + deltaTime;
@@ -89,21 +86,13 @@ namespace AnimFlex.Tweener
             }
             
             deletion_phase:
-            for (var i = 0; i < _activeTweenersLength; i++)
+            for (var i = 0; i < _tweeners.Length; i++)
             {
                 // check if contains a delete flag
-                if (_activeTweeners[i].flag.HasFlag(TweenerFlag.Deleting))
+                if (_tweeners[i].flag.HasFlag(TweenerFlag.Deleting))
                 {
-                    _activeTweeners[i].OnKill();
-                    
-                    // paste last active tween here and length--
-                    _activeTweeners[i] = _activeTweeners[_activeTweenersLength - 1];
-                    _activeTweenersLength--;
-                    
-                    // paste last new queued tween to the duplicate last active tween and queue length--
-                    _activeTweeners[_activeTweenersLength] = _activeTweeners[_activeTweenersLength + _newTweenersInQueue];
-                    
-                    i--;
+                    _tweeners[i].OnKill();
+                    _tweeners.RemoveAt(i--);
                 }
             }
         }
@@ -119,19 +108,7 @@ namespace AnimFlex.Tweener
 
             tweener.flag |= TweenerFlag.Created;
 
-            if (_activeTweeners.Length == _activeTweenersLength + _newTweenersInQueue)
-            {
-                Debug.LogWarning(
-                    $"maximum capacity reached: automatically increasing " +
-                    $"from {_activeTweeners.Length} to {_activeTweeners.Length * 2}");
-                var _tmp = new Tweener[_activeTweeners.Length * 2];
-                for (int i = 0; i < _activeTweeners.Length; i++) 
-                    _tmp[i] = _activeTweeners[i];
-                _activeTweeners = _tmp;
-            }
-
-            _newTweenersInQueue++;
-            _activeTweeners[_activeTweenersLength + _newTweenersInQueue - 1] = tweener;
+            _tweeners.AddToQueue(tweener);
         }
 
         public void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true)

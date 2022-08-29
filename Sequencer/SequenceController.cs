@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using AnimFlex.Core;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Sequencer
 {
@@ -12,13 +13,19 @@ namespace AnimFlex.Sequencer
         private int _activeSequencesCount = 0; // length of active sequences
         private int _queuedSequencesCount = 0; // sequences queued to be added to the list the next frame
 
+        private Stopwatch _stopwatch;
+
         public SequenceController()
         {
             _sequences = new Sequence[AnimFlexSettings.Instance.sequenceMaxCapacity];
+            _stopwatch = new Stopwatch();
+            _stopwatch.Start();
         }
 
+        
         public void Tick(float deltaTime)
         {
+            
             // adding queued sequences to the active list
             _activeSequencesCount += _queuedSequencesCount;
             _queuedSequencesCount = 0;
@@ -35,8 +42,10 @@ namespace AnimFlex.Sequencer
             tick_phase:
             for (int i = 0; i < _activeSequencesCount; i++)
             {
-                if(!_sequences[i].flags.HasFlag(SequenceFlags.Paused))
+                if (!_sequences[i].flags.HasFlag(SequenceFlags.Paused))
+                {
                     _sequences[i].Tick(deltaTime);
+                }
             }
             
             remove_phase:
@@ -61,7 +70,7 @@ namespace AnimFlex.Sequencer
                 throw new NullReferenceException("sequence");
             
             // capacity check
-            if (_sequences.Length <= _activeSequencesCount + _queuedSequencesCount - 1)
+            if (_sequences.Length <= _activeSequencesCount + _queuedSequencesCount)
             {
                 Debug.LogWarning(
                     $"Sequences capacity reached: " +

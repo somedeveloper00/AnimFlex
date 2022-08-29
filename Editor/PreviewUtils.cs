@@ -152,13 +152,13 @@ namespace AnimFlex.Editor
                     200,
                     60));
 
-            GUI.color = AFStyles.TweenerBoxColor;
+            GUI.color = AFStyles.BoxColor;
 
-            EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.TweenerBoxColor);
+            EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.BoxColorDarker);
             using (new GUILayout.HorizontalScope(EditorStyles.helpBox, GUILayout.ExpandHeight(true)))
             {
                 GUI.color = Color.white;
-                GUILayout.Label("AnimFlex Playing...", AFStyles.Label);
+                GUILayout.Label("AnimFlex Playing...", AFStyles.SpecialLabel);
                 if (GUILayout.Button("Stop", AFStyles.Button))
                 {
                     StopPreviewMode();
