@@ -8,7 +8,6 @@ namespace AnimFlex
     ///  
     /// it also supports queued elements, which will be useful for scheduling your pipelines
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class PreservedArray<T>
     {
         private T[] values;
@@ -18,7 +17,7 @@ namespace AnimFlex
 
         public PreservedArray(int preserveLength = 256)
         {
-            values = new T[256];
+            values = new T[preserveLength];
         }
 
         public T this[int i]

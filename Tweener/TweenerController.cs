@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AnimFlex.Core;
+using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Tweener
@@ -22,6 +23,7 @@ namespace AnimFlex.Tweener
         /// </summary>
         public void Tick(float deltaTime)
         {
+            Profiler.BeginSample("Tweener Tick");
             _tweeners.LetEveryoneIn();
             
             initialize_phase:
@@ -95,6 +97,8 @@ namespace AnimFlex.Tweener
                     _tweeners.RemoveAt(i--);
                 }
             }
+            
+            Profiler.EndSample();
         }
 
         public void AddTweener(Tweener tweener)

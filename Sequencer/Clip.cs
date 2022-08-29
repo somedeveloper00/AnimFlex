@@ -5,23 +5,22 @@ namespace AnimFlex.Sequencer
     [Serializable]
     public abstract class Clip
     {
-        internal event Action onEndCallback;
+        [NonSerialized] public ClipNode Node;
+
+        protected void PlayNext() => Node.PlayNextClipNode();
+        protected void PlayIndex(int index) => Node.PlayClipNode(index);
+        
+        internal void Init(ClipNode node)
+        {
+            Node = node;
+        }
+        
+        internal void Play() => OnStart();
+
         protected abstract void OnStart();
-
-        internal void Play(Action onEndCallback)
-        {
-            this.onEndCallback = onEndCallback;
-            OnStart();
-        }
-
-        public virtual bool hasUpdate() => false;
-        public virtual void Update() { }
-
-        public void End()
-        {
-            onEndCallback();
-        }
-
+        public virtual bool hasTick() => false;
+        public virtual void Tick() { }
+        
         /// <summary>
         /// Editor-only
         /// </summary>

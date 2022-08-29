@@ -6,7 +6,7 @@ namespace AnimFlex.Sequencer.UserEnd
     public class SequenceAnim : MonoBehaviour
     {
         [SerializeField] private bool playOnStart = true;
-        public Sequence sequence = new Sequence();
+        public Sequence sequence = new();
 
         private void Start()
         {
@@ -26,7 +26,7 @@ namespace AnimFlex.Sequencer.UserEnd
 
         private void OnDestroy()
         {
-            sequence.Kill();
+            sequence.Complete();
         }
     }
 }

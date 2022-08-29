@@ -90,7 +90,7 @@ namespace AnimFlex.Editor
         /// <summary>
         /// gets the type name based on the given Type
         /// </summary>
-        public static string GetTypeName(Type type, bool groupsRemoved = true)
+        public static string GetTypeName(Type type, bool groupsRemoved = false)
         {
             return type.GetCustomAttributes(typeof(DisplayNameAttribute), true)
                     .FirstOrDefault() is DisplayNameAttribute displayNameAttr

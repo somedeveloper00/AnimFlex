@@ -38,7 +38,7 @@ namespace AnimFlex.Sequencer.Clips
         protected override void OnStart()
         {
             GetFieldInfo().SetValue(component, value);
-            End();
+            PlayNext();
         }
     }
 }

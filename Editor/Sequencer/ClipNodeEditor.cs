@@ -16,7 +16,7 @@ namespace AnimFlex.Editor.Sequencer
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            position.width = Mathf.Max(position.width, 450);
+            position.width = Mathf.Max(position.width, 350);
             
             using (new AFStyles.CenteredEditorStyles())
             {
@@ -50,8 +50,6 @@ namespace AnimFlex.Editor.Sequencer
 
             return linePos.height;
         }
-
-
         private void DrawHeader(Rect position)
         {
             var linePos = new Rect(position);

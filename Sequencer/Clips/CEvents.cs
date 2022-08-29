@@ -11,7 +11,7 @@ namespace AnimFlex.Sequencer.Clips
         protected override void OnStart()
         {
             Event.Invoke();
-            End();
+            PlayNext();
         }
 
     }
@@ -24,7 +24,7 @@ namespace AnimFlex.Sequencer.Clips
         protected override void OnStart()
         {
             Event.Invoke(Value);
-            End();
+            PlayNext();
         }
     }
 
@@ -37,7 +37,7 @@ namespace AnimFlex.Sequencer.Clips
         protected override void OnStart()
         {
             Event.Invoke(Value1, Value2);
-            End();
+            PlayNext();
         }
     }
 
@@ -51,7 +51,7 @@ namespace AnimFlex.Sequencer.Clips
         protected override void OnStart()
         {
             Event.Invoke(Value1, Value2, Value3);
-            End();
+            PlayNext();
         }
     }
 

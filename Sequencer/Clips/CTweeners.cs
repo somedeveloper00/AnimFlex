@@ -14,12 +14,12 @@ namespace AnimFlex.Sequencer.Clips
         {
             if (GeneratorDataUtil.TryGenerateTweener(data, out var tweener))
             {
-                tweener.onComplete += End;
+                tweener.onComplete += PlayNext;
             }
             else
             {
                 Debug.LogError($"Could not generate tweener. unexpected error happened!");
-                End();
+                PlayNext();
             }
         }
     }

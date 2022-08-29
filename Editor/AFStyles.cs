@@ -58,6 +58,17 @@ namespace AnimFlex.Editor
             }
             public void Dispose() => GUI.backgroundColor = oldCol;
         }
+
+        public class GuiForceActive : IDisposable
+        {
+            private bool wasEnabled;
+            public GuiForceActive()
+            {
+                wasEnabled = GUI.enabled;
+                GUI.enabled = true;
+            }
+            public void Dispose() => GUI.enabled = wasEnabled;
+        }
         
         public static void Refresh()
         {

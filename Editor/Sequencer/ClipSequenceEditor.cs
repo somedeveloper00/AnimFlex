@@ -38,8 +38,32 @@ namespace AnimFlex.Editor.Sequencer
 
             DrawClipNodes();
             DrawAddButton();
+            DrawPlayback();
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void DrawPlayback()
+        {
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+
+                using (new AFStyles.GuiForceActive())
+                {
+                    if (GUILayout.Button(
+                            text: PreviewUtils.isActive ? "Stop" : "Play", style: AFStyles.BigButton, 
+                            GUILayout.Height(height: AFStyles.BigHeight), GUILayout.Width(200)))
+                    {
+                        if (PreviewUtils.isActive)
+                            PreviewUtils.StopPreviewMode();
+                        else
+                            PreviewUtils.PreviewSequence(sequence: _sequence);
+                    }
+                }
+
+                GUILayout.FlexibleSpace();
+            }
         }
 
         private void DrawClipNodes()
@@ -58,20 +82,11 @@ namespace AnimFlex.Editor.Sequencer
             {
                 var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
                 EditorGUI.PropertyField(rect, nodeProp, GUIContent.none, true);
-                rect.y += EditorGUI.GetPropertyHeight(nodeProp, true);
-                rect.height = AFStyles.Height;
-                if (nodeProp.isExpanded)
-                {
-                    GUI.Label(rect, "Next :", AFStyles.Label);
-                }
             };
             _nodeClipList.elementHeightCallback = index =>
             {
                 var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
-                var height = EditorGUI.GetPropertyHeight(nodeProp, true);
-                if (nodeProp.isExpanded)
-                    height += AFStyles.Height;
-                return height;
+                return EditorGUI.GetPropertyHeight(nodeProp, true);
             };
         }
 

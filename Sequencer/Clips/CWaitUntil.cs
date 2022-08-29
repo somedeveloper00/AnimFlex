@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using AnimFlex.Sequencer.ClipModules;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer.Clips
@@ -14,7 +13,7 @@ namespace AnimFlex.Sequencer.Clips
 
       
     }
-    public abstract class CWaitUntil<T> : CWaitUntil, IEndWhen
+    public abstract class CWaitUntil<T> : CWaitUntil
     {
         public T value;
         
@@ -45,16 +44,17 @@ namespace AnimFlex.Sequencer.Clips
             startTicks = 0; // so it checks in the first frame
         }
 
-        public bool CanEnd()
+        public override bool hasTick() => true;
+
+        public override void Tick()
         {
             var secondsPassed = (DateTime.UtcNow.Ticks - startTicks) * 0.000_000_1f;
             if(secondsPassed > checkEvery)
             {
                 startTicks = DateTime.UtcNow.Ticks;
-                return IsEqual((T)cachedFieldInfo.GetValue(component), value);
+                if(IsEqual((T)cachedFieldInfo.GetValue(component), value))
+                    PlayNext();
             }
-
-            return false;
         }
         
         protected abstract bool IsEqual(T a, T b);
