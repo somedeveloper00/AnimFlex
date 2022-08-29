@@ -58,7 +58,7 @@ namespace AnimFlex.Sequencer
         public void AddSequence(Sequence sequence)
         {
             if (sequence == null)
-                throw new NullReferenceException(sequence.ToString());
+                throw new NullReferenceException("sequence");
             
             // capacity check
             if (_sequences.Length <= _activeSequencesCount + _queuedSequencesCount - 1)

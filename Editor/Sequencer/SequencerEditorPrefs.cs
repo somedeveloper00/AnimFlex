@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AnimFlex.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,8 +10,6 @@ namespace AnimFlex.EditorPrefs
         public Color clipNodeColor = Color.white;
         public Color clipNodeBackgroundColor = Color.white;
         
-        public const string k_SequencerEditorPrefsPath = "Assets/Editor/SequencerEditorSettings.asset";
-
         private static SequencerEditorPrefs _instance;
         public static SequencerEditorPrefs Instance
         {
@@ -19,14 +18,14 @@ namespace AnimFlex.EditorPrefs
                 if (_instance != null) return _instance;
                 
                 // load if possible
-                _instance = AssetDatabase.LoadAssetAtPath<SequencerEditorPrefs>(k_SequencerEditorPrefsPath);
+                _instance = AssetDatabase.LoadAssetAtPath<SequencerEditorPrefs>(AFEditorUtils.GetPathRelative("SequencerEditorSettings.asset"));
                 if (_instance != null) return _instance;
                 
                 // create a new one
                 _instance = CreateInstance<SequencerEditorPrefs>();
                 if (!AssetDatabase.IsValidFolder("Assets/Editor")) // validate folder
                     AssetDatabase.CreateFolder("Assets", "Editor");
-                AssetDatabase.CreateAsset(_instance, k_SequencerEditorPrefsPath);
+                AssetDatabase.CreateAsset(_instance, AFEditorUtils.GetPathRelative("SequencerEditorSettings.asset"));
                 AssetDatabase.SaveAssets();
                 return _instance;
             }
@@ -40,15 +39,9 @@ namespace AnimFlex.EditorPrefs
                 label = "Sequencer",
                 guiHandler = searchContext =>
                 {
-                    var settings = new SerializedObject(Instance);
-                    var iter = settings.GetIterator();
-                    iter.Next(true);
-                    for (int i = 0; i < 9; i++) iter.Next(false);
-                    while (iter.Next(false))
-                    {
-                        EditorGUILayout.PropertyField(iter, true);
-                    }
-                    settings.ApplyModifiedProperties();
+                    UnityEditor.Editor editor = null;
+                    UnityEditor.Editor.CreateCachedEditor(Instance, null, ref editor);
+                    editor.OnInspectorGUI();
                 },
                 keywords = new HashSet<string>(new[] {"animflex", "anim", "flex", "sequence" })
             };

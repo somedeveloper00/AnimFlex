@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace AnimFlex.Tweener
@@ -13,6 +12,7 @@ namespace AnimFlex.Tweener
 
         private void Reset()
         {
+            if (generatorData == null) generatorData = new GeneratorData();
             playOnStart = true;
             generatorData.fromObject = gameObject;
             generatorData.duration = 1;

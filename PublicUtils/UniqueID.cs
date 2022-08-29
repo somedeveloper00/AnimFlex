@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace AnimFlex.Editor
 {
+    [AddComponentMenu("")]
     public class UniqueID : MonoBehaviour
     {
         private static int _lastID = 0;

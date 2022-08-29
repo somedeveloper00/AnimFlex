@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Editor
 {
-    public static partial class Styles
+    public static partial class AFStyles
     {
         public class CenteredEditorStyles : IDisposable
         {
@@ -35,10 +36,31 @@ namespace AnimFlex.Editor
                 EditorGUIUtility.labelWidth = width;
             }
         }
+
+        public class GuiColor : IDisposable
+        {
+            private Color oldCol;
+            public GuiColor(Color color)
+            {
+                oldCol = GUI.color;
+                GUI.color = color;
+            }
+            public void Dispose() => GUI.color = oldCol;
+        }
+        public class GuiBackgroundColor : IDisposable
+        {
+            private Color oldCol;
+            public GuiBackgroundColor(Color color)
+            {
+                oldCol = GUI.backgroundColor;
+                GUI.backgroundColor = color;
+            }
+            public void Dispose() => GUI.backgroundColor = oldCol;
+        }
         
         public static void Refresh()
         {
-            _button = _yellowButton = _label = _boolButtonON = _boolButtonOFF = _popup = null;
+            _button = _yellowButton = _label = _bigButton = _textField = _bigTextField = _popup = null;
         }
 
         private static GUIStyle _button;
@@ -55,6 +77,18 @@ namespace AnimFlex.Editor
             }
         }
 
+        private static GUIStyle _bigButton;
+        public static GUIStyle BigButton
+        {
+            get
+            {
+                if (_bigButton != null) return _bigButton;
+                _bigButton = new GUIStyle(Button);
+                _bigButton.fontSize = 18;
+                return _bigButton;
+            }
+        }
+        
         private static GUIStyle _yellowButton;
         public static GUIStyle YellowButton
         {
@@ -70,7 +104,6 @@ namespace AnimFlex.Editor
         }
 
         private static GUIStyle _label;
-
         public static GUIStyle Label
         {
             get
@@ -86,34 +119,36 @@ namespace AnimFlex.Editor
             }
         }
 
-        private static GUIStyle _boolButtonON;
-        public static GUIStyle BoolButtonON
+        private static GUIStyle _bigTextField;
+        public static GUIStyle BigTextField
         {
             get
             {
-                if (_boolButtonON != null) return _boolButtonON;
-                _boolButtonON = new GUIStyle(GUI.skin.button);
-                _boolButtonON.fontSize = StyleSettings.Instance.fontSize;
-                _boolButtonON.normal.textColor = _boolButtonON.hover.textColor = _boolButtonON.active.textColor =
-                    _boolButtonON.focused.textColor = StyleSettings.Instance.onButtonCol;
-                return _boolButtonON;
+                if (_bigTextField != null) return _bigTextField;
+                _bigTextField = new GUIStyle(EditorStyles.textField);
+                _bigTextField.font = StyleSettings.Instance.font;
+                _bigTextField.alignment = TextAnchor.MiddleCenter;
+                _bigTextField.fontSize = StyleSettings.Instance.bigFontSize;
+                _bigTextField.fixedHeight = 0;
+                return _bigTextField;
             }
         }
 
-        private static GUIStyle _boolButtonOFF;
-        public static GUIStyle BoolButtonOFF
+        private static GUIStyle _textField;
+        public static GUIStyle TextField
         {
             get
             {
-                if (_boolButtonOFF != null) return _boolButtonOFF;
-                _boolButtonOFF = new GUIStyle(GUI.skin.button);
-                _boolButtonOFF.fontSize = StyleSettings.Instance.fontSize;
-                _boolButtonOFF.normal.textColor = _boolButtonOFF.hover.textColor = _boolButtonOFF.active.textColor =
-                    _boolButtonOFF.focused.textColor = StyleSettings.Instance.offButtonCol;
-                return _boolButtonOFF;
+                if (_textField != null) return _textField;
+                _textField = new GUIStyle(EditorStyles.textField);
+                _textField.font = StyleSettings.Instance.font;
+                _textField.alignment = TextAnchor.MiddleCenter;
+                _textField.fontSize = StyleSettings.Instance.fontSize;
+                _textField.fixedHeight = 0;
+                return _textField;
             }
         }
-
+        
         private static GUIStyle _popup;
         public static GUIStyle Popup
         {
@@ -148,11 +183,42 @@ namespace AnimFlex.Editor
                 style.alignment = TextAnchor.MiddleCenter;
                 style.wordWrap = false;
 
-                var col = GUI.color;
-                GUI.color = Color.yellow;
-                GUI.Label(position, guiContent, style);
-                GUI.color = col;
+                using(new GuiColor(Color.yellow))
+                    GUI.Label(position, guiContent, style);
             }
+        }
+        public static void DrawBigTextField(SerializedProperty stringProperty, params GUILayoutOption[] options)
+        {
+            // changing editor styles and keeping their old states
+            var style = new GUIStyle(EditorStyles.textField);
+            EditorStyles.textField.fontSize = StyleSettings.Instance.bigFontSize;
+            EditorStyles.textField.font = StyleSettings.Instance.font;
+            EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
+            EditorStyles.textField.fixedHeight = StyleSettings.Instance.bigHeight;
+
+            var list = options.ToList();
+            list.Add(GUILayout.Height(StyleSettings.Instance.bigHeight));
+            options = list.ToArray();
+            
+            GUI.backgroundColor = Color.clear;
+
+            using (new GuiBackgroundColor(Color.clear))
+            {
+                using (new EditorLabelWidth(0))
+                {
+                    GUILayout.BeginVertical();
+                    stringProperty.stringValue = EditorGUILayout.TextField(stringProperty.stringValue, options);
+                    GUILayout.Space(5);
+                    GUILayout.EndVertical();
+                }
+            }
+
+            // reverting the editor styles old states
+            EditorStyles.textField.font  = style.font;
+            EditorStyles.textField.fontSize = style.fontSize; 
+            EditorStyles.textField.fontStyle = style.fontStyle;
+            EditorStyles.textField.alignment = style.alignment;
+            EditorStyles.textField.fixedHeight = style.fixedHeight;
         }
         
         public static float Height => StyleSettings.Instance.height;

@@ -66,7 +66,6 @@ namespace AnimFlex.Sequencer
             {
                 clip = clip,
                 name = $"Node {index}",
-                groupName = index == 0 ? String.Empty : nodes[index - 1].groupName
             });
             nodes = tmp.ToArray();
             foreach (var node in nodes)

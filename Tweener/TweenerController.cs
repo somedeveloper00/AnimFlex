@@ -45,15 +45,36 @@ namespace AnimFlex.Tweener
             for (var i = 0; i < _activeTweenersLength; i++)
             {
                 var tweener = _activeTweeners[i];
+                var totalTime = tweener.duration + tweener.delay;
+                
                 var t = tweener._t + deltaTime;
+                
+                // apply loop
+                if (tweener.loops > 0 && t >= totalTime)
+                {
+                    t %= totalTime;
+                    t += tweener.delay - tweener.loopDelay;
+                    tweener.loops--;
+                }
                 
                 // to avoid repeated evaluations
                 if(tweener._t == t) continue;
-                
+
                 tweener._t = t; // save for next Ticks
 
-                _c = t >= tweener.duration + tweener.delay; // completion check
-                t = _c ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration;
+                
+                
+                _c = t >= totalTime; // completion check
+                t = _c ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
+
+                
+                // apply ping pong
+                if (tweener.pingPong && t != 0)
+                {
+                    t *= 2;
+                    if (t > 1) t = 2 - t;
+                }
+                
 
                 tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
                 tweener.OnUpdate();

@@ -58,12 +58,29 @@ namespace AnimFlex.Tweener
         /// </summary>
         internal AnimationCurve customCurve;
 
+        /// <summary>
+        /// if true, the tweener will have a ping pong behaviour. note that the duration will stay the same
+        /// </summary>
+        internal bool pingPong = false;
+
+        /// <summary>
+        /// indicates the number of times the tweener will have to loop until it's completed.
+        /// </summary>
+        internal int loops = 0;
+
+        /// <summary>
+        /// the delay in between each loop
+        /// </summary>
+        internal float loopDelay = 0;
+
+        /// <summary>
+        /// indicates whether or not to swap the start and end value during initialization (next frame of a Play call)
+        /// </summary>
+        internal bool from = false;
         internal bool useCurve = false;
 
         internal abstract void Init();
         internal abstract void Set(float t);
-        internal abstract void Revert();
-        internal abstract void SwapStartAndEnd();
         
         
         internal Tweener() => TweenerController.Instance.AddTweener(this);
@@ -93,6 +110,7 @@ namespace AnimFlex.Tweener
         internal void OnStart() => onStart();
         internal void OnUpdate() => onUpdate();
         internal void OnComplete() => onComplete();
+
         internal void OnKill() => onKill();
         #endregion
 
@@ -107,16 +125,11 @@ namespace AnimFlex.Tweener
         internal Action<T> setter;
         internal Func<T> getter;
 
-        internal override void Revert()
-        {
-            setter(startValue);
-        }
-
         internal override void Init()
         {
             startValue = getter();
+            if(@from)
+                (startValue, endValue) = (endValue, startValue);
         }
-        
-        internal override void SwapStartAndEnd() => (startValue, endValue) = (endValue, startValue);
     }
 }

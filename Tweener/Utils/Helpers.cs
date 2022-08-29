@@ -25,12 +25,6 @@ namespace AnimFlex.Tweener
             return tweener;
         }
 
-        public static Tweener<T> SwapStartAndEnd<T>(this Tweener<T> tweener)
-        {
-            tweener.SwapStartAndEnd();
-            return tweener;
-        }
-
         public static Tweener<T> SetEase<T>(this Tweener<T> tweener, Ease ease)
         {
             tweener.ease = ease;

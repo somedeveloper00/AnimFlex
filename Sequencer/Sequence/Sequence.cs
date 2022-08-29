@@ -32,6 +32,8 @@ namespace AnimFlex.Sequencer
         private readonly List<(int id, Action action)> _onUpdates = new();
         private int _lastID = -1;
         private float time = 0;
+
+        private int activeNodes = 0;
         
         internal void Kill() => flags |= SequenceFlags.Deleting;
 
@@ -55,7 +57,7 @@ namespace AnimFlex.Sequencer
                     _delayedNodesInQueue.RemoveAt(i--);
                 }
 
-            if (_onUpdates.Count == 0 && _delayedNodesInQueue.Count == 0)
+            if (activeNodes == 0 && _delayedNodesInQueue.Count == 0)
             {
                 onComplete();
             }
@@ -67,6 +69,10 @@ namespace AnimFlex.Sequencer
             foreach (var node in nodes)
                 if (node.nextIndices.Any(i => i >= nodes.Length))
                     RemoveExtraNextNodes();
+            foreach (var node in nodes)
+            {
+                node.OnValidate();
+            }
         }
 
 
@@ -90,7 +96,11 @@ namespace AnimFlex.Sequencer
         {
             var id = ++_lastID;
 
-            Action onFinishCallback = delegate { PlayNextClips(index); };
+            Action onFinishCallback = delegate
+            {
+                activeNodes--;
+                PlayNextClips(index);
+            };
             Action onUpdateCallback = null; 
 
             // check for update module
@@ -127,6 +137,7 @@ namespace AnimFlex.Sequencer
                 onFinishCallback += () => RemoveClipFromOnUpdates(id);
             }
 
+            activeNodes++;
             nodes[index].Play(onFinishCallback);
         }
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace AnimFlex.Editor
             {
                 if (m_instance == null)
                 {
-                    var path = EditorUtils.GetPathRelative("StyleSettings.asset");
+                    var path = AFEditorUtils.GetPathRelative("StyleSettings.asset");
                     if (!File.Exists(path))
                     {
                         m_instance = CreateInstance<StyleSettings>();
@@ -29,18 +30,36 @@ namespace AnimFlex.Editor
 
         public Font font;
         public int fontSize;
+        public int bigFontSize;
+        public int bigHeight;
         public float height;
         public float verticalSpace;
         public Color buttonDefCol;
         public Color buttonYellowCol;
         public Color labelCol;
         public Color tweeerBoxCol;
-        public Color onButtonCol;
-        public Color offButtonCol;
         public Color popupCol;
 
         // refresh
-        private void OnValidate() => Styles.Refresh();
+        private void OnValidate() => AFStyles.Refresh();
+        
+        [SettingsProvider]
+        private static SettingsProvider CreateSettingsProvider() 
+        {
+            var provider = new SettingsProvider("AnimFlex/General", SettingsScope.Project)
+            {
+                label = "General",
+                guiHandler = searchContext =>
+                {
+                    UnityEditor.Editor editor = null;
+                    UnityEditor.Editor.CreateCachedEditor(Instance, null, ref editor);
+                    editor.OnInspectorGUI();
+                },
+                keywords = new HashSet<string>(new[] {"animflex", "anim", "flex", "sequence" })
+            };
+
+            return provider;
+        }
     }
 
 }

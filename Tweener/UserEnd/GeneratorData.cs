@@ -57,6 +57,15 @@ namespace AnimFlex.Tweener
                  "advanced: while in the initial delay, the tweener object acts as if it's tweening and it's on T zero (so if you're for example tweening it's Position, " +
                  "you can't modify the same object's position from other scripts, because the tween is constantly updating it every frame/tick")]
         public float delay;
+
+        [Tooltip("In PingPong mode, the tweener will have a ping-pong ball behaviour. note that the duration will stay the same")]
+        public bool pingPong;
+
+        [Tooltip("indicates the number of times the tweener will have to loop until it's completed.")]
+        public int loops;
+
+        [Tooltip("the delay in between each loop")]
+        public float loopDelay;
         
         [Tooltip("The events to call when the tween plays.\n" +
                  "advanced: gets called the next frame of a .PlayOrRestart() call")]

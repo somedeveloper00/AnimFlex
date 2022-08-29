@@ -25,10 +25,10 @@ namespace AnimFlex.Tweener.Editor
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_playOnStartProp);
-            GUI.color = Styles.TweenerBoxColor;
+            GUI.color = AFStyles.TweenerBoxColor;
             using (new GUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                using (new Styles.CenteredEditorStyles())
+                using (new AFStyles.CenteredEditorStyles())
                 {
                     GUI.color = Color.white;
                     EditorGUILayout.PropertyField(_generatorDataProp);

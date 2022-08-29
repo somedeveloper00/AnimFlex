@@ -189,6 +189,10 @@ namespace AnimFlex.Tweener
             tweener.onComplete += () => data.onComplete.Invoke();
             tweener.onKill += data.onKill.Invoke;
             tweener.onUpdate += data.onUpdate.Invoke;
+            tweener.@from = data.@from;
+            tweener.loops = data.loops;
+            tweener.loopDelay = data.loopDelay;
+            tweener.pingPong = data.pingPong;
             
             return true;
         } 

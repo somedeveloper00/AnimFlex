@@ -1,8 +1,10 @@
-﻿using AnimFlex.Tweener;
+﻿using System.ComponentModel;
+using AnimFlex.Tweener;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer.Clips
 {
+    [DisplayName("Tweeners/Simple Tweener")]
     public class CTweener : Clip
     {
         public GeneratorData data;

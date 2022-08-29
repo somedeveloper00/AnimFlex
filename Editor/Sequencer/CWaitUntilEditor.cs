@@ -1,4 +1,5 @@
-﻿using AnimFlex.Sequencer.Clips;
+﻿using AnimFlex.Editor;
+using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace AnimFlex.Sequencer.Editor
             pos.y += EditorGUI.GetPropertyHeight(componentProp) + EditorGUIUtility.standardVerticalSpacing;
             if (EditorGUI.EndChangeCheck())
             {
-                ClipEditorsUtility.OpenComponentReferenceSelectionMenu(componentProp);
+                AFEditorUtils.OpenComponentReferenceSelectionMenu(componentProp);
             }
             
             EditorGUI.PropertyField(pos, valueNameProp);

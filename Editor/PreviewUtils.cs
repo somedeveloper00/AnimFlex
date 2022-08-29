@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using AnimFlex.Core;
 using AnimFlex.Tweener;
 using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -13,14 +13,27 @@ namespace AnimFlex.Editor
 {
     public static class PreviewUtils
     {
-        private static Stopwatch stopWatch = new();
         private static float lastTickTime = 0;
 
-        public static bool isActive { get; private set; } = false;
+        public static bool isActive
+        {
+            get => UnityEditor.EditorPrefs.GetBool("AnimFlex_previewIsActive", false);
+            private set => UnityEditor.EditorPrefs.SetBool("AnimFlex_previewIsActive", value);
+        }
 
         private static int lastSelectedID;
 
         private static event Action onEnd;
+        private static float startTime = 0;
+
+        [InitializeOnLoadMethod]
+        private static void StopPreviewIfActive()
+        {
+            if (isActive)
+            {
+                EditorApplication.delayCall += StopPreviewMode;
+            }
+        }
 
         public static void StartPreviewMode()
         {
@@ -48,8 +61,8 @@ namespace AnimFlex.Editor
 
             AnimFlexCore.Initialize();
             EditorApplication.update += EditorTick;
-            stopWatch.Restart();
             lastTickTime = (float)EditorApplication.timeSinceStartup;
+            startTime = lastTickTime;
             isActive = true;
             Debug.Log("Preview started.");
 
@@ -80,8 +93,12 @@ namespace AnimFlex.Editor
 
         private static void EditorTick()
         {
-            if(EditorApplication.timeSinceStartup - lastTickTime >= 0.2f) return;
-            AnimFlexCore.Instance.Tick((float)EditorApplication.timeSinceStartup - lastTickTime);
+            // ignoring long frames altogether (maybe user changed the window or whatever else)
+            if (EditorApplication.timeSinceStartup - lastTickTime < 1f)
+            {
+                AnimFlexCore.Instance.Tick((float)EditorApplication.timeSinceStartup - lastTickTime);
+                SceneView.RepaintAll();
+            }
             lastTickTime = (float)EditorApplication.timeSinceStartup;
         }
 
@@ -91,25 +108,9 @@ namespace AnimFlex.Editor
             
             EditorApplication.update -= EditorTick;
             
-            stopWatch.Stop();
-            isActive = false;
             
             // restore selection
-            EditorSceneManager.sceneOpened += (_, _) =>
-            {
-                // get last selected gameObject
-                if (UniqueID.FindByID(lastSelectedID, out var activeGameObject))
-                {
-                    if(activeGameObject == null) return;
-                    
-                    // remove id component and save
-                    Object.DestroyImmediate(activeGameObject.GetComponent<UniqueID>());
-                    EditorUtility.SetDirty(activeGameObject);
-                    EditorSceneManager.SaveScene(activeGameObject.scene);
-                    
-                    Selection.activeGameObject = activeGameObject;
-                }
-            };
+            EditorSceneManager.sceneOpened += OnEditorSceneManagerOnsceneOpened; 
             
             // discard new changes
             EditorSceneManager.OpenScene(EditorSceneManager.GetActiveScene().path, OpenSceneMode.Single);
@@ -117,7 +118,28 @@ namespace AnimFlex.Editor
             SceneView.duringSceneGui -= OnSceneGUI; 
             
             GC.Collect();
+            isActive = false;
             Debug.Log($"Preview stopped");
+        }
+
+        private static void OnEditorSceneManagerOnsceneOpened(Scene scene, OpenSceneMode openSceneMode)
+        {
+            // get last selected gameObject
+            if (UniqueID.FindByID(lastSelectedID, out var activeGameObject))
+            {
+                if (activeGameObject == null) return;
+                Selection.activeGameObject = activeGameObject;
+            }
+
+            // remove all other UniqueID components 
+            foreach (var comp in Object.FindObjectsOfType<UniqueID>())
+            {
+                EditorUtility.SetDirty(comp.gameObject);
+                Object.DestroyImmediate(comp);
+            }
+
+            EditorSceneManager.SaveScene(activeGameObject.scene);
+            EditorSceneManager.sceneOpened -= OnEditorSceneManagerOnsceneOpened;
         }
 
         private static void OnSceneGUI(SceneView sceneview)
@@ -130,14 +152,14 @@ namespace AnimFlex.Editor
                     200,
                     60));
 
-            GUI.color = Styles.TweenerBoxColor;
+            GUI.color = AFStyles.TweenerBoxColor;
 
-            EditorGUI.DrawRect(new Rect(0, 0, 200, 60), Styles.TweenerBoxColor);
-            using (new GUILayout.HorizontalScope(EditorStyles.helpBox))
+            EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.TweenerBoxColor);
+            using (new GUILayout.HorizontalScope(EditorStyles.helpBox, GUILayout.ExpandHeight(true)))
             {
                 GUI.color = Color.white;
-                GUILayout.Label("AnimFlex Playing...", Styles.Label);
-                if (GUILayout.Button("Stop", Styles.Button))
+                GUILayout.Label("AnimFlex Playing...", AFStyles.Label);
+                if (GUILayout.Button("Stop", AFStyles.Button))
                 {
                     StopPreviewMode();
                 }

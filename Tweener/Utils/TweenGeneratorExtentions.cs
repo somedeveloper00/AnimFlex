@@ -92,7 +92,7 @@ namespace AnimFlex.Tweener
                 value =>
                 {
                     t = value;
-                    vec = Vector3.Lerp(fromVec, endRotation, t);
+                    vec = Vector3.LerpUnclamped(fromVec, endRotation, t);
                     transform.rotation = Quaternion.Euler(vec);
                 },
                 1, ease, duration, delay, curve);
