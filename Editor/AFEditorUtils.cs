@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEngine;
 using Component = UnityEngine.Component;
@@ -102,17 +103,15 @@ namespace AnimFlex.Editor
 
         /// <summary>
         /// Opens a popup for selecting a component from the newly assigned reference.
-        /// it only operates if the new reference is a Transform, so if Unity changes the default drag & drop reference,
-        /// this needs to change as well
         /// </summary>
         public static void OpenComponentReferenceSelectionMenu(SerializedProperty property)
         {
             var selectedComponent = property.objectReferenceValue;
-            if (selectedComponent is Transform transform)
+            if (selectedComponent is Component component)
             {
                 // show component selection generic context menu
                 var menu = new GenericMenu();
-                var components = transform.GetComponents<Component>();
+                var components = component.GetComponents<Component>();
                 foreach (var c in components)
                 {
                     if (c == null) continue;
@@ -150,6 +149,26 @@ namespace AnimFlex.Editor
                         onSelect((T)val);
                     });
             menu.ShowAsContext();
+        }
+        
+        
+        public static void DrawNodeSelectionPopup(Rect position, SerializedProperty property, GUIContent label, Sequence sequence)
+        {
+            var displayedOptions = sequence.nodes
+                .Select(node => node.name).ToArray()
+                .Select(p => new GUIContent(p)).ToArray();
+
+            if (property.intValue < 0 || property.intValue >= displayedOptions.Length)
+                property.intValue = 0;
+
+            position.height = AFStyles.Height;
+
+            property.intValue = EditorGUI.Popup(
+                position: position,
+                label: label,
+                selectedIndex: property.intValue,
+                displayedOptions: displayedOptions,
+                style: AFStyles.Popup);
         }
     }
 }
