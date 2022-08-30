@@ -11,10 +11,18 @@ namespace AnimFlex.Sequencer.Clips
         [Tooltip("In Seconds")]
         public float checkEvery = 0.1f;
 
-      
+#if UNITY_EDITOR
+        internal abstract Type GetValueType();
+#endif
+
+
     }
     public abstract class CWaitUntil<T> : CWaitUntil
     {
+#if UNITY_EDITOR
+        internal override Type GetValueType() => typeof(T);
+#endif
+
         public T value;
         
         private long startTicks;

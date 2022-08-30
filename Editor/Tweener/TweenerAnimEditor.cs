@@ -35,8 +35,7 @@ namespace AnimFlex.Tweener.Editor
                 }
             }
 
-            if(!PreviewUtils.isActive)
-                serializedObject.ApplyModifiedProperties();
+            serializedObject.ApplyModifiedProperties();
         }
 
 

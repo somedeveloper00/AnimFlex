@@ -80,7 +80,7 @@ namespace AnimFlex
             values[index] = values[--Length];
             
             // copy the last queued element in place of the old duplicate one
-            values[Length + 1] = values[Length + queueLength];
+            values[Length] = values[Length + queueLength];
         }
 
         private void RangeCheck(int i)

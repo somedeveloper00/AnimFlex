@@ -84,8 +84,7 @@ namespace AnimFlex.Tweener.Editor
             height = DrawEvents(position);
 
             position.y += height + AFStyles.VerticalSpace;
-            if (DrawPlayback(position))
-                return;
+            DrawPlayback(position);
 
             EditorGUI.EndProperty();
         }
@@ -100,6 +99,7 @@ namespace AnimFlex.Tweener.Editor
             linePos.width = (position.width - 80 - 80 - 80) / 2;
             using (new AFStyles.EditorLabelWidth())
                 _loopProp.intValue = EditorGUI.IntField(linePos, new GUIContent("    "), _loopProp.intValue);
+            _loopProp.intValue = Mathf.Max(0, _loopProp.intValue);
             linePos.x += linePos.width;
 
             using (new EditorGUI.DisabledGroupScope(_loopProp.intValue <= 0))
@@ -213,7 +213,7 @@ namespace AnimFlex.Tweener.Editor
 
         }
 
-        private bool DrawPlayback(Rect position)
+        private void DrawPlayback(Rect position)
         {
             var linePos = new Rect(position);
             linePos.width = 80;
@@ -221,20 +221,24 @@ namespace AnimFlex.Tweener.Editor
 
             using (new EditorGUI.DisabledGroupScope(PreviewUtils.isActive))
             {
-                if (GUI.Button(linePos, "Play", AFStyles.Button))
+                using (new AFStyles.GuiForceActive())
                 {
-                    PreviewUtils.PreviewTweener((GeneratorData)_property.GetValue());
-                    return true;
+                    if (GUI.Button(linePos, PreviewUtils.isActive ? "Stop" : "Play", AFStyles.Button))
+                    {
+                        if(PreviewUtils.isActive)
+                            PreviewUtils.StopPreviewMode();
+                        else
+                            PreviewUtils.PreviewTweener((GeneratorData)_property.GetValue());
+                    }
                 }
             }
-            return false;
-
         }
 
         private float DrawValue(Rect position)
         {
             var linePos = new Rect(position);
 
+            float height = position.height;
             linePos.width = 80;
             if (GUI.Button(linePos, new GUIContent(_fromProp.boolValue ? "From :" : "To :", _fromProp.tooltip), AFStyles.YellowButton))
             {
@@ -279,7 +283,8 @@ namespace AnimFlex.Tweener.Editor
                         _useQuaternionProp.boolValue = !useQuaternion;
                     }
 
-                    if (useQuaternion && TweenerPrefs.Instance.showQuaternionWarnings)
+                    if (useQuaternion && 
+                        TweenerPrefs.Instance.showQuaternionWarnings)
                     {
                         // warning
                         linePos = position;
@@ -289,6 +294,7 @@ namespace AnimFlex.Tweener.Editor
                             "it's highly recommended to use Vector3 instead.\n" +
                             "(to not see this message, change it in Preferences.)";
                         linePos.height = AFStyles.VerticalSpace * 2 + AFStyles.SpecialLabel.CalcHeight(new GUIContent(message), position.width);
+                        height += linePos.height;
                         AFStyles.DrawHelpBox(linePos, message, MessageType.Warning);
                     }
                     break;
@@ -308,9 +314,7 @@ namespace AnimFlex.Tweener.Editor
                     throw new ArgumentOutOfRangeException();
             }
 
-            return position.height + (_useQuaternionProp.boolValue && TweenerPrefs.Instance.showQuaternionWarnings
-                ? position.height * 2 + AFStyles.VerticalSpace * 2
-                : 0);
+            return height;
         }
 
         private void DrawTweenerType(Rect position)
@@ -408,8 +412,13 @@ namespace AnimFlex.Tweener.Editor
             height += singleLine;
             height += singleLine;
             height += singleLine;
-            if(_useQuaternionProp.boolValue && TweenerPrefs.Instance.showQuaternionWarnings)
+            
+            var enumValue = (GeneratorData.TweenerType)_tweenerTypeProp.enumValueIndex;
+            if ((enumValue.HasFlag(GeneratorData.TweenerType.Rotation) || enumValue.HasFlag(GeneratorData.TweenerType.LocalRotation)) &&
+                _useQuaternionProp.boolValue && TweenerPrefs.Instance.showQuaternionWarnings)
+            {
                 height += AFStyles.VerticalSpace * 2 + singleLine * 2;
+            }
                 
             height += 20;
 

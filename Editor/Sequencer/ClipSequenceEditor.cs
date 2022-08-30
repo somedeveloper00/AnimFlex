@@ -1,8 +1,6 @@
-﻿using System;
-using AnimFlex.Sequencer;
+﻿using AnimFlex.Sequencer;
 using AnimFlex.Sequencer.UserEnd;
 using UnityEditor;
-using UnityEditor.Graphs;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -41,6 +39,9 @@ namespace AnimFlex.Editor.Sequencer
             DrawPlayback();
 
             serializedObject.ApplyModifiedProperties();
+            
+            if(StyleSettings.Instance.repaintEveryFrame)
+                Repaint();
         }
 
         private void DrawPlayback()
@@ -80,8 +81,31 @@ namespace AnimFlex.Editor.Sequencer
             _nodeClipList.multiSelect = false;
             _nodeClipList.drawElementCallback = (rect, index, active, focused) =>
             {
-                var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
-                EditorGUI.PropertyField(rect, nodeProp, GUIContent.none, true);
+                using (new AFStyles.StyledGuiScope())
+                {
+                    EditorGUI.indentLevel++;
+                    var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
+                    EditorGUI.PropertyField(rect, nodeProp, GUIContent.none, true);
+
+                    // draw X button
+                    using (new AFStyles.GuiBackgroundColor(Color.clear))
+                    {
+                        if (GUI.Button(
+                                new Rect(rect.x + rect.width - 20 + 5, rect.y, 20,
+                                    AFStyles.BigHeight + AFStyles.VerticalSpace * 2)
+                                , new GUIContent("X", "Remove clip"), AFStyles.ClearButton))
+                        {
+                            EditorApplication.delayCall += () =>
+                            {
+                                serializedObject.Update();
+                                _clipNodesProp.DeleteArrayElementAtIndex(index);
+                                serializedObject.ApplyModifiedProperties();
+                                Repaint();
+                            };
+                        }
+                    }
+                    EditorGUI.indentLevel--;
+                }
             };
             _nodeClipList.elementHeightCallback = index =>
             {

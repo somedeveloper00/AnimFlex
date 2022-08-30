@@ -51,8 +51,13 @@ namespace AnimFlex.Sequencer.Clips
     {
         protected override bool IsEqual(Color a, Color b) => a == b;
     }
-    [DisplayName("Wait Until/int list")] public class CWaitUntilListInt : CWaitUntil<List<int>>
+    [DisplayName("Wait Until/Transform")] public class CWaitUntilTransform : CWaitUntil<Transform>
     {
-        protected override bool IsEqual(List<int> a, List<int> b) => a.SequenceEqual(b);
+        protected override bool IsEqual(Transform a, Transform b) => a == b;
+    }
+
+    public abstract class CWaitUntilList<T> : CWaitUntil<List<T>>
+    {
+        protected override bool IsEqual(List<T> a, List<T> b) => a.SequenceEqual(b);
     }
 }

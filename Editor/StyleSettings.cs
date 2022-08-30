@@ -38,10 +38,12 @@ namespace AnimFlex.Editor
         public Color buttonDefCol;
         public Color buttonYellowCol;
         public Color labelCol;
+        public Color labelCol_Hover;
         [FormerlySerializedAs("tweeerBoxCol")] public Color BoxCol;
         [FormerlySerializedAs("tweeerBoxCol")] public Color BoxColDarker;
         public Color backgroundBoxCol;
         public Color popupCol;
+        public bool repaintEveryFrame = true;
 
         // refresh
         private void OnValidate() => AFStyles.Refresh();

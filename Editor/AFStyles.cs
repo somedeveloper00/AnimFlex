@@ -69,6 +69,59 @@ namespace AnimFlex.Editor
             }
             public void Dispose() => GUI.enabled = wasEnabled;
         }
+
+        public class StyledGuiScope : IDisposable
+        {
+            private GUIStyle labelStyle;
+            private GUIStyle largeLabelStyle;
+            private GUIStyle popupStyle;
+            
+            public StyledGuiScope()
+            {
+                labelStyle = new GUIStyle(EditorStyles.label);
+                largeLabelStyle = new GUIStyle(EditorStyles.largeLabel);
+                popupStyle = new GUIStyle(EditorStyles.popup);
+
+                EditorStyles.label.font = StyleSettings.Instance.font;
+                EditorStyles.label.fontSize = StyleSettings.Instance.fontSize;
+                EditorStyles.label.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.label.normal.textColor = StyleSettings.Instance.labelCol;
+                EditorStyles.label.hover.textColor = Color.white;
+                EditorStyles.label.onHover.textColor = Color.white;
+                
+                EditorStyles.largeLabel.font = StyleSettings.Instance.font;
+                EditorStyles.largeLabel.fontSize = StyleSettings.Instance.bigFontSize;
+                EditorStyles.largeLabel.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.largeLabel.normal.textColor = StyleSettings.Instance.labelCol;
+                
+                EditorStyles.popup.font = StyleSettings.Instance.font;
+                EditorStyles.popup.fontSize = StyleSettings.Instance.fontSize;
+                EditorStyles.popup.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.popup.normal.textColor = StyleSettings.Instance.popupCol;
+            }
+
+            public void Dispose()
+            {
+                EditorStyles.label.font = labelStyle.font;
+                EditorStyles.label.fontSize = labelStyle.fontSize;
+                EditorStyles.label.alignment = labelStyle.alignment;
+                EditorStyles.label.normal.textColor = labelStyle.normal.textColor;
+                EditorStyles.label.hover.textColor = labelStyle.hover.textColor;
+                EditorStyles.label.onHover.textColor = labelStyle.onHover.textColor;
+
+                EditorStyles.largeLabel.font = largeLabelStyle.font;
+                EditorStyles.largeLabel.fontSize = largeLabelStyle.fontSize;
+                EditorStyles.largeLabel.alignment = largeLabelStyle.alignment;
+                EditorStyles.largeLabel.normal.textColor = largeLabelStyle.normal.textColor;
+                
+                EditorStyles.popup.font = popupStyle.font; 
+                EditorStyles.popup.fontSize = popupStyle.fontSize; 
+                EditorStyles.popup.alignment = popupStyle.alignment;
+                EditorStyles.popup.normal.textColor = popupStyle.normal.textColor;
+
+            }
+            
+        }
         
         public static void Refresh()
         {
@@ -100,6 +153,29 @@ namespace AnimFlex.Editor
                 return _bigButton;
             }
         }
+
+        private static GUIStyle _clearButton;
+        public static GUIStyle ClearButton
+        {
+            get
+            {
+                if (_clearButton != null) return _clearButton;
+                _clearButton = new GUIStyle(Button);
+                _clearButton.fontSize = 18;
+                _clearButton.alignment = TextAnchor.MiddleCenter;
+                
+                var tex = new Texture2D(8, 8);
+                tex.SetPixels(new[]
+                {
+                    Color.clear, Color.clear, Color.clear, Color.clear, 
+                    Color.clear, Color.clear, Color.clear, Color.clear 
+                });
+                tex.Apply(false);
+                _clearButton.normal.background = _clearButton.hover.background = 
+                    _clearButton.onHover.background = tex;
+                return _clearButton;
+            }
+        }
         
         private static GUIStyle _yellowButton;
         public static GUIStyle YellowButton
@@ -125,8 +201,8 @@ namespace AnimFlex.Editor
                 _specialLabel.font = StyleSettings.Instance.font;
                 _specialLabel.alignment = TextAnchor.MiddleCenter;
                 _specialLabel.fontSize = StyleSettings.Instance.fontSize;
-                _specialLabel.normal.textColor = _specialLabel.hover.textColor = _specialLabel.active.textColor =
-                    _specialLabel.focused.textColor = StyleSettings.Instance.labelCol;
+                _specialLabel.normal.textColor = StyleSettings.Instance.labelCol;
+                _specialLabel.hover.textColor = _specialLabel.onHover.textColor = StyleSettings.Instance.labelCol_Hover;
                 return _specialLabel;
             }
         }

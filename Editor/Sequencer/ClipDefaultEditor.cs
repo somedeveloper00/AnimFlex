@@ -11,25 +11,29 @@ namespace AnimFlex.Editor.Sequencer
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             int depth = property.depth;
-            property.Next (true);
-            do
+            if (property.Next(true))
             {
-                if(property.depth <= depth) break;
-                EditorGUI.PropertyField(position, property, new GUIContent(property.displayName), true);
-                position.y += EditorGUI.GetPropertyHeight(property);
-            } while (property.Next (false));
+                do
+                {
+                    if (property.depth <= depth) break;
+                    EditorGUI.PropertyField(position, property, new GUIContent(property.displayName), true);
+                    position.y += EditorGUI.GetPropertyHeight(property);
+                } while (property.Next(false));
+            }
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             float height = 0;
             var depth = property.depth;
-            property.Next (true);
-            do
+            if (property.Next(true))
             {
-                if(property.depth <= depth) break;
-                height += EditorGUI.GetPropertyHeight(property);
-            } while (property.Next (false));
+                do
+                {
+                    if(property.depth <= depth) break;
+                    height += EditorGUI.GetPropertyHeight(property);
+                } while (property.Next (false));
+            }
 
             return height;
         }

@@ -50,11 +50,12 @@ namespace AnimFlex.Editor.Sequencer
 
             return linePos.height;
         }
+        
         private void DrawHeader(Rect position)
         {
             var linePos = new Rect(position);
             linePos.y += AFStyles.VerticalSpace;
-            linePos.x += 20;
+            // linePos.x += 20;
             linePos.width = 10;
             linePos.height = AFStyles.BigHeight;
             
@@ -68,7 +69,7 @@ namespace AnimFlex.Editor.Sequencer
             // display clip type
             var type = AFEditorUtils.FindType(_clipProp.GetValue().GetType().FullName);
             linePos.x += linePos.width;
-            linePos.width = 170;
+            linePos.width = 185;
             if (GUI.Button(linePos, AFEditorUtils.GetTypeName(type), AFStyles.Popup))
             {
                 SerializedProperty prop = property; // to hold on to the property for the callback
@@ -87,7 +88,7 @@ namespace AnimFlex.Editor.Sequencer
             GUI.Label(linePos, "Delay :", AFStyles.Label);
 
             linePos.x += linePos.width;
-            linePos.width = 60;
+            linePos.width = 50;
             using (new AFStyles.EditorLabelWidth())
             {
                 _delayProp.floatValue = EditorGUI.FloatField(linePos, new GUIContent("   "), _delayProp.floatValue);
