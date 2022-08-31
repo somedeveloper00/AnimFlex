@@ -164,11 +164,11 @@ namespace AnimFlex.Editor
                 _clearButton.fontSize = 18;
                 _clearButton.alignment = TextAnchor.MiddleCenter;
                 
-                var tex = new Texture2D(8, 8);
+                var tex = new Texture2D(2, 2);
                 tex.SetPixels(new[]
                 {
-                    Color.clear, Color.clear, Color.clear, Color.clear, 
-                    Color.clear, Color.clear, Color.clear, Color.clear 
+                    Color.clear, Color.clear, 
+                    Color.clear, Color.clear 
                 });
                 tex.Apply(false);
                 _clearButton.normal.background = _clearButton.hover.background = 
@@ -271,6 +271,8 @@ namespace AnimFlex.Editor
             }        
         }
 
+        public static Rect PadX(this Rect rect, float pad) =>
+            new Rect(rect.x + pad, rect.y, rect.width - pad * 2, rect.height);
         
         public static void DrawHelpBox(Rect position, string message, MessageType messageType)
         {

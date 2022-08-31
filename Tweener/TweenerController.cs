@@ -49,7 +49,7 @@ namespace AnimFlex.Tweener
                 var t = tweener._t + deltaTime;
                 
                 // apply loop
-                if (tweener.loops > 0 && t >= totalTime)
+                if (tweener.loops != 0 && t >= totalTime)
                 {
                     t %= totalTime;
                     t += tweener.delay - tweener.loopDelay;

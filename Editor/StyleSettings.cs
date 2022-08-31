@@ -42,6 +42,7 @@ namespace AnimFlex.Editor
         [FormerlySerializedAs("tweeerBoxCol")] public Color BoxCol;
         [FormerlySerializedAs("tweeerBoxCol")] public Color BoxColDarker;
         public Color backgroundBoxCol;
+        public Color backgroundBoxColDarker;
         public Color popupCol;
         public bool repaintEveryFrame = true;
 

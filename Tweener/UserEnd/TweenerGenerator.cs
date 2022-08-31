@@ -5,23 +5,15 @@ using UnityEngine.Events;
 namespace AnimFlex.Tweener
 {
     [Serializable]
-    public class GeneratorData
+    public abstract class TweenerGenerator
     {
-        [Tooltip("The object which this tween applies to")]
-        public GameObject fromObject;
-        
-        [Tooltip("The type of tween. for example, if you choose Position, you'll be modifying the rest of the options in a way that'll animate the Position" +
-                 ". \n\n Advanced note: the way it will detect which Component to modify is totally automatic, And it'll Get them when the tween plays." +
-                 " so if you want to add a component, say a MeshRenderer, and then play some tween on that, make sure to add the component first. (because the tween generation is not " +
-                 "frame scheduled; it happens right away) ")]
-        public TweenerType tweenerType;
-        
-        public Vector3 targetVector3;
-        public Vector2 targetVector2;
-        public float targetFloat;
-        public Color targetColor;
-        public Transform targetTransform;
-        public Quaternion targetQuaternion;
+        internal abstract Type GetFromValueType();
+        internal abstract Type GetToValueType();
+        internal abstract void Reset(GameObject gameObject);
+        internal abstract bool TryGenerateTween(out Tweener tweener);
+
+        #region Data
+
         public AnimationCurve customCurve;
 
         [Tooltip("You can choose between a variety of different built-in curves, but if you want to use special curves that you can't find on the list, " +
@@ -61,7 +53,7 @@ namespace AnimFlex.Tweener
         [Tooltip("In PingPong mode, the tweener will have a ping-pong ball behaviour. note that the duration will stay the same")]
         public bool pingPong;
 
-        [Tooltip("indicates the number of times the tweener will have to loop until it's completed. -1 means infinite")]
+        [Tooltip("indicates the number of times the tweener will have to loop until it's completed.")]
         public int loops;
 
         [Tooltip("the delay in between each loop")]
@@ -84,15 +76,53 @@ namespace AnimFlex.Tweener
                  "advanced: it gets called after the onComplete, but in the same frame so")]
         public UnityEvent onKill;
 
-        public enum TweenerType
+        #endregion
+        
+    }
+    
+    public abstract class TweenerGenerator<TFrom, TTo> : TweenerGenerator where TFrom : Component
+    {
+        [Tooltip("The object which this tween applies to")]
+        public TFrom fromObject;
+        
+        public TTo target;
+        
+        protected abstract Tweener GenerateTween(AnimationCurve curve);
+
+        internal override bool TryGenerateTween(out Tweener tweener)
         {
-            LocalPosition,
-            Position,
-            LocalRotation,
-            Rotation,
-            Scale,
-            Fade,
-            Color
+            tweener = null;
+            
+            if (fromObject == null)
+            {
+                Debug.LogError($"fromObject was null. The tween generation is impossible.");
+                return false;
+            }
+
+            AnimationCurve curve = useCurve ? customCurve : null;
+
+            tweener = GenerateTween(curve);
+            
+
+            // add Unity events
+            tweener.onStart += onStart.Invoke;
+            tweener.onComplete += () => onComplete.Invoke();
+            tweener.onKill += onKill.Invoke;
+            tweener.onUpdate += onUpdate.Invoke;
+            tweener.@from = @from;
+            tweener.loops = loops;
+            tweener.loopDelay = loopDelay;
+            tweener.pingPong = pingPong;
+            
+            return true;
         }
+
+        internal override void Reset(GameObject gameObject)
+        {
+            fromObject = gameObject.GetComponent<TFrom>();
+        }
+
+        internal override Type GetFromValueType() => typeof(TFrom);
+        internal override Type GetToValueType() => typeof(TTo);
     }
 }
