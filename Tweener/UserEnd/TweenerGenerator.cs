@@ -43,12 +43,12 @@ namespace AnimFlex.Tweener
         [Tooltip("The duration it takes for the animation to finish. \n" +
                  "yes, the animations (a.k.a. Tweeners) are not speed-based, they're time based. if you need speed-based animations, please contact us so we know it's" +
                  " a needed feature.")]
-        public float duration;
+        public float duration = 1;
         
         [Tooltip("The initial delay for the tween.\n" +
                  "advanced: while in the initial delay, the tweener object acts as if it's tweening and it's on T zero (so if you're for example tweening it's Position, " +
                  "you can't modify the same object's position from other scripts, because the tween is constantly updating it every frame/tick")]
-        public float delay;
+        public float delay = 0.2f;
 
         [Tooltip("In PingPong mode, the tweener will have a ping-pong ball behaviour. note that the duration will stay the same")]
         public bool pingPong;

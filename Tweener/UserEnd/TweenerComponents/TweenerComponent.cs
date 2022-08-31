@@ -16,10 +16,6 @@ namespace AnimFlex.Tweener
         {
             if (generator == null) generator = new T();
             generator.Reset(gameObject);
-            playOnStart = true;
-            generator.from = transform;
-            generator.duration = 1;
-            generator.delay = 0.5f;
         }
 
         private Tweener m_tweener;
@@ -60,7 +56,6 @@ namespace AnimFlex.Tweener
         /// <summary>
         /// generates the tweener and plays it if it's not playing already. otherwise generates a new tweener and plays it.
         /// </summary>
-        [ContextMenu("Play")]
         public void PlayOrRestart()
         {
             // kill if already running

@@ -180,7 +180,7 @@ namespace AnimFlex.Editor
             sequence.onComplete += StopPreviewMode;
         }
 
-        public static void PreviewTweener(GeneratorData tweenData)
+        public static void PreviewTweener(TweenerGenerator generator)
         {
             EditorApplication.delayCall += () =>
             {
@@ -191,8 +191,9 @@ namespace AnimFlex.Editor
                 }
 
                 StartPreviewMode();
-                if (GeneratorDataUtil.TryGenerateTweener(tweenData, out var tweener) == false)
+                if (generator.TryGenerateTween(out var tweener) == false)
                 {
+                    Debug.LogError("Could not generate the tween");
                     StopPreviewMode();
                 }
             };
