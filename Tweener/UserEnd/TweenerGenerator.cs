@@ -133,6 +133,9 @@ namespace AnimFlex.Tweener
     {
         [Tooltip("The objects which this tween applies to")]
         public TFrom[] fromObject;
+        
+        [Tooltip("")]
+        public bool getChildren = false;
         public TTo target;
         [Tooltip("The delay between each tween")]
         public float multiDelay;

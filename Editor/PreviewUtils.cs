@@ -21,10 +21,9 @@ namespace AnimFlex.Editor
             private set => UnityEditor.EditorPrefs.SetBool("AnimFlex_previewIsActive", value);
         }
 
-        private static int lastSelectedID;
+        private static GlobalObjectId lastSelected;
 
         private static event Action onEnd;
-        private static float startTime = 0;
 
         [InitializeOnLoadMethod]
         private static void StopPreviewIfActive()
@@ -54,15 +53,12 @@ namespace AnimFlex.Editor
             // keep track of selection
             if (Selection.activeGameObject != null)
             {
-                lastSelectedID = Selection.activeGameObject?.AddComponent<UniqueID>().GetID() ?? 0;
-                EditorUtility.SetDirty(Selection.activeGameObject);
-                EditorSceneManager.SaveScene(Selection.activeGameObject.scene);
+                lastSelected = GlobalObjectId.GetGlobalObjectIdSlow(Selection.activeGameObject);
             }
 
             AnimFlexCore.Initialize();
             EditorApplication.update += EditorTick;
             lastTickTime = (float)EditorApplication.timeSinceStartup;
-            startTime = lastTickTime;
             isActive = true;
             Debug.Log("Preview started.");
 
@@ -125,20 +121,10 @@ namespace AnimFlex.Editor
         private static void OnEditorSceneManagerOnsceneOpened(Scene scene, OpenSceneMode openSceneMode)
         {
             // get last selected gameObject
-            if (UniqueID.FindByID(lastSelectedID, out var activeGameObject))
-            {
-                if (activeGameObject == null) return;
-                Selection.activeGameObject = activeGameObject;
-            }
+            var selectedGO = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(lastSelected);
+            if(selectedGO != null) 
+                Selection.activeGameObject = (GameObject)selectedGO;
 
-            // remove all other UniqueID components 
-            foreach (var comp in Object.FindObjectsOfType<UniqueID>())
-            {
-                EditorUtility.SetDirty(comp.gameObject);
-                Object.DestroyImmediate(comp);
-            }
-
-            EditorSceneManager.SaveScene(activeGameObject.scene);
             EditorSceneManager.sceneOpened -= OnEditorSceneManagerOnsceneOpened;
         }
 
