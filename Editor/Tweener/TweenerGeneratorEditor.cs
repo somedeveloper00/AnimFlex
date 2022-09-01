@@ -126,7 +126,7 @@ namespace AnimFlex.Editor.Tweener
             using (new AFStyles.EditorLabelWidth(80))
                 EditorGUI.PropertyField(pos, loopsProp, new GUIContent("Loop :", loopsProp.tooltip));
 
-            using (new EditorGUI.DisabledGroupScope(loopsProp.intValue != 0))
+            using (new EditorGUI.DisabledGroupScope(loopsProp.intValue == 0))
             {
                 pos.x += pos.width;
                 using (new AFStyles.EditorLabelWidth(80))
