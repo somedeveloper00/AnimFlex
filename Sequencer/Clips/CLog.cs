@@ -10,7 +10,7 @@ namespace AnimFlex.Sequencer.Clips
         protected override void OnStart()
         {
             Debug.Log(message);
-            End();
+            PlayNext();
         }
     }
 }

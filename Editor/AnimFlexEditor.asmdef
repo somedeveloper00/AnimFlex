@@ -1,0 +1,18 @@
+{
+    "name": "AnimFlexEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1f5c56dc4d564bfb9dbc4f2822296c3b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

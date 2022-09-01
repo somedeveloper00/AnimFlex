@@ -10,6 +10,9 @@ namespace AnimFlex.Sequencer.Clips
     {
         public Component component;
         public string valueName;
+#if UNITY_EDITOR
+        internal abstract Type GetValueType();
+#endif
     }
     public abstract class CSetValue<T> : CSetValue
     {
@@ -33,12 +36,14 @@ namespace AnimFlex.Sequencer.Clips
             
             return cachedFieldInfo;
         }
-
+#if UNITY_EDITOR
+        internal override Type GetValueType() => typeof(T);
+#endif
 
         protected override void OnStart()
         {
             GetFieldInfo().SetValue(component, value);
-            End();
+            PlayNext();
         }
     }
 }
