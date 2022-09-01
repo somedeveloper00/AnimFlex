@@ -7,7 +7,7 @@ using UnityEngine;
 namespace AnimFlex.Editor.Sequencer
 {
     [CustomEditor(typeof(SequenceAnim))]
-    public class ClipSequenceEditor : UnityEditor.Editor
+    public class SequenceAnimEditor : UnityEditor.Editor
     {
         private SequenceAnim _sequenceAnim;
         private Sequence _sequence;
@@ -83,7 +83,6 @@ namespace AnimFlex.Editor.Sequencer
             {
                 using (new AFStyles.StyledGuiScope())
                 {
-                    EditorGUI.indentLevel++;
                     var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
                     EditorGUI.PropertyField(rect, nodeProp, GUIContent.none, true);
 
@@ -104,7 +103,6 @@ namespace AnimFlex.Editor.Sequencer
                             };
                         }
                     }
-                    EditorGUI.indentLevel--;
                 }
             };
             _nodeClipList.elementHeightCallback = index =>

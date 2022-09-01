@@ -36,6 +36,21 @@ namespace AnimFlex.Editor
                 EditorGUIUtility.labelWidth = width;
             }
         }
+        public class EditorFieldMinWidth : IDisposable
+        {
+            private float oldWidth;
+            public EditorFieldMinWidth(Rect pos, float width = 10)
+            {
+                this.oldWidth = EditorGUIUtility.labelWidth;
+                if (pos.width - EditorGUIUtility.labelWidth < width)
+                    EditorGUIUtility.labelWidth = pos.width - width;
+            }
+
+            public void Dispose()
+            {
+                EditorGUIUtility.labelWidth = oldWidth;
+            }
+        }
 
         public class GuiColor : IDisposable
         {
@@ -122,7 +137,7 @@ namespace AnimFlex.Editor
             }
             
         }
-        
+
         public static void Refresh()
         {
             _button = _yellowButton = _specialLabel = _bigButton = _textField = _bigTextField = _popup = null;
@@ -273,6 +288,37 @@ namespace AnimFlex.Editor
 
         public static Rect PadX(this Rect rect, float pad) =>
             new Rect(rect.x + pad, rect.y, rect.width - pad * 2, rect.height);
+
+        public static bool DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, bool value, string tooltip, out bool result)
+        {
+            var options = new GUIContent[]
+            {
+                new(optionTrue, tooltip), new(optionFalse, tooltip)
+            };
+            using var check = new EditorGUI.ChangeCheckScope();
+            using (new AFStyles.EditorLabelWidth(0))
+                result = EditorGUI.Popup(position, GUIContent.none, value ? 0 : 1, options, AFStyles.Popup) == 0;
+            return check.changed;
+        }
+
+        public static void DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, SerializedProperty property)
+        {
+            // var options = new GUIContent[]
+            // {
+            //     new(optionTrue, property.tooltip), new(optionFalse, property.tooltip)
+            // };
+            var options = new []
+            {
+                optionTrue, optionFalse
+            };
+
+            using (new AFStyles.EditorLabelWidth(0))
+            {
+                property.boolValue = EditorGUI.Popup(position, property.boolValue ? 0 : 1, options, AFStyles.Popup) == 0;
+            }
+            
+        }
+
         
         public static void DrawHelpBox(Rect position, string message, MessageType messageType)
         {

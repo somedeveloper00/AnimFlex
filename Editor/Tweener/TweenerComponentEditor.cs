@@ -13,11 +13,11 @@ namespace AnimFlex.Editor.Tweener
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(TweenerPosition.playOnStart)));
             
-            using (new AFStyles.GuiColor(StyleSettings.Instance.backgroundBoxColDarker))
+            // using (new AFStyles.GuiColor(StyleSettings.Instance.backgroundBoxColDarker))
             {
-                using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+                // using (new GUILayout.VerticalScope(EditorStyles.helpBox))
                 {
-                    using (new AFStyles.GuiColor(Color.white))
+                    // using (new AFStyles.GuiColor(Color.white))
                     {
                         EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(TweenerPosition.generator)));
                     }

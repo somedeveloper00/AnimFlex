@@ -8,10 +8,10 @@ namespace AnimFlex.Editor.Tweener
     [CustomPropertyDrawer(typeof(TweenerGenerator), true)]
     public class TweenerGeneratorEditor : PropertyDrawer
     {
-        private SerializedProperty property;
-        private TweenerGenerator target;
+        protected SerializedProperty property;
+        protected TweenerGenerator target;
 
-        private int selectedEvent = 0;
+        protected int selectedEvent = 0;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -26,6 +26,7 @@ namespace AnimFlex.Editor.Tweener
                 EditorGUI.BeginProperty(position, label, property);
                 position.height = AFStyles.Height;
 
+                position.y += AFStyles.VerticalSpace;
                 DrawPlayback(position);
                 
                 position.y += DrawPlayback_Height() + AFStyles.VerticalSpace;
@@ -50,7 +51,7 @@ namespace AnimFlex.Editor.Tweener
             }
         }
 
-        protected float DrawPlayback_Height() => AFStyles.Height;
+        protected virtual float DrawPlayback_Height() => AFStyles.Height;
         protected virtual void DrawPlayback(Rect position)
         {
             var pos = new Rect(position);
@@ -69,7 +70,7 @@ namespace AnimFlex.Editor.Tweener
             }
         }
 
-        protected float DrawUnityEvents_Height()
+        protected virtual float DrawUnityEvents_Height()
         {
             var onStart = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onStart));
             var onUpdate = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onUpdate));
@@ -113,7 +114,7 @@ namespace AnimFlex.Editor.Tweener
             }
         }
 
-        protected float DrawLoop_Height() => AFStyles.Height; 
+        protected virtual float DrawLoop_Height() => AFStyles.Height; 
         protected virtual void DrawLoop(Rect position)
         {
             var loopsProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.loops));
@@ -123,30 +124,31 @@ namespace AnimFlex.Editor.Tweener
 
             pos.width = (position.width - 80) / 2;
             using (new AFStyles.EditorLabelWidth(80))
-                EditorGUI.PropertyField(pos.PadX(5), loopsProp, new GUIContent("Loop :", loopsProp.tooltip));
+                EditorGUI.PropertyField(pos, loopsProp, new GUIContent("Loop :", loopsProp.tooltip));
 
             using (new EditorGUI.DisabledGroupScope(loopsProp.intValue != 0))
             {
                 pos.x += pos.width;
                 using (new AFStyles.EditorLabelWidth(80))
-                    EditorGUI.PropertyField(pos.PadX(5), loopDelayProp, new GUIContent("Loop-Delay", loopDelayProp.tooltip));
+                    EditorGUI.PropertyField(pos, loopDelayProp, new GUIContent("Loop-Delay", loopDelayProp.tooltip));
             }
 
 
             pos.x += pos.width;
             pos.width = 80;
             loopsProp.intValue = Mathf.Max(loopsProp.intValue, -1);
-            if (GUI.Button(pos, new GUIContent(loopsProp.intValue < 0 ? "Infinite" : "Finite",
-                        "Infinite loop means the tween will never end " +
-                        ", while in Finite loop, you can specify a limited number of times to repeat the tween"),
-                    AFStyles.YellowButton))
+            
+            if(AFStyles.DrawBooleanEnum(pos, "Infinite", "Finite", 
+                   loopsProp.intValue < 0, 
+                   "Infinite loop means the tween will never end " +
+                   ", while in Finite loop, you can specify a limited number of times to repeat the tween", out var result))
             {
-                if (loopsProp.intValue < 0) loopsProp.intValue = loopsProp.intValue = 0;
+                if (result == false) loopsProp.intValue = 0;
                 else loopsProp.intValue = -1;
             }
         }
 
-        protected float DrawTiming_Height() => AFStyles.Height;
+        protected virtual float DrawTiming_Height() => AFStyles.Height;
         protected virtual void DrawTiming(Rect position)
         {
             var durationProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.duration));
@@ -158,22 +160,18 @@ namespace AnimFlex.Editor.Tweener
             pos.width = (position.width - 80) / 2;
             
             using (new AFStyles.EditorLabelWidth(80))
-                EditorGUI.PropertyField(pos.PadX(5), durationProp, new GUIContent("Duration :", durationProp.tooltip));
+                EditorGUI.PropertyField(pos, durationProp, new GUIContent("Duration :", durationProp.tooltip));
 
             pos.x += pos.width;
             using (new AFStyles.EditorLabelWidth(80))
-                EditorGUI.PropertyField(pos.PadX(5), delayProp, new GUIContent("Delay :", delayProp.tooltip));
+                EditorGUI.PropertyField(pos, delayProp, new GUIContent("Delay :", delayProp.tooltip));
 
             pos.x += pos.width;
             pos.width = 80;
-            if (GUI.Button(pos, new GUIContent(pingPongProp.boolValue ? "Ping-Pong" : "Straight", pingPongProp.tooltip),
-                    AFStyles.YellowButton))
-            {
-                pingPongProp.boolValue = !pingPongProp.boolValue;
-            }
+            AFStyles.DrawBooleanEnum(pos, "Ping-Pong", "Straight", pingPongProp);
         }
 
-        protected float DrawCurve_Height() => AFStyles.Height;
+        protected virtual float DrawCurve_Height() => AFStyles.Height;
         protected virtual void DrawCurve(Rect position)
         {
             var easeProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.ease));
@@ -188,14 +186,14 @@ namespace AnimFlex.Editor.Tweener
             using (new AFStyles.EditorLabelWidth(80))
                 if (useCustom.boolValue)
                 {
-                    EditorGUI.PropertyField(pos.PadX(5), customCurve, new GUIContent("Ease :", easeProp.tooltip));
+                    EditorGUI.PropertyField(pos, customCurve, new GUIContent("Ease :", easeProp.tooltip));
                 }
                 else
                 {
                     var ease = (Ease)easeProp.enumValueIndex;
                     using (var check = new EditorGUI.ChangeCheckScope())
                     {
-                        ease = (Ease)EditorGUI.EnumPopup(pos.PadX(5),
+                        ease = (Ease)EditorGUI.EnumPopup(pos,
                             new GUIContent("Ease :", easeProp.tooltip), ease,
                             AFStyles.Popup);
                         if (check.changed)
@@ -205,15 +203,11 @@ namespace AnimFlex.Editor.Tweener
 
             pos.x += pos.width;
             pos.width = 80;
-            if (GUI.Button(pos, new GUIContent(useCustom.boolValue ? "Custom" : "Built-in", useCustom.tooltip),
-                    AFStyles.YellowButton))
-            {
-                useCustom.boolValue = !useCustom.boolValue;
-            }
+            AFStyles.DrawBooleanEnum(pos, "Custom", "Built-in", useCustom);
 
         }
 
-        protected float DrawValue_Height()
+        protected virtual float DrawValue_Height()
         {
             var targetProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.target));
             return EditorGUI.GetPropertyHeight(targetProp);
@@ -229,31 +223,25 @@ namespace AnimFlex.Editor.Tweener
             pos.height = AFStyles.Height;
 
             pos.width = 80;
-            if (GUI.Button(pos, new GUIContent(fromProp.boolValue ? "From" : "To", fromProp.tooltip),
-                    AFStyles.YellowButton))
-            {
-                fromProp.boolValue = !fromProp.boolValue;
-            }
+            AFStyles.DrawBooleanEnum(pos, "From", "To", fromProp);
 
             pos.x += pos.width;
             pos.width = position.width - 80 - 80;
-            EditorGUI.PropertyField(pos.PadX(5), targetProp, GUIContent.none);
+            EditorGUI.PropertyField(pos, targetProp, GUIContent.none);
             height += EditorGUI.GetPropertyHeight(targetProp);
 
             pos.x += pos.width;
             pos.width = 80;
-            if (GUI.Button(pos, new GUIContent(relativeProp.boolValue ? "Relative" : "Absolute", relativeProp.tooltip),
-                    AFStyles.YellowButton))
-            {
-                relativeProp.boolValue = !relativeProp.boolValue;
-            }
+            AFStyles.DrawBooleanEnum(pos, "Relative", "Absolute", relativeProp);
         }
 
         protected virtual float DrawFrom_Height()
         {
             var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
             var height = Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(fromProp));
-            if (fromProp.objectReferenceValue == null) height += AFStyles.Height + AFStyles.VerticalSpace;
+            
+            if(fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null)
+                height += AFStyles.Height + AFStyles.VerticalSpace;
             return height;
         }
         protected virtual void DrawFrom(Rect position)
@@ -264,7 +252,7 @@ namespace AnimFlex.Editor.Tweener
             
             pos.width = position.width - 80;
             using (new AFStyles.EditorLabelWidth(80))
-                EditorGUI.PropertyField(pos.PadX(5), fromProp, new GUIContent("For :", fromProp.tooltip));
+                EditorGUI.PropertyField(pos, fromProp, new GUIContent("For :", fromProp.tooltip));
 
             pos.x += pos.width;
             pos.width = 80;
@@ -278,10 +266,10 @@ namespace AnimFlex.Editor.Tweener
             }
 
             // null warning
-            if (fromProp.objectReferenceValue == null)
+            if (fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null)
             {
                 pos.x = position.x;
-                pos.y += AFStyles.Height + AFStyles.VerticalSpace;
+                pos.y += EditorGUI.GetPropertyHeight(fromProp) + AFStyles.VerticalSpace;
                 pos.width = position.width;
                 pos.height = AFStyles.BigHeight;
                 AFStyles.DrawHelpBox(pos, "The \"From\" reference is empty!", MessageType.Warning);
@@ -293,7 +281,7 @@ namespace AnimFlex.Editor.Tweener
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             this.property = property;
-            float height = AFStyles.Height;
+            float height = AFStyles.Height + AFStyles.VerticalSpace;
 
             height += DrawPlayback_Height() + AFStyles.VerticalSpace;
             height += DrawFrom_Height() + AFStyles.VerticalSpace;

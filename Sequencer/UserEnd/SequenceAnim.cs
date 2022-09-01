@@ -1,4 +1,5 @@
 ﻿using System;
+using AnimFlex.Tweener;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer.UserEnd

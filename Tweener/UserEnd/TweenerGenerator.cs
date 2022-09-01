@@ -125,4 +125,60 @@ namespace AnimFlex.Tweener
         internal override Type GetFromValueType() => typeof(TFrom);
         internal override Type GetToValueType() => typeof(TTo);
     }
+    
+    // empty class for easier inspector coding :(
+    public abstract class MultiTweenerGenerator : TweenerGenerator { }
+    
+    public abstract class MultiTweenerGenerator<TFrom, TTo> : MultiTweenerGenerator where TFrom : Component
+    {
+        [Tooltip("The objects which this tween applies to")]
+        public TFrom[] fromObject;
+        public TTo target;
+        [Tooltip("The delay between each tween")]
+        public float multiDelay;
+
+        protected abstract Tweener GenerateTween(TFrom fromObject, AnimationCurve curve, float delay);
+
+        /// <summary>
+        /// returns the last generated tweener
+        /// </summary>
+        internal override bool TryGenerateTween(out Tweener tweener)
+        {
+            tweener = null;
+            
+            if (fromObject == null)
+            {
+                Debug.LogError($"fromObject was null. The tween generation is impossible.");
+                return false;
+            }
+
+            AnimationCurve curve = useCurve ? customCurve : null;
+
+            for (int i = 0; i < fromObject.Length; i++)
+            {
+                tweener = GenerateTween(fromObject[i], curve, delay + multiDelay * i);
+                tweener.@from = @from;
+                tweener.loops = loops;
+                tweener.loopDelay = loopDelay;
+                tweener.pingPong = pingPong;
+            }
+            
+
+            // add Unity events
+            tweener.onStart += onStart.Invoke;
+            tweener.onComplete += () => onComplete.Invoke();
+            tweener.onKill += onKill.Invoke;
+            tweener.onUpdate += onUpdate.Invoke;
+            
+            return true;
+        }
+
+        internal override void Reset(GameObject gameObject)
+        {
+            
+        }
+
+        internal override Type GetFromValueType() => typeof(TFrom);
+        internal override Type GetToValueType() => typeof(TTo);
+    }
 }
