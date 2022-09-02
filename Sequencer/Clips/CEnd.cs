@@ -2,7 +2,8 @@
 
 namespace AnimFlex.Sequencer.Clips
 {
-    [DisplayName("Misc/End")]
+    [DisplayName("End")]
+    [Category("Misc/End")]
     public class CEnd : Clip
     {
         protected override void OnStart()

@@ -55,22 +55,24 @@ namespace AnimFlex.Editor.Sequencer
         {
             var linePos = new Rect(position);
             linePos.y += AFStyles.VerticalSpace;
-            // linePos.x += 20;
+            linePos.x += 10;
             linePos.width = 10;
             linePos.height = AFStyles.BigHeight;
             
             property.isExpanded = EditorGUI.Foldout(linePos, property.isExpanded, "");
 
             linePos.x += linePos.width;
-            linePos.width = position.width - 30 - 10 - 40 - 60 - 10 - 170;
+            float width = position.width - 30 - 10 - 40 - 60 - 10 - 170 + 185;
+
+            linePos.width = width * 0.3f;
             using (new AFStyles.GuiBackgroundColor(Color.clear))
                 _nameProp.stringValue = EditorGUI.TextField(linePos, _nameProp.stringValue, AFStyles.BigTextField);
             
             // display clip type
             var type = AFEditorUtils.FindType(_clipProp.GetValue().GetType().FullName);
             linePos.x += linePos.width;
-            linePos.width = 185;
-            if (GUI.Button(linePos, AFEditorUtils.GetTypeName(type), AFStyles.Popup))
+            linePos.width = width * 0.7f;
+            if (GUI.Button(linePos, AFEditorUtils.GetTypeName(type, false), AFStyles.Popup))
             {
                 SerializedProperty prop = property; // to hold on to the property for the callback
                 AFEditorUtils.CreateTypeInstanceFromHierarchy<Clip>((clip) =>

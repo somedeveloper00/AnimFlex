@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace AnimFlex.Sequencer.Clips
 {
-    [DisplayName("Branch/Go to")]
+    [DisplayName("Go to")]
+    [Category("Branch/Go to")]
     public class CGoto : Clip
     {
         [Tooltip("The node index to play after this node")]

@@ -195,24 +195,43 @@ namespace AnimFlex.Tweener
     // empty class for easier inspector
     internal abstract class AFSelection
     {
-        public enum SelectionType { Direct, GetChildren, Ignore }
+        public enum SelectionType { Direct, GetChildren, GetAllChildren, Ignore }
 
+        public Transform transform;
+        
+        [Tooltip("The type of selection.\n" +
+                 "**Direct** : The object is directly added to the list of objects to tween.\n\n" +
+                 "**Get Children** : The 1st row children of this object will be added to the list of objects to tween.\n\n" +
+                 "**Get All Children** : All the children of this object will be added to the list of objects to tween.\n\n" +
+                 "**Ignore** : These objects will be ignored from this MultiTweener.\n\n" +
+                 "+ advanced: The phase they'll be respected is Direct, GetChildren and lastly Ignore. And there'll be no repeated " +
+                 "objects in the final list.")]
+        public SelectionType type = SelectionType.Direct;
 
+        public abstract Type GetValueType();
+        
         public static TFrom[] GetSelectedObjects<TFrom>(AFSelection<TFrom>[] selections) where TFrom : Component
         {
             var r = new HashSet<TFrom>();
             for (var i = 0; i < selections.Length; i++)
             {
                 if (selections[i].type == SelectionType.Direct)
-                    r.Add(selections[i].objectRef);
+                    r.Add(selections[i].transform.GetComponent<TFrom>());
             }
             for (var i = 0; i < selections.Length; i++)
             {
                 if (selections[i].type == SelectionType.GetChildren)
                 {
-                    for (int childIndex = 0; childIndex < selections[i].objectRef.transform.childCount; childIndex++)
+                    for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++)
                     {
-                        r.Add(selections[i].objectRef.transform.GetChild(childIndex).GetComponent<TFrom>());
+                        r.Add(selections[i].transform.GetChild(childIndex).GetComponent<TFrom>());
+                    }
+                }
+                else if (selections[i].type == SelectionType.GetAllChildren)
+                {
+                    foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
+                    {
+                        r.Add(obj);
                     }
                 }
             }
@@ -220,7 +239,7 @@ namespace AnimFlex.Tweener
             for (var i = 0; i < selections.Length; i++)
             {
                 if (selections[i].type == SelectionType.Ignore)
-                    r.Remove(selections[i].objectRef);
+                    r.Remove(selections[i].transform.GetComponent<TFrom>());
             }
 
             return r.ToArray();
@@ -230,20 +249,6 @@ namespace AnimFlex.Tweener
     [Serializable]
     internal class AFSelection<TFrom> : AFSelection where TFrom : Component
     {
-        public TFrom objectRef;
-        
-        [Tooltip("The type of selection.\n" +
-                 "**Direct** : the object is directly added to the list of objects to tween.\n\n" +
-                 "**Get Children** : the children of this object will be added to the list of objects to tween.\n\n" +
-                 "**Ignore** : these objects will be ignored from this MultiTweener.\n\n" +
-                 "+ advanced: the phase they'll be respected is Direct, GetChildren and lastly Ignore. And there'll be no repeated " +
-                 "objects in the final list.")]
-        public SelectionType type = SelectionType.Direct;
+        public override Type GetValueType() => typeof(TFrom);
     }
-
-#if UNITY_EDITOR
-    // a sample sub-class for easier inspector naming (otherwise, property names would have to be hardcodedly copy-pasted)
-    internal sealed class SampleAFSelection : AFSelection<Transform> { }
-#endif
-
 }

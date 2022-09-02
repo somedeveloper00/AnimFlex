@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace AnimFlex.Sequencer.UserEnd
 {
+    [AddComponentMenu("AnimFlex/Sequencer")]
     public class SequenceAnim : MonoBehaviour
     {
         [SerializeField] private bool playOnStart = true;

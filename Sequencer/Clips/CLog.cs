@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel;
+using UnityEngine;
 
 namespace AnimFlex.Sequencer.Clips
 {
-    [System.ComponentModel.DisplayName("Log")]
+    [DisplayName("Log")]
+    [Category("Log")]
     public class CLog : Clip
     {
         public string message;

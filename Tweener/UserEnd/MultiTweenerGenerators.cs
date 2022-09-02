@@ -23,7 +23,7 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
             var toPos = target;
-            if (relative) toPos += fromObject.position;
+            if (relative) toPos += fromObject.localPosition;
             return fromObject.AnimLocalPositionTo(toPos, ease, duration, delay, curve);
         }
     }

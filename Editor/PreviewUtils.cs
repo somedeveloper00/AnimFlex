@@ -54,7 +54,10 @@ namespace AnimFlex.Editor
             }
             
             // save all changes
-            if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return;
+            while (EditorSceneManager.GetActiveScene().isDirty)
+            {
+                if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return;
+            }
             
             // keep track of selection
             if (Selection.activeGameObject != null)

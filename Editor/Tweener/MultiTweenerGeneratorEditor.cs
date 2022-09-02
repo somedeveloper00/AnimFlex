@@ -22,10 +22,16 @@ namespace AnimFlex.Editor.Tweener
             var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
             
             var pos = new Rect(position);
-            
-            // pos.width = position.width - 80;
-            // using (new AFStyles.EditorLabelWidth(80))
+
+            using (var check = new EditorGUI.ChangeCheckScope())
+            {
                 EditorGUI.PropertyField(pos, selectionsProp, new GUIContent("Select :", selectionsProp.tooltip));
+                if (check.changed)
+                {
+                    property.serializedObject.ApplyModifiedProperties();
+                    property.serializedObject.Update();
+                }
+            }
 
             // null warning
             if (selectionsProp.isArray && selectionsProp.arraySize == 0 || !selectionsProp.isArray && selectionsProp.objectReferenceValue == null)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AnimFlex.Tweener;
 using UnityEditor;
 using UnityEngine;
@@ -13,41 +12,84 @@ namespace AnimFlex.Editor.Tweener
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            var objectRefProp = property.FindPropertyRelative(nameof(SampleAFSelection.objectRef));
-            var typeProp = property.FindPropertyRelative(nameof(SampleAFSelection.type));
-
-            position.height = AFStyles.Height;
-            position.width -= 90;
-            EditorGUI.PropertyField(position, objectRefProp, GUIContent.none);
+            var objectRefProp = property.FindPropertyRelative(nameof(AFSelection.transform));
+            var typeProp = property.FindPropertyRelative(nameof(AFSelection.type));
             
-            position.x += position.width;
-            position.width = 90;
-
+            var pos = new Rect(position);
+            
+            pos.height = AFStyles.Height;
+            pos.width -= 120;
+            EditorGUI.PropertyField(pos, objectRefProp, GUIContent.none);
+            
+            pos.x += pos.width;
+            pos.width = 120;
+            
+            if(typeProp.enumValueIndex is < 0 or >= 3)
+                typeProp.enumValueIndex = 0;
+            var type = (AFSelection.SelectionType)typeProp.enumValueIndex;
+            
             using (var check = new EditorGUI.ChangeCheckScope())
             {
-                if(typeProp.enumValueIndex is < 0 or >= 3)
-                    typeProp.enumValueIndex = 0;
-                var type = (AFSelection.SelectionType)typeProp.enumValueIndex;
                 using (new AFStyles.EditorLabelWidth(1))
                 {
                     type = (AFSelection.SelectionType)EditorGUI.Popup(
-                        position,
+                        pos,
                         typeProp.enumValueIndex,
                         typeProp.enumDisplayNames
                             .Select(label => new GUIContent(label, typeProp.tooltip)).ToArray(),
                         AFStyles.Popup);
                 }
-
+            
                 if (check.changed)
                     typeProp.enumValueIndex = (int)type;
             }
-
+            
+            // error check
+            pos.x = position.x;
+            pos.width = position.width;
+            pos.y += AFStyles.Height + AFStyles.VerticalSpace;
+            
+            if (property.GetValue() is AFSelection target)
+            {
+                var targetType = target.GetValueType();
+                
+                if (objectRefProp.objectReferenceValue == null)
+                {
+                    AFStyles.DrawHelpBox(pos, "Reference field is empty", MessageType.Warning);
+                }
+                else if (type == AFSelection.SelectionType.Direct && objectRefProp.objectReferenceValue.GetType() != targetType)
+                {
+                    AFStyles.DrawHelpBox(pos, "Reference type is not correct!", MessageType.Error);
+                }
+            }
+            
             EditorGUI.EndProperty();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return AFStyles.Height + AFStyles.VerticalSpace;
+            var height = AFStyles.Height + AFStyles.VerticalSpace;
+               
+            var objectRefProp = property.FindPropertyRelative(nameof(AFSelection.transform));
+            var typeProp = property.FindPropertyRelative(nameof(AFSelection.type));
+
+            if (property.GetValue() is AFSelection target)
+            {
+                var targetType = target.GetValueType();
+                var type = (AFSelection.SelectionType)typeProp.enumValueIndex;
+
+                if (objectRefProp.objectReferenceValue == null)
+                {
+                    height += AFStyles.Height + AFStyles.VerticalSpace;
+                }
+                else if (type == AFSelection.SelectionType.Direct &&
+                         objectRefProp.objectReferenceValue.GetType() != targetType)
+                {
+                    height += AFStyles.Height + AFStyles.VerticalSpace;
+                }
+            }
+
+            return height;
         }
     }
 }
