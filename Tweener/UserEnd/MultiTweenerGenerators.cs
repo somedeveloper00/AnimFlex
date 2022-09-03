@@ -7,7 +7,7 @@ namespace AnimFlex.Tweener
     #region Transform
 
     [Serializable]
-    public class MultiTweenerGeneratorPosition : MultiTweenerGenerator<Transform, Vector3>
+    internal class MultiTweenerGeneratorPosition : MultiTweenerGenerator<Transform, Vector3>
     {
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
@@ -18,18 +18,18 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorLocalPosition : MultiTweenerGenerator<Transform, Vector3>
+    internal class MultiTweenerGeneratorLocalPosition : MultiTweenerGenerator<Transform, Vector3>
     {
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
             var toPos = target;
-            if (relative) toPos += fromObject.position;
+            if (relative) toPos += fromObject.localPosition;
             return fromObject.AnimLocalPositionTo(toPos, ease, duration, delay, curve);
         }
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorRotation : MultiTweenerGenerator<Transform, Vector3>
+    internal class MultiTweenerGeneratorRotation : MultiTweenerGenerator<Transform, Vector3>
     {
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
@@ -48,7 +48,7 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorLocalRotation : MultiTweenerGenerator<Transform, Vector3>
+    internal class MultiTweenerGeneratorLocalRotation : MultiTweenerGenerator<Transform, Vector3>
     {
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
@@ -67,7 +67,7 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorTransform : MultiTweenerGenerator<Transform, Transform>
+    internal class MultiTweenerGeneratorTransform : MultiTweenerGenerator<Transform, Transform>
     {
         public bool position, rotation;
 
@@ -102,7 +102,7 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorScale : MultiTweenerGenerator<Transform, Vector3>
+    internal class MultiTweenerGeneratorScale : MultiTweenerGenerator<Transform, Vector3>
     {
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
@@ -117,7 +117,7 @@ namespace AnimFlex.Tweener
     #region Fade
 
     [Serializable]
-    public class MultiTweenerGeneratorFadeGraphic : MultiTweenerGenerator<Graphic, float>
+    internal class MultiTweenerGeneratorFadeGraphic : MultiTweenerGenerator<Graphic, float>
     {
         protected override Tweener GenerateTween(Graphic fromObject, AnimationCurve curve, float delay)
         {
@@ -128,7 +128,7 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorFadeRenderer : MultiTweenerGenerator<Renderer, float>
+    internal class MultiTweenerGeneratorFadeRenderer : MultiTweenerGenerator<Renderer, float>
     {
         protected override Tweener GenerateTween(Renderer fromObject, AnimationCurve curve, float delay)
         {
@@ -139,7 +139,7 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorFadeCanvasGroup : MultiTweenerGenerator<CanvasGroup, float>
+    internal class MultiTweenerGeneratorFadeCanvasGroup : MultiTweenerGenerator<CanvasGroup, float>
     {
         protected override Tweener GenerateTween(CanvasGroup fromObject, AnimationCurve curve, float delay)
         {
@@ -154,7 +154,7 @@ namespace AnimFlex.Tweener
     #region Color
 
     [Serializable]
-    public class MultiTweenerGeneratorColorGraphic : MultiTweenerGenerator<Graphic, Color>
+    internal class MultiTweenerGeneratorColorGraphic : MultiTweenerGenerator<Graphic, Color>
     {
         protected override Tweener GenerateTween(Graphic fromObject, AnimationCurve curve, float delay)
         {
@@ -165,7 +165,7 @@ namespace AnimFlex.Tweener
     }
 
     [Serializable]
-    public class MultiTweenerGeneratorColorRenderer : MultiTweenerGenerator<Renderer, Color>
+    internal class MultiTweenerGeneratorColorRenderer : MultiTweenerGenerator<Renderer, Color>
     {
         protected override Tweener GenerateTween(Renderer fromObject, AnimationCurve curve, float delay)
         {

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using AnimFlex.Sequencer;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Component = UnityEngine.Component;
 
 namespace AnimFlex.Editor
@@ -43,8 +46,13 @@ namespace AnimFlex.Editor
         /// Gets value from SerializedProperty, even if it's nested
         /// thanks to vedram : https://forum.unity.com/threads/get-a-general-object-value-from-serializedproperty.327098/#post-4098484
         /// </summary>
-        public static object GetValue(this SerializedProperty property)
+        public static object GetValue(this SerializedProperty property, bool syncData = false)
         {
+            if (syncData == false)
+            {
+                property.serializedObject.ApplyModifiedProperties();
+                property.serializedObject.Update();
+            }
             object obj = property.serializedObject.targetObject;
 
             var split = property.propertyPath.Split('.');
@@ -89,16 +97,25 @@ namespace AnimFlex.Editor
         }
 
         /// <summary>
-        /// gets the type name based on the given Type
+        /// gets the type name based on the given Type.
+        /// if categoryName is true, it'll return the Category attribute name, otherwise it'll return the DisplayName attribute name
         /// </summary>
-        public static string GetTypeName(Type type, bool groupsRemoved = false)
+        public static string GetTypeName(Type type, bool categoryName = true)
         {
-            return type.GetCustomAttributes(typeof(DisplayNameAttribute), true)
+            if (categoryName)
+            {
+                return type.GetCustomAttributes(typeof(CategoryAttribute), true)
+                    .FirstOrDefault() is CategoryAttribute displayNameAttr
+                    ? displayNameAttr.Category
+                    : type.Name;
+            }
+            else
+            {
+                return type.GetCustomAttributes(typeof(DisplayNameAttribute), true)
                     .FirstOrDefault() is DisplayNameAttribute displayNameAttr
-                ? groupsRemoved 
-                    ? displayNameAttr.DisplayName.Substring(Mathf.Max(0, 1 + displayNameAttr.DisplayName.LastIndexOf("/")))
-                    : displayNameAttr.DisplayName
-                : type.Name;
+                    ? displayNameAttr.DisplayName
+                    : type.Name;
+            }
         }
 
         /// <summary>
@@ -142,7 +159,7 @@ namespace AnimFlex.Editor
 
             var menu = new GenericMenu();
             foreach (var type in classTypes)
-                menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(GetTypeName(type, false))),
+                menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(GetTypeName(type))),
                     false, () =>
                     {
                         var val = Activator.CreateInstance(type);
@@ -208,5 +225,29 @@ namespace AnimFlex.Editor
             }
         }
 
+        /// <summary>
+        /// taken from Unity Internal EditModeLauncher file
+        /// </summary>
+        public static void ReloadUnsavedDirtyScene()
+        {
+            EditorApplication.delayCall += () =>
+            {
+                var ReloadScene = typeof(EditorSceneManager).GetMethod("ReloadScene",
+                    BindingFlags.Default | BindingFlags.Static | BindingFlags.NonPublic);
+
+
+                for (var i = 0; i < SceneManager.sceneCount; i++)
+                {
+                    var scene = SceneManager.GetSceneAt(i);
+                    var isSceneNotPersisted = string.IsNullOrEmpty(scene.path);
+                    var isSceneDirty = scene.isDirty;
+                    if (!isSceneNotPersisted && isSceneDirty)
+                    {
+                        Debug.Log($"reloading scene {scene.name}");
+                        ReloadScene.Invoke(null, new object[] { scene });
+                    }
+                }
+            };
+        }
     }
 }

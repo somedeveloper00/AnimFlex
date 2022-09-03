@@ -303,13 +303,9 @@ namespace AnimFlex.Editor
 
         public static void DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, SerializedProperty property)
         {
-            // var options = new GUIContent[]
-            // {
-            //     new(optionTrue, property.tooltip), new(optionFalse, property.tooltip)
-            // };
-            var options = new []
+            var options = new GUIContent[]
             {
-                optionTrue, optionFalse
+                new(optionTrue, property.tooltip), new(optionFalse, property.tooltip)
             };
 
             using (new AFStyles.EditorLabelWidth(0))

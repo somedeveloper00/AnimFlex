@@ -34,9 +34,10 @@ namespace AnimFlex.Editor.Sequencer
 
             EditorGUILayout.PropertyField(_playOnStartProp);
 
+            DrawPlayback();
+            GUILayout.Space(10);
             DrawClipNodes();
             DrawAddButton();
-            DrawPlayback();
 
             serializedObject.ApplyModifiedProperties();
             
@@ -53,7 +54,7 @@ namespace AnimFlex.Editor.Sequencer
                 using (new AFStyles.GuiForceActive())
                 {
                     if (GUILayout.Button(
-                            text: PreviewUtils.isActive ? "Stop" : "Play", style: AFStyles.BigButton, 
+                            text: PreviewUtils.isActive ? "Stop" : "Play Sequence", style: AFStyles.BigButton, 
                             GUILayout.Height(height: AFStyles.BigHeight), GUILayout.Width(200)))
                     {
                         if (PreviewUtils.isActive)

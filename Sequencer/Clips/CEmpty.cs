@@ -2,7 +2,8 @@
 
 namespace AnimFlex.Sequencer.Clips
 {
-    [DisplayName("Misc/Empty")]
+    [DisplayName("Empty")]
+    [Category("Misc/Empty")]
     public class CEmpty : Clip
     {
         protected override void OnStart()

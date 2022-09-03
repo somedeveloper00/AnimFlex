@@ -23,7 +23,7 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(AnimationCurve curve)
         {
             var toPos = target;
-            if (relative) toPos += fromObject.position;
+            if (relative) toPos += fromObject.localPosition;
             return fromObject.AnimLocalPositionTo(toPos, ease, duration, delay, curve);
         }
     }
@@ -107,7 +107,13 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(AnimationCurve curve)
         {
             Vector3 toScl = target;
-            if (relative) toScl += fromObject.localScale;
+            if (relative)
+            {
+                var localScale = fromObject.localScale;
+                toScl.x *= localScale.x;
+                toScl.y *= localScale.y;
+                toScl.z *= localScale.z;
+            }
             return fromObject.AnimScaleTo(toScl, ease, duration, delay, curve);
         }
     }

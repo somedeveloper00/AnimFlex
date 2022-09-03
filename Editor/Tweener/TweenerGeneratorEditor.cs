@@ -55,12 +55,12 @@ namespace AnimFlex.Editor.Tweener
         protected virtual void DrawPlayback(Rect position)
         {
             var pos = new Rect(position);
-            pos.width = 80;
+            pos.width = 100;
             pos.x += (position.width - pos.width) / 2f;
 
             using (new AFStyles.GuiForceActive())
             {
-                if (GUI.Button(pos,  PreviewUtils.isActive ? "Stop" : "Play"))
+                if (GUI.Button(pos,  PreviewUtils.isActive ? "Stop" : "Play Tweener", AFStyles.Button))
                 {
                     if(PreviewUtils.isActive)
                         PreviewUtils.StopPreviewMode();
@@ -126,7 +126,7 @@ namespace AnimFlex.Editor.Tweener
             using (new AFStyles.EditorLabelWidth(80))
                 EditorGUI.PropertyField(pos, loopsProp, new GUIContent("Loop :", loopsProp.tooltip));
 
-            using (new EditorGUI.DisabledGroupScope(loopsProp.intValue != 0))
+            using (new EditorGUI.DisabledGroupScope(loopsProp.intValue == 0))
             {
                 pos.x += pos.width;
                 using (new AFStyles.EditorLabelWidth(80))

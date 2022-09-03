@@ -7,21 +7,37 @@ namespace AnimFlex.Editor.Tweener
     [CustomPropertyDrawer(typeof(MultiTweenerGenerator), true)]
     public class MultiTweenerGeneratorEditor : TweenerGeneratorEditor
     {
+        protected override float DrawFrom_Height()
+        {
+            var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
+            var height = Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(selectionsProp));
+            
+            if(selectionsProp.arraySize == 0)
+                height += AFStyles.Height + AFStyles.VerticalSpace;
+            return height;
+        }
+
         protected override void DrawFrom(Rect position)
         {
-            var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
+            var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
             
             var pos = new Rect(position);
-            
-            // pos.width = position.width - 80;
-            // using (new AFStyles.EditorLabelWidth(80))
-                EditorGUI.PropertyField(pos, fromProp, new GUIContent("For :", fromProp.tooltip));
+
+            using (var check = new EditorGUI.ChangeCheckScope())
+            {
+                EditorGUI.PropertyField(pos, selectionsProp, new GUIContent("Select :", selectionsProp.tooltip));
+                if (check.changed)
+                {
+                    property.serializedObject.ApplyModifiedProperties();
+                    property.serializedObject.Update();
+                }
+            }
 
             // null warning
-            if (fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null)
+            if (selectionsProp.isArray && selectionsProp.arraySize == 0 || !selectionsProp.isArray && selectionsProp.objectReferenceValue == null)
             {
                 pos.x = position.x;
-                pos.y += EditorGUI.GetPropertyHeight(fromProp) + AFStyles.VerticalSpace;
+                pos.y += EditorGUI.GetPropertyHeight(selectionsProp) + AFStyles.VerticalSpace;
                 pos.width = position.width;
                 pos.height = AFStyles.BigHeight;
                 AFStyles.DrawHelpBox(pos, "The \"From\" reference is empty!", MessageType.Warning);

@@ -3,26 +3,37 @@ using AnimFlex.Tweener;
 
 namespace AnimFlex.Sequencer.Clips
 {
-    [DisplayName("Tweener/Multi/Transform/Position")]
-    public class CMultiTweenerPosition : CTweener<MultiTweenerGeneratorPosition> { }
-    [DisplayName("Tweener/Multi/Transform/LocalPosition")]
-    public class CMultiTweenerLocalPosition : CTweener<MultiTweenerGeneratorLocalPosition> { }
-    [DisplayName("Tweener/Multi/Transform/Rotation")]
-    public class CMultiTweenerRotation : CTweener<MultiTweenerGeneratorRotation> { }
-    [DisplayName("Tweener/Multi/Transform/LocalRotation")]
-    public class CMultiTweenerLocalRotation : CTweener<MultiTweenerGeneratorLocalRotation> { }
-    [DisplayName("Tweener/Multi/Transform/Scale")]
-    public class CMultiTweenerScale : CTweener<MultiTweenerGeneratorScale> { }
-    [DisplayName("Tweener/Multi/Transform/Transform")]
-    public class CMultiTweenerTransform : CTweener<MultiTweenerGeneratorTransform> { }
-    [DisplayName("Tweener/Multi/Fade/Graphic")]
-    public class CMultiTweenerFadeGraphic : CTweener<MultiTweenerGeneratorFadeGraphic> { }
-    [DisplayName("Tweener/Multi/Fade/Renderer")]
-    public class CMultiTweenerFadeRenderer : CTweener<MultiTweenerGeneratorFadeRenderer> { }
-    [DisplayName("Tweener/Multi/Fade/CanvasGroup")]
-    public class CMultiTweenerFadeCanvasGroup : CTweener<MultiTweenerGeneratorFadeCanvasGroup> { }
-    [DisplayName("Tweener/Multi/Color/Graphic")]
-    public class CMultiTweenerColorGraphic : CTweener<MultiTweenerGeneratorColorGraphic> { }
-    [DisplayName("Tweener/Multi/Color/Renderer")]
-    public class CMultiTweenerColorRenderer : CTweener<MultiTweenerGeneratorColorRenderer> { }
+    [DisplayName("Multi Tweener Position")]
+    [Category("Tweener/Multi/Transform/Position")]
+    internal class CMultiTweenerPosition : CTweener<MultiTweenerGeneratorPosition> { }
+    [DisplayName("Multi Tweener LocalPosition")]
+    [Category("Tweener/Multi/Transform/LocalPosition")]
+    internal class CMultiTweenerLocalPosition : CTweener<MultiTweenerGeneratorLocalPosition> { }
+    [DisplayName("Multi Tweener Rotation")]
+    [Category("Tweener/Multi/Transform/Rotation")]
+    internal class CMultiTweenerRotation : CTweener<MultiTweenerGeneratorRotation> { }
+    [DisplayName("Multi Tweener LocalRotation")]
+    [Category("Tweener/Multi/Transform/LocalRotation")]
+    internal class CMultiTweenerLocalRotation : CTweener<MultiTweenerGeneratorLocalRotation> { }
+    [DisplayName("Multi Tweener Scale")]
+    [Category("Tweener/Multi/Transform/Scale")]
+    internal class CMultiTweenerScale : CTweener<MultiTweenerGeneratorScale> { }
+    [DisplayName("Multi Tweener Transform")]
+    [Category("Tweener/Multi/Transform/Transform")]
+    internal class CMultiTweenerTransform : CTweener<MultiTweenerGeneratorTransform> { }
+    [DisplayName("Multi Tweener Fade (Graphic)")]
+    [Category("Tweener/Multi/Fade/Graphic")]
+    internal class CMultiTweenerFadeGraphic : CTweener<MultiTweenerGeneratorFadeGraphic> { }
+    [DisplayName("Multi Tweener Fade (Renderer)")]
+    [Category("Tweener/Multi/Fade/Renderer")]
+    internal class CMultiTweenerFadeRenderer : CTweener<MultiTweenerGeneratorFadeRenderer> { }
+    [DisplayName("Multi Tweener Fade (CanvasGroup)")]
+    [Category("Tweener/Multi/Fade/CanvasGroup")]
+    internal class CMultiTweenerFadeCanvasGroup : CTweener<MultiTweenerGeneratorFadeCanvasGroup> { }
+    [DisplayName("Multi Tweener Color (Graphic)")]
+    [Category("Tweener/Multi/Color/Graphic")]
+    internal class CMultiTweenerColorGraphic : CTweener<MultiTweenerGeneratorColorGraphic> { }
+    [DisplayName("Multi Tweener Color (Renderer)")]
+    [Category("Tweener/Multi/Color/Renderer")]
+    internal class CMultiTweenerColorRenderer : CTweener<MultiTweenerGeneratorColorRenderer> { }
 }

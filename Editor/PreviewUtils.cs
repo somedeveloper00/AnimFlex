@@ -46,9 +46,18 @@ namespace AnimFlex.Editor
                 StopPreviewMode();
                 Debug.LogWarning($"Preview already in progress: automatically stopped the previous one.");
             }
+
+            if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+            {
+                Debug.LogError($"Previewing AnimFlex in prefab mode is not supported. Your other choice is to create an empty sample scene for previewing your assets.");
+                return;
+            }
             
             // save all changes
-            if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return;
+            while (EditorSceneManager.GetActiveScene().isDirty)
+            {
+                if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return;
+            }
             
             // keep track of selection
             if (Selection.activeGameObject != null)
@@ -76,15 +85,20 @@ namespace AnimFlex.Editor
                 }
             };
             
-            
             // handling inspector editing
-            SceneView.duringSceneGui += OnSceneGUI;
             foreach (var component in Object.FindObjectsOfType<Component>())
             {
                 var flags = component.hideFlags;
-                onEnd += () => component.hideFlags = flags;
+                // onEnd += () => component.hideFlags = flags;
                 component.hideFlags |= HideFlags.NotEditable;
             }
+            
+            // marking all scenes dirty for later revertion
+            EditorSceneManager.MarkAllScenesDirty();
+
+            
+            // start scene view menu
+            SceneView.duringSceneGui += OnSceneGUI;
         }
 
         private static void EditorTick()
@@ -107,11 +121,11 @@ namespace AnimFlex.Editor
             
             // restore selection
             EditorSceneManager.sceneOpened += OnEditorSceneManagerOnsceneOpened; 
+            // close scene view menu
+            SceneView.duringSceneGui -= OnSceneGUI; 
             
             // discard new changes
-            EditorSceneManager.OpenScene(EditorSceneManager.GetActiveScene().path, OpenSceneMode.Single);
-
-            SceneView.duringSceneGui -= OnSceneGUI; 
+            AFEditorUtils.ReloadUnsavedDirtyScene();
             
             GC.Collect();
             isActive = false;
