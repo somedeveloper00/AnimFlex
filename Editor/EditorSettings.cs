@@ -52,9 +52,9 @@ namespace AnimFlex.Editor
         [SettingsProvider]
         private static SettingsProvider CreateSettingsProvider()
         {
-            var provider = new SettingsProvider("AnimFlex/General", SettingsScope.Project)
+            var provider = new SettingsProvider("AnimFlex/Editor", SettingsScope.Project)
             {
-                label = "General",
+                label = "AnimFlex Editor Settings",
                 guiHandler = searchContext =>
                 {
                     UnityEditor.Editor editor = null;
