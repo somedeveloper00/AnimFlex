@@ -6,10 +6,10 @@ using UnityEngine.Serialization;
 
 namespace AnimFlex.Editor
 {
-    public class StyleSettings : ScriptableObject
+    public class EditorSettings : ScriptableObject
     {
-        private static StyleSettings m_instance; 
-        public static StyleSettings Instance
+        private static EditorSettings m_instance;
+        public static EditorSettings Instance
         {
             get
             {
@@ -18,12 +18,12 @@ namespace AnimFlex.Editor
                     var path = AFEditorUtils.GetPathRelative("StyleSettings.asset");
                     if (!File.Exists(path))
                     {
-                        m_instance = CreateInstance<StyleSettings>();
+                        m_instance = CreateInstance<EditorSettings>();
                         m_instance.name = "StyleSettings";
                         AssetDatabase.CreateAsset(m_instance, path);
                         AssetDatabase.Refresh();
                     }
-                    m_instance = AssetDatabase.LoadAssetAtPath<StyleSettings>(path);
+                    m_instance = AssetDatabase.LoadAssetAtPath<EditorSettings>(path);
                 }
                 return m_instance;
             }
@@ -48,9 +48,9 @@ namespace AnimFlex.Editor
 
         // refresh
         private void OnValidate() => AFStyles.Refresh();
-        
+
         [SettingsProvider]
-        private static SettingsProvider CreateSettingsProvider() 
+        private static SettingsProvider CreateSettingsProvider()
         {
             var provider = new SettingsProvider("AnimFlex/General", SettingsScope.Project)
             {

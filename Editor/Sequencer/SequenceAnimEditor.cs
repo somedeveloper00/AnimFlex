@@ -41,7 +41,7 @@ namespace AnimFlex.Editor.Sequencer
 
             serializedObject.ApplyModifiedProperties();
 
-            if(StyleSettings.Instance.repaintEveryFrame)
+            if(EditorSettings.Instance.repaintEveryFrame)
                 Repaint();
         }
 
@@ -71,7 +71,7 @@ namespace AnimFlex.Editor.Sequencer
         private void DrawClipNodes()
         {
             using var _ = new AFStyles.GuiColor(AFStyles.BoxColor);
-            using (new AFStyles.GuiBackgroundColor(StyleSettings.Instance.backgroundBoxCol))
+            using (new AFStyles.GuiBackgroundColor(EditorSettings.Instance.backgroundBoxCol))
                 _nodeClipList.DoLayoutList();
         }
 
