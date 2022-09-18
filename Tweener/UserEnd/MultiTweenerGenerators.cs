@@ -107,7 +107,15 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
         {
             Vector3 toScl = target;
-            if (relative) toScl += fromObject.localScale;
+            if (relative)
+            {
+	            var localScale = fromObject.localScale;
+	            toScl = new Vector3(
+		            toScl.x * localScale.x,
+		            toScl.y * localScale.y,
+		            toScl.z * localScale.z);
+            }
+
             return fromObject.AnimScaleTo(toScl, ease, duration, delay, curve);
         }
     }

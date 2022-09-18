@@ -141,7 +141,7 @@ namespace AnimFlex.Tweener
         public TTo target;
 
         [Tooltip("The delay between each tween")]
-        public float multiDelay;
+        public float multiDelay = 0.2f;
 
         protected abstract Tweener GenerateTween(TFrom fromObject, AnimationCurve curve, float delay);
 
