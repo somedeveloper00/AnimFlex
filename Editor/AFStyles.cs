@@ -97,22 +97,22 @@ namespace AnimFlex.Editor
                 largeLabelStyle = new GUIStyle(EditorStyles.largeLabel);
                 popupStyle = new GUIStyle(EditorStyles.popup);
 
-                EditorStyles.label.font = EditorSettings.Instance.font;
-                EditorStyles.label.fontSize = EditorSettings.Instance.fontSize;
+                EditorStyles.label.font = AFEditorSettings.Instance.font;
+                EditorStyles.label.fontSize = AFEditorSettings.Instance.fontSize;
                 EditorStyles.label.alignment = TextAnchor.MiddleCenter;
-                EditorStyles.label.normal.textColor = EditorSettings.Instance.labelCol;
+                EditorStyles.label.normal.textColor = AFEditorSettings.Instance.labelCol;
                 EditorStyles.label.hover.textColor = Color.white;
                 EditorStyles.label.onHover.textColor = Color.white;
 
-                EditorStyles.largeLabel.font = EditorSettings.Instance.font;
-                EditorStyles.largeLabel.fontSize = EditorSettings.Instance.bigFontSize;
+                EditorStyles.largeLabel.font = AFEditorSettings.Instance.font;
+                EditorStyles.largeLabel.fontSize = AFEditorSettings.Instance.bigFontSize;
                 EditorStyles.largeLabel.alignment = TextAnchor.MiddleCenter;
-                EditorStyles.largeLabel.normal.textColor = EditorSettings.Instance.labelCol;
+                EditorStyles.largeLabel.normal.textColor = AFEditorSettings.Instance.labelCol;
 
-                EditorStyles.popup.font = EditorSettings.Instance.font;
-                EditorStyles.popup.fontSize = EditorSettings.Instance.fontSize;
+                EditorStyles.popup.font = AFEditorSettings.Instance.font;
+                EditorStyles.popup.fontSize = AFEditorSettings.Instance.fontSize;
                 EditorStyles.popup.alignment = TextAnchor.MiddleCenter;
-                EditorStyles.popup.normal.textColor = EditorSettings.Instance.popupCol;
+                EditorStyles.popup.normal.textColor = AFEditorSettings.Instance.popupCol;
             }
 
             public void Dispose()
@@ -150,9 +150,9 @@ namespace AnimFlex.Editor
             {
                 if (_button != null) return _button;
                 _button = new GUIStyle(GUI.skin.button);
-                _button.normal.textColor = EditorSettings.Instance.buttonDefCol;
-                _button.font = EditorSettings.Instance.font;
-                _button.fontSize = EditorSettings.Instance.fontSize;
+                _button.normal.textColor = AFEditorSettings.Instance.buttonDefCol;
+                _button.font = AFEditorSettings.Instance.font;
+                _button.fontSize = AFEditorSettings.Instance.fontSize;
                 return _button;
             }
         }
@@ -199,9 +199,9 @@ namespace AnimFlex.Editor
             {
                 if (_yellowButton != null) return _yellowButton;
                 _yellowButton = new GUIStyle(GUI.skin.button);
-                _yellowButton.normal.textColor = EditorSettings.Instance.buttonYellowCol;
-                _yellowButton.font = EditorSettings.Instance.font;
-                _yellowButton.fontSize = EditorSettings.Instance.fontSize;
+                _yellowButton.normal.textColor = AFEditorSettings.Instance.buttonYellowCol;
+                _yellowButton.font = AFEditorSettings.Instance.font;
+                _yellowButton.fontSize = AFEditorSettings.Instance.fontSize;
                 return _yellowButton;
             }
         }
@@ -213,11 +213,11 @@ namespace AnimFlex.Editor
             {
                 if (_specialLabel != null) return _specialLabel;
                 _specialLabel = new GUIStyle(GUI.skin.label);
-                _specialLabel.font = EditorSettings.Instance.font;
+                _specialLabel.font = AFEditorSettings.Instance.font;
                 _specialLabel.alignment = TextAnchor.MiddleCenter;
-                _specialLabel.fontSize = EditorSettings.Instance.fontSize;
-                _specialLabel.normal.textColor = EditorSettings.Instance.labelCol;
-                _specialLabel.hover.textColor = _specialLabel.onHover.textColor = EditorSettings.Instance.labelCol_Hover;
+                _specialLabel.fontSize = AFEditorSettings.Instance.fontSize;
+                _specialLabel.normal.textColor = AFEditorSettings.Instance.labelCol;
+                _specialLabel.hover.textColor = _specialLabel.onHover.textColor = AFEditorSettings.Instance.labelCol_Hover;
                 return _specialLabel;
             }
         }
@@ -229,9 +229,9 @@ namespace AnimFlex.Editor
             {
                 if (_label != null) return _label;
                 _label = new GUIStyle(GUI.skin.label);
-                _label.font = EditorSettings.Instance.font;
+                _label.font = AFEditorSettings.Instance.font;
                 _label.alignment = TextAnchor.MiddleCenter;
-                _label.fontSize = EditorSettings.Instance.fontSize;
+                _label.fontSize = AFEditorSettings.Instance.fontSize;
                 return _label;
             }
         }
@@ -243,10 +243,10 @@ namespace AnimFlex.Editor
             {
                 if (_bigTextField != null) return _bigTextField;
                 _bigTextField = new GUIStyle(EditorStyles.textField);
-                _bigTextField.font = EditorSettings.Instance.font;
+                _bigTextField.font = AFEditorSettings.Instance.font;
                 // _bigTextField.fontStyle = FontStyle.Bold;
                 _bigTextField.alignment = TextAnchor.MiddleCenter;
-                _bigTextField.fontSize = EditorSettings.Instance.bigFontSize;
+                _bigTextField.fontSize = AFEditorSettings.Instance.bigFontSize;
                 _bigTextField.fixedHeight = 0;
                 return _bigTextField;
             }
@@ -259,9 +259,9 @@ namespace AnimFlex.Editor
             {
                 if (_textField != null) return _textField;
                 _textField = new GUIStyle(EditorStyles.textField);
-                _textField.font = EditorSettings.Instance.font;
+                _textField.font = AFEditorSettings.Instance.font;
                 _textField.alignment = TextAnchor.MiddleCenter;
-                _textField.fontSize = EditorSettings.Instance.fontSize;
+                _textField.fontSize = AFEditorSettings.Instance.fontSize;
                 _textField.fixedHeight = 0;
                 return _textField;
             }
@@ -274,14 +274,14 @@ namespace AnimFlex.Editor
             {
                 if (_popup != null) return _popup;
                 _popup = new GUIStyle(EditorStyles.popup);
-                _popup.font = EditorSettings.Instance.font;
-                _popup.fontSize = EditorSettings.Instance.fontSize;
+                _popup.font = AFEditorSettings.Instance.font;
+                _popup.fontSize = AFEditorSettings.Instance.fontSize;
                 _popup.stretchHeight = true;
                 _popup.stretchWidth = true;
                 _popup.alignment = TextAnchor.MiddleCenter;
                 _popup.fixedHeight = 0;
                 _popup.normal.textColor = _popup.hover.textColor = _popup.active.textColor =
-                    _popup.focused.textColor = EditorSettings.Instance.popupCol;
+                    _popup.focused.textColor = AFEditorSettings.Instance.popupCol;
                 return _popup;
             }
         }
@@ -326,8 +326,8 @@ namespace AnimFlex.Editor
                 var guiContent = new GUIContent(message, texture);
 
                 var style = new GUIStyle(EditorStyles.helpBox);
-                style.font = EditorSettings.Instance.font;
-                style.fontSize = EditorSettings.Instance.fontSize;
+                style.font = AFEditorSettings.Instance.font;
+                style.fontSize = AFEditorSettings.Instance.fontSize;
                 style.alignment = TextAnchor.MiddleCenter;
                 style.wordWrap = false;
 
@@ -339,8 +339,8 @@ namespace AnimFlex.Editor
         {
             // changing editor styles and keeping their old states
             var style = new GUIStyle(EditorStyles.textField);
-            EditorStyles.textField.fontSize = EditorSettings.Instance.bigFontSize;
-            EditorStyles.textField.font = EditorSettings.Instance.font;
+            EditorStyles.textField.fontSize = AFEditorSettings.Instance.bigFontSize;
+            EditorStyles.textField.font = AFEditorSettings.Instance.font;
             EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
             EditorStyles.textField.fixedHeight = AFStyles.BigHeight;
 
@@ -369,10 +369,10 @@ namespace AnimFlex.Editor
             EditorStyles.textField.fixedHeight = style.fixedHeight;
         }
 
-        public static float Height => EditorSettings.Instance.height;
-        public static float BigHeight => EditorSettings.Instance.bigHeight;
-        public static float VerticalSpace => EditorSettings.Instance.verticalSpace;
-        public static Color BoxColor => EditorSettings.Instance.BoxCol;
-        public static Color BoxColorDarker => EditorSettings.Instance.BoxColDarker;
+        public static float Height => AFEditorSettings.Instance.height;
+        public static float BigHeight => AFEditorSettings.Instance.bigHeight;
+        public static float VerticalSpace => AFEditorSettings.Instance.verticalSpace;
+        public static Color BoxColor => AFEditorSettings.Instance.BoxCol;
+        public static Color BoxColorDarker => AFEditorSettings.Instance.BoxColDarker;
     }
 }
