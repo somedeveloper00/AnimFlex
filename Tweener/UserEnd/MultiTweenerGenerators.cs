@@ -130,7 +130,7 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(Graphic fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
-            if (relative) toVal += fromObject.color.a;
+            if (relative) toVal *= fromObject.color.a;
             return fromObject.AnimFadeTo(toVal, ease, duration, delay, curve);
         }
     }
@@ -141,7 +141,7 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(Renderer fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
-            if (relative) toVal += fromObject.material.color.a;
+            if (relative) toVal *= fromObject.material.color.a;
             return fromObject.AnimFadeTo(toVal, ease, duration, delay, curve);
         }
     }
@@ -152,7 +152,7 @@ namespace AnimFlex.Tweener
         protected override Tweener GenerateTween(CanvasGroup fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
-            if (relative) toVal += fromObject.alpha;
+            if (relative) toVal *= fromObject.alpha;
             return fromObject.AnimFadeTo(toVal, ease, duration, delay, curve);
         }
     }

@@ -76,7 +76,6 @@ namespace AnimFlex.Tweener
                     if (t > 1) t = 2 - t;
                 }
 
-
                 tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
                 tweener.OnUpdate();
 
