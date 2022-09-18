@@ -27,7 +27,10 @@ namespace AnimFlex.Editor
 
         private static GlobalObjectId lastSelected;
 
+        // event never used
+#pragma warning disable CS0067
         private static event Action onEnd;
+#pragma warning restore CS0067
 
         [InitializeOnLoadMethod]
         private static void StopPreviewIfActive()

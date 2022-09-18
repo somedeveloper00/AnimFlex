@@ -109,6 +109,7 @@ namespace AnimFlex.Editor
             return obj;
         }
 
+        #nullable enable
         /// <summary>
         /// finds a Type from the given name
         /// </summary>
@@ -127,6 +128,7 @@ namespace AnimFlex.Editor
 
             return null;
         }
+        #nullable restore
 
         /// <summary>
         /// gets the type name based on the given Type.
