@@ -8,7 +8,7 @@ namespace AnimFlex.Sequencer.UserEnd
     public class SequenceAnim : MonoBehaviour
     {
         [SerializeField] private bool playOnStart = true;
-        public Sequence sequence = new();
+        public Sequence sequence = new Sequence();
 
         private void Start()
         {

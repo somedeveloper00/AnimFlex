@@ -10,7 +10,7 @@ namespace AnimFlex.Tweener
     internal class EaseEvaluator
     {
         public static EaseEvaluator Instance => AnimFlexCore.Instance.EaseEvaluator;
-        
+
         public const Ease CUSTOM_ANIMATION_CURVE_EASE = (Ease)256;
 
         private float[][] _cachedEvals = new float[28][];
@@ -49,15 +49,15 @@ namespace AnimFlex.Tweener
             for (int i = 0; i < sampleCount; i++)
                 array[i] = ExactEvaluateEase(ease, (float)i / sampleCount, null);
         }
-        
+
         private static float ExactEvaluateEase(Ease ease, float t, AnimationCurve customCurve)
         {
-            if (customCurve is not null)
+            if (customCurve != null)
                 return customCurve.Evaluate(t);
 
             float overshoot = AnimFlexSettings.Instance.overShoot;
             float period = AnimFlexSettings.Instance.period;
-            
+
             switch (ease)
             {
                 case Ease.Linear:
@@ -178,7 +178,7 @@ namespace AnimFlex.Tweener
                     return t < 1.0f
                         ? -0.5f * (overshoot * Mathf.Pow(2.0f, 10.0f * --t) * Mathf.Sin((t - num3) * 6.28318548202515f / period))
                         : overshoot * Mathf.Pow(2.0f, -10.0f * --t) * Mathf.Sin((t - num3) * 6.28318548202515f / period) * 0.5f + 1.0f;
-        
+
                 case Ease.InBack:
                     return t * t * ((overshoot + 1.0f) * t - overshoot);
                 case Ease.OutBack:

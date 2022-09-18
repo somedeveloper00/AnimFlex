@@ -32,7 +32,7 @@ namespace AnimFlex.Editor
             }
 
             public void Dispose()
-            { 
+            {
                 EditorGUIUtility.labelWidth = width;
             }
         }
@@ -62,7 +62,7 @@ namespace AnimFlex.Editor
             }
             public void Dispose() => GUI.color = oldCol;
         }
-        
+
         public class GuiBackgroundColor : IDisposable
         {
             private Color oldCol;
@@ -90,7 +90,7 @@ namespace AnimFlex.Editor
             private GUIStyle labelStyle;
             private GUIStyle largeLabelStyle;
             private GUIStyle popupStyle;
-            
+
             public StyledGuiScope()
             {
                 labelStyle = new GUIStyle(EditorStyles.label);
@@ -103,12 +103,12 @@ namespace AnimFlex.Editor
                 EditorStyles.label.normal.textColor = StyleSettings.Instance.labelCol;
                 EditorStyles.label.hover.textColor = Color.white;
                 EditorStyles.label.onHover.textColor = Color.white;
-                
+
                 EditorStyles.largeLabel.font = StyleSettings.Instance.font;
                 EditorStyles.largeLabel.fontSize = StyleSettings.Instance.bigFontSize;
                 EditorStyles.largeLabel.alignment = TextAnchor.MiddleCenter;
                 EditorStyles.largeLabel.normal.textColor = StyleSettings.Instance.labelCol;
-                
+
                 EditorStyles.popup.font = StyleSettings.Instance.font;
                 EditorStyles.popup.fontSize = StyleSettings.Instance.fontSize;
                 EditorStyles.popup.alignment = TextAnchor.MiddleCenter;
@@ -128,14 +128,14 @@ namespace AnimFlex.Editor
                 EditorStyles.largeLabel.fontSize = largeLabelStyle.fontSize;
                 EditorStyles.largeLabel.alignment = largeLabelStyle.alignment;
                 EditorStyles.largeLabel.normal.textColor = largeLabelStyle.normal.textColor;
-                
-                EditorStyles.popup.font = popupStyle.font; 
-                EditorStyles.popup.fontSize = popupStyle.fontSize; 
+
+                EditorStyles.popup.font = popupStyle.font;
+                EditorStyles.popup.fontSize = popupStyle.fontSize;
                 EditorStyles.popup.alignment = popupStyle.alignment;
                 EditorStyles.popup.normal.textColor = popupStyle.normal.textColor;
 
             }
-            
+
         }
 
         public static void Refresh()
@@ -178,20 +178,20 @@ namespace AnimFlex.Editor
                 _clearButton = new GUIStyle(Button);
                 _clearButton.fontSize = 18;
                 _clearButton.alignment = TextAnchor.MiddleCenter;
-                
+
                 var tex = new Texture2D(2, 2);
                 tex.SetPixels(new[]
                 {
-                    Color.clear, Color.clear, 
-                    Color.clear, Color.clear 
+                    Color.clear, Color.clear,
+                    Color.clear, Color.clear
                 });
                 tex.Apply(false);
-                _clearButton.normal.background = _clearButton.hover.background = 
+                _clearButton.normal.background = _clearButton.hover.background =
                     _clearButton.onHover.background = tex;
                 return _clearButton;
             }
         }
-        
+
         private static GUIStyle _yellowButton;
         public static GUIStyle YellowButton
         {
@@ -266,7 +266,7 @@ namespace AnimFlex.Editor
                 return _textField;
             }
         }
-        
+
         private static GUIStyle _popup;
         public static GUIStyle Popup
         {
@@ -283,7 +283,7 @@ namespace AnimFlex.Editor
                 _popup.normal.textColor = _popup.hover.textColor = _popup.active.textColor =
                     _popup.focused.textColor = StyleSettings.Instance.popupCol;
                 return _popup;
-            }        
+            }
         }
 
         public static Rect PadX(this Rect rect, float pad) =>
@@ -293,7 +293,7 @@ namespace AnimFlex.Editor
         {
             var options = new GUIContent[]
             {
-                new(optionTrue, tooltip), new(optionFalse, tooltip)
+                new GUIContent(optionTrue, tooltip), new GUIContent(optionFalse, tooltip)
             };
             using var check = new EditorGUI.ChangeCheckScope();
             using (new AFStyles.EditorLabelWidth(0))
@@ -305,20 +305,20 @@ namespace AnimFlex.Editor
         {
             var options = new GUIContent[]
             {
-                new(optionTrue, property.tooltip), new(optionFalse, property.tooltip)
+                new GUIContent(optionTrue, property.tooltip), new GUIContent(optionFalse, property.tooltip)
             };
 
             using (new AFStyles.EditorLabelWidth(0))
             {
                 property.boolValue = EditorGUI.Popup(position, property.boolValue ? 0 : 1, options, AFStyles.Popup) == 0;
             }
-            
+
         }
 
-        
+
         public static void DrawHelpBox(Rect position, string message, MessageType messageType)
         {
-            var GetHelpIcon = 
+            var GetHelpIcon =
                 typeof(EditorGUIUtility).GetMethod("GetHelpIcon", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Default);
             if (GetHelpIcon != null)
             {
@@ -347,7 +347,7 @@ namespace AnimFlex.Editor
             var list = options.ToList();
             list.Add(GUILayout.Height(AFStyles.BigHeight));
             options = list.ToArray();
-            
+
             GUI.backgroundColor = Color.clear;
 
             using (new GuiBackgroundColor(Color.clear))
@@ -363,12 +363,12 @@ namespace AnimFlex.Editor
 
             // reverting the editor styles old states
             EditorStyles.textField.font  = style.font;
-            EditorStyles.textField.fontSize = style.fontSize; 
+            EditorStyles.textField.fontSize = style.fontSize;
             EditorStyles.textField.fontStyle = style.fontStyle;
             EditorStyles.textField.alignment = style.alignment;
             EditorStyles.textField.fixedHeight = style.fixedHeight;
         }
-        
+
         public static float Height => StyleSettings.Instance.height;
         public static float BigHeight => StyleSettings.Instance.bigHeight;
         public static float VerticalSpace => StyleSettings.Instance.verticalSpace;

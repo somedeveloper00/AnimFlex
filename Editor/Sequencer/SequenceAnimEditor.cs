@@ -11,7 +11,7 @@ namespace AnimFlex.Editor.Sequencer
     {
         private SequenceAnim _sequenceAnim;
         private Sequence _sequence;
-        
+
         private SerializedProperty _sequenceProp;
         private SerializedProperty _playOnStartProp;
         private SerializedProperty _clipNodesProp;
@@ -40,7 +40,7 @@ namespace AnimFlex.Editor.Sequencer
             DrawAddButton();
 
             serializedObject.ApplyModifiedProperties();
-            
+
             if(StyleSettings.Instance.repaintEveryFrame)
                 Repaint();
         }
@@ -54,7 +54,7 @@ namespace AnimFlex.Editor.Sequencer
                 using (new AFStyles.GuiForceActive())
                 {
                     if (GUILayout.Button(
-                            text: PreviewUtils.isActive ? "Stop" : "Play Sequence", style: AFStyles.BigButton, 
+                            text: PreviewUtils.isActive ? "Stop" : "Play Sequence", style: AFStyles.BigButton,
                             GUILayout.Height(height: AFStyles.BigHeight), GUILayout.Width(200)))
                     {
                         if (PreviewUtils.isActive)
@@ -79,7 +79,6 @@ namespace AnimFlex.Editor.Sequencer
         {
             _nodeClipList = new ReorderableList(serializedObject, elements: _clipNodesProp, draggable: true,
                 displayHeader: false, displayAddButton: false, displayRemoveButton: false);
-            _nodeClipList.multiSelect = false;
             _nodeClipList.drawElementCallback = (rect, index, active, focused) =>
             {
                 using (new AFStyles.StyledGuiScope())

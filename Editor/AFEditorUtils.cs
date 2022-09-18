@@ -19,7 +19,7 @@ namespace AnimFlex.Editor
 
 
         /// <summary>
-        /// returns the path relative to the indexer file located at the root of the plugin 
+        /// returns the path relative to the indexer file located at the root of the plugin
         /// </summary>
         public static string GetPathRelative(string path)
         {
@@ -31,7 +31,7 @@ namespace AnimFlex.Editor
                 var file = new FileInfo(fpath);
                 if (file.Name == EDITOR_RESOURCES_INDEXER_NAME)
                 {
-                    var root_dir = Path.GetRelativePath(Application.dataPath, file.Directory.FullName);
+                    var root_dir = MakeRelativePath(Application.dataPath + "/", file.Directory.FullName);
                     r = "Assets/" + root_dir.Replace("\\", "/") + "/" + path.Replace("\\", "/");
                     return r;
                 }
@@ -40,6 +40,38 @@ namespace AnimFlex.Editor
             throw new FileNotFoundException(
                 $"The indexer file not found: " +
                 $"create a file named AnimFlexEditor.ind at the root of the editor resources of AnimFlex.");
+        }
+
+
+        /// <summary>
+        /// Creates a relative path from one file or folder to another.
+        /// Credits to Dave : https://stackoverflow.com/a/340454/17089583
+        /// </summary>
+        /// <param name="fromPath">Contains the directory that defines the start of the relative path.</param>
+        /// <param name="toPath">Contains the path that defines the endpoint of the relative path.</param>
+        /// <returns>The relative path from the start directory to the end path or <c>toPath</c> if the paths are not related.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UriFormatException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static string MakeRelativePath(string fromPath, string toPath)
+        {
+	        if (string.IsNullOrEmpty(fromPath)) throw new ArgumentNullException("fromPath");
+	        if (string.IsNullOrEmpty(toPath))   throw new ArgumentNullException("toPath");
+
+	        Uri fromUri = new Uri(fromPath);
+	        Uri toUri = new Uri(toPath);
+
+	        if (fromUri.Scheme != toUri.Scheme) { return toPath; } // path can't be made relative.
+
+	        Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+	        string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+
+	        if (toUri.Scheme.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+	        {
+		        relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+	        }
+
+	        return relativePath;
         }
 
         /// <summary>
@@ -167,8 +199,8 @@ namespace AnimFlex.Editor
                     });
             menu.ShowAsContext();
         }
-        
-        
+
+
         public static void DrawNodeSelectionPopup(Rect position, SerializedProperty property, GUIContent label, Sequence sequence)
         {
             var displayedOptions = sequence.nodes
@@ -187,7 +219,7 @@ namespace AnimFlex.Editor
                 displayedOptions: displayedOptions,
                 style: AFStyles.Popup);
         }
-        
+
         public static void DrawFieldNameSelectionPopup(Type type, SerializedProperty componentProp, Rect pos, SerializedProperty valueNameProp)
         {
             if (componentProp.objectReferenceValue == null)
