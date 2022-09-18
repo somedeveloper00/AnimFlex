@@ -17,7 +17,7 @@ namespace AnimFlex.Editor.Tweener
         {
             using var enteredEditorStyles = new AFStyles.CenteredEditorStyles();
             using var styledGuiScope = new AFStyles.StyledGuiScope();
-            
+
             this.property = property;
             target = (TweenerGenerator)property.GetValue();
 
@@ -28,25 +28,25 @@ namespace AnimFlex.Editor.Tweener
 
                 position.y += AFStyles.VerticalSpace;
                 DrawPlayback(position);
-                
+
                 position.y += DrawPlayback_Height() + AFStyles.VerticalSpace;
                 DrawFrom(position);
-                
+
                 position.y += DrawFrom_Height() + AFStyles.VerticalSpace;
                 DrawValue(position);
-                
+
                 position.y += DrawValue_Height() + AFStyles.VerticalSpace;
                 DrawCurve(position);
-                
+
                 position.y += DrawCurve_Height() + AFStyles.VerticalSpace;
                 DrawTiming(position);
 
                 position.y += DrawTiming_Height() + AFStyles.VerticalSpace;
                 DrawLoop(position);
-                
+
                 position.y += DrawLoop_Height() + AFStyles.VerticalSpace;
                 DrawUnityEvents(position);
-                
+
                 EditorGUI.EndProperty();
             }
         }
@@ -97,10 +97,10 @@ namespace AnimFlex.Editor.Tweener
 
             selectedEvent = GUI.Toolbar(position, selectedEvent, new GUIContent[]
             {
-                new("On Start", onStart.tooltip),
-                new("On Update", onUpdate.tooltip),
-                new("On Complete", onComplete.tooltip),
-                new("On Kill", onKill.tooltip)
+                new GUIContent("On Start", onStart.tooltip),
+                new GUIContent("On Update", onUpdate.tooltip),
+                new GUIContent("On Complete", onComplete.tooltip),
+                new GUIContent("On Kill", onKill.tooltip)
             });
 
             pos.y += AFStyles.Height + AFStyles.VerticalSpace;
@@ -114,7 +114,7 @@ namespace AnimFlex.Editor.Tweener
             }
         }
 
-        protected virtual float DrawLoop_Height() => AFStyles.Height; 
+        protected virtual float DrawLoop_Height() => AFStyles.Height;
         protected virtual void DrawLoop(Rect position)
         {
             var loopsProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.loops));
@@ -137,9 +137,9 @@ namespace AnimFlex.Editor.Tweener
             pos.x += pos.width;
             pos.width = 80;
             loopsProp.intValue = Mathf.Max(loopsProp.intValue, -1);
-            
-            if(AFStyles.DrawBooleanEnum(pos, "Infinite", "Finite", 
-                   loopsProp.intValue < 0, 
+
+            if(AFStyles.DrawBooleanEnum(pos, "Infinite", "Finite",
+                   loopsProp.intValue < 0,
                    "Infinite loop means the tween will never end " +
                    ", while in Finite loop, you can specify a limited number of times to repeat the tween", out var result))
             {
@@ -154,11 +154,11 @@ namespace AnimFlex.Editor.Tweener
             var durationProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.duration));
             var delayProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.delay));
             var pingPongProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.pingPong));
-            
-            
+
+
             var pos = new Rect(position);
             pos.width = (position.width - 80) / 2;
-            
+
             using (new AFStyles.EditorLabelWidth(80))
                 EditorGUI.PropertyField(pos, durationProp, new GUIContent("Duration :", durationProp.tooltip));
 
@@ -177,12 +177,12 @@ namespace AnimFlex.Editor.Tweener
             var easeProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.ease));
             var useCustom = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.useCurve));
             var customCurve = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.customCurve));
-            
+
             var pos = new Rect(position);
             pos.height = AFStyles.Height;
 
             pos.width = position.width - 80;
-            
+
             using (new AFStyles.EditorLabelWidth(80))
                 if (useCustom.boolValue)
                 {
@@ -217,7 +217,7 @@ namespace AnimFlex.Editor.Tweener
             var fromProp = property.FindPropertyRelative(nameof(TweenerGenerator.@from));
             var targetProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.target));
             var relativeProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.relative));
-                
+
             float height = 0;
             var pos = new Rect(position);
             pos.height = AFStyles.Height;
@@ -239,7 +239,7 @@ namespace AnimFlex.Editor.Tweener
         {
             var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
             var height = Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(fromProp));
-            
+
             if(fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null)
                 height += AFStyles.Height + AFStyles.VerticalSpace;
             return height;
@@ -247,16 +247,16 @@ namespace AnimFlex.Editor.Tweener
         protected virtual void DrawFrom(Rect position)
         {
             var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
-            
+
             var pos = new Rect(position);
-            
+
             pos.width = position.width - 80;
             using (new AFStyles.EditorLabelWidth(80))
                 EditorGUI.PropertyField(pos, fromProp, new GUIContent("For :", fromProp.tooltip));
 
             pos.x += pos.width;
             pos.width = 80;
-            if (GUI.Button(pos, 
+            if (GUI.Button(pos,
                     new GUIContent("Self", "Sets the From Object to the game object this is attached to"),
                     AFStyles.Button))
             {
@@ -274,7 +274,7 @@ namespace AnimFlex.Editor.Tweener
                 pos.height = AFStyles.BigHeight;
                 AFStyles.DrawHelpBox(pos, "The \"From\" reference is empty!", MessageType.Warning);
             }
-                
+
 
         }
 

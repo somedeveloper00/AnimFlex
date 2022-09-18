@@ -6,6 +6,10 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+#if !UNITY_2021_1_OR_NEWER
+using UnityEditor.Experimental.SceneManagement;
+#endif
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -23,7 +27,10 @@ namespace AnimFlex.Editor
 
         private static GlobalObjectId lastSelected;
 
+        // event never used
+#pragma warning disable CS0067
         private static event Action onEnd;
+#pragma warning restore CS0067
 
         [InitializeOnLoadMethod]
         private static void StopPreviewIfActive()
@@ -52,13 +59,13 @@ namespace AnimFlex.Editor
                 Debug.LogError($"Previewing AnimFlex in prefab mode is not supported. Your other choice is to create an empty sample scene for previewing your assets.");
                 return;
             }
-            
+
             // save all changes
             while (EditorSceneManager.GetActiveScene().isDirty)
             {
                 if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return;
             }
-            
+
             // keep track of selection
             if (Selection.activeGameObject != null)
             {
@@ -84,7 +91,7 @@ namespace AnimFlex.Editor
                     }
                 }
             };
-            
+
             // handling inspector editing
             foreach (var component in Object.FindObjectsOfType<Component>())
             {
@@ -92,11 +99,11 @@ namespace AnimFlex.Editor
                 // onEnd += () => component.hideFlags = flags;
                 component.hideFlags |= HideFlags.NotEditable;
             }
-            
+
             // marking all scenes dirty for later revertion
             EditorSceneManager.MarkAllScenesDirty();
 
-            
+
             // start scene view menu
             SceneView.duringSceneGui += OnSceneGUI;
         }
@@ -115,18 +122,18 @@ namespace AnimFlex.Editor
         public static void StopPreviewMode()
         {
             if(!isActive) return;
-            
+
             EditorApplication.update -= EditorTick;
-            
-            
+
+
             // restore selection
-            EditorSceneManager.sceneOpened += OnEditorSceneManagerOnsceneOpened; 
+            EditorSceneManager.sceneOpened += OnEditorSceneManagerOnsceneOpened;
             // close scene view menu
-            SceneView.duringSceneGui -= OnSceneGUI; 
-            
+            SceneView.duringSceneGui -= OnSceneGUI;
+
             // discard new changes
             AFEditorUtils.ReloadUnsavedDirtyScene();
-            
+
             GC.Collect();
             isActive = false;
             Debug.Log($"Preview stopped");
@@ -136,7 +143,7 @@ namespace AnimFlex.Editor
         {
             // get last selected gameObject
             var selectedGO = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(lastSelected);
-            if(selectedGO != null) 
+            if(selectedGO != null)
                 Selection.activeGameObject = (GameObject)selectedGO;
 
             EditorSceneManager.sceneOpened -= OnEditorSceneManagerOnsceneOpened;
@@ -167,7 +174,7 @@ namespace AnimFlex.Editor
             GUILayout.EndArea();
             Handles.EndGUI();
         }
-        
+
         public static void PreviewSequence(Sequence sequence)
         {
             if (isActive)

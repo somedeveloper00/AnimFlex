@@ -20,7 +20,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
@@ -37,7 +37,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
@@ -55,7 +55,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
@@ -73,7 +73,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
@@ -91,7 +91,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
@@ -108,7 +108,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
@@ -125,7 +125,7 @@ namespace AnimFlex.Tweener
                 duration = duration,
                 delay = delay,
                 customCurve = customCurve,
-                useCurve = customCurve is not null
+                useCurve = customCurve != null
             };
             return tweener;
         }
