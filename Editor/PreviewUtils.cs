@@ -1,28 +1,26 @@
 ﻿using System;
 using AnimFlex.Core;
-using AnimFlex.Tweener;
 using AnimFlex.Sequencer;
+using AnimFlex.Tweener;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Object = UnityEngine.Object;
 #if !UNITY_2021_1_OR_NEWER
 using UnityEditor.Experimental.SceneManagement;
 #endif
-using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
 
 namespace AnimFlex.Editor
 {
     public static class PreviewUtils
     {
-        private static float lastTickTime = 0;
+        private static float lastTickTime;
 
         public static bool isActive
         {
-            get => UnityEditor.EditorPrefs.GetBool("AnimFlex_previewIsActive", false);
-            private set => UnityEditor.EditorPrefs.SetBool("AnimFlex_previewIsActive", value);
+            get => EditorPrefs.GetBool("AnimFlex_previewIsActive", false);
+            private set => EditorPrefs.SetBool("AnimFlex_previewIsActive", value);
         }
 
         private static GlobalObjectId lastSelected;
@@ -51,12 +49,12 @@ namespace AnimFlex.Editor
             if (isActive)
             {
                 StopPreviewMode();
-                Debug.LogWarning($"Preview already in progress: automatically stopped the previous one.");
+                Debug.LogWarning("Preview already in progress: automatically stopped the previous one.");
             }
 
             if (PrefabStageUtility.GetCurrentPrefabStage() != null)
             {
-                Debug.LogError($"Previewing AnimFlex in prefab mode is not supported. Your other choice is to create an empty sample scene for previewing your assets.");
+                Debug.LogError("Previewing AnimFlex in prefab mode is not supported. Your other choice is to create an empty sample scene for previewing your assets.");
                 return;
             }
 
@@ -86,7 +84,7 @@ namespace AnimFlex.Editor
                     if (change == PlayModeStateChange.ExitingEditMode)
                     {
                         EditorApplication.isPlaying = false;
-                        Debug.LogError($"You shouldn't enter playmode while in preview mode!");
+                        Debug.LogError("You shouldn't enter playmode while in preview mode!");
                         StopPreviewMode();
                     }
                 }
@@ -136,7 +134,7 @@ namespace AnimFlex.Editor
 
             GC.Collect();
             isActive = false;
-            Debug.Log($"Preview stopped");
+            Debug.Log("Preview stopped");
         }
 
         private static void OnEditorSceneManagerOnsceneOpened(Scene scene, OpenSceneMode openSceneMode)

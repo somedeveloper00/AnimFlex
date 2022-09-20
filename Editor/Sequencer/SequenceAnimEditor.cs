@@ -18,6 +18,8 @@ namespace AnimFlex.Editor.Sequencer
 
         private ReorderableList _nodeClipList;
 
+        private Vector2 _lastMousePos = Vector2.zero;
+
         private void OnEnable()
         {
             _sequenceAnim = target as SequenceAnim;
@@ -40,10 +42,9 @@ namespace AnimFlex.Editor.Sequencer
             DrawAddButton();
 
             serializedObject.ApplyModifiedProperties();
-
-            if(StyleSettings.Instance.repaintEveryFrame)
-                Repaint();
         }
+
+        public override bool RequiresConstantRepaint() => AFEditorSettings.Instance.repaintEveryFrame;
 
         private void DrawPlayback()
         {
@@ -71,7 +72,7 @@ namespace AnimFlex.Editor.Sequencer
         private void DrawClipNodes()
         {
             using var _ = new AFStyles.GuiColor(AFStyles.BoxColor);
-            using (new AFStyles.GuiBackgroundColor(StyleSettings.Instance.backgroundBoxCol))
+            using (new AFStyles.GuiBackgroundColor(AFEditorSettings.Instance.backgroundBoxCol))
                 _nodeClipList.DoLayoutList();
         }
 

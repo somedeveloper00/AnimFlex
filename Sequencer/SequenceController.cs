@@ -7,7 +7,7 @@ namespace AnimFlex.Sequencer
     internal class SequenceController
     {
         public static SequenceController Instance => AnimFlexCore.Instance.SequenceController;
-        
+
         private PreservedArray<Sequence> _sequences;
 
         public SequenceController()
@@ -15,13 +15,15 @@ namespace AnimFlex.Sequencer
             _sequences = new PreservedArray<Sequence>(AnimFlexSettings.Instance.sequenceMaxCapacity);
         }
 
-        
+
         public void Tick(float deltaTime)
         {
-            Profiler.BeginSample("Sequencer Tick");
-            _sequences.LetEveryoneIn();
+#if UNITY_EDITOR
+	        Profiler.BeginSample("Sequencer Tick");
+#endif
+            _sequences.LetEveryoneIn(); // flush the array
 
-            init_phase:
+            // init phase
             for (int i = 0; i < _sequences.Length; i++)
             {
                 if (!_sequences[i].flags.HasFlag(SequenceFlags.Initialized))
@@ -31,7 +33,7 @@ namespace AnimFlex.Sequencer
                 }
             }
 
-            tick_phase:
+            // tick phase
             for (int i = 0; i < _sequences.Length; i++)
             {
                 if (!_sequences[i].flags.HasFlag(SequenceFlags.Paused))
@@ -39,8 +41,8 @@ namespace AnimFlex.Sequencer
                     _sequences[i].Tick(deltaTime);
                 }
             }
-            
-            remove_phase:
+
+            // remove phase
             for (int i = 0; i < _sequences.Length; i++)
             {
                 if (_sequences[i].flags.HasFlag(SequenceFlags.Deleting))
@@ -49,8 +51,10 @@ namespace AnimFlex.Sequencer
                     _sequences.RemoveAt(i--);
                 }
             }
-            
+
+#if UNITY_EDITOR
             Profiler.EndSample();
+#endif
         }
 
         public void AddSequence(Sequence sequence)

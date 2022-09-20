@@ -9,7 +9,7 @@ namespace AnimFlex.Tweener
     internal class TweenerController
     {
         public static TweenerController Instance => AnimFlexCore.Instance.TweenerController;
-        
+
         internal TweenerController()
         {
             _tweeners = new PreservedArray<Tweener>(AnimFlexSettings.Instance.maxTweenCount);
@@ -23,10 +23,13 @@ namespace AnimFlex.Tweener
         /// </summary>
         public void Tick(float deltaTime)
         {
-            Profiler.BeginSample("Tweener Tick");
-            _tweeners.LetEveryoneIn();
-            
-            initialize_phase:
+#if UNITY_EDITOR
+	        Profiler.BeginSample("Tweener Tick");
+#endif
+
+            _tweeners.LetEveryoneIn(); // flush the array
+
+            // init phase
             for (var i = 0; i < _tweeners.Length; i++)
             {
                 var tweener = _tweeners[i];
@@ -38,16 +41,15 @@ namespace AnimFlex.Tweener
                 }
             }
 
-            setter_phase:
-            bool _c = false; // mark for tweener's completion
-            // for (var i = 0; i < _activeTweenersLength; i++)
+			// setter phase
+            bool _completed = false; // mark for tweener's completion
             for (var i = 0; i < _tweeners.Length; i++)
             {
                 var tweener = _tweeners[i];
                 var totalTime = tweener.duration + tweener.delay;
-                
+
                 var t = tweener._t + deltaTime;
-                
+
                 // apply loop
                 if (tweener.loops != 0 && t >= totalTime)
                 {
@@ -55,39 +57,38 @@ namespace AnimFlex.Tweener
                     t += tweener.delay - tweener.loopDelay;
                     tweener.loops--;
                 }
-                
+
                 // to avoid repeated evaluations
                 if(tweener._t == t) continue;
 
                 tweener._t = t; // save for next Ticks
 
-                
-                
-                _c = t >= totalTime; // completion check
-                t = _c ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
 
-                
+
+                _completed = t >= totalTime; // completion check
+                t = _completed ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
+
+
                 // apply ping pong
                 if (tweener.pingPong && t != 0)
                 {
                     t *= 2;
                     if (t > 1) t = 2 - t;
                 }
-                
 
                 tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
                 tweener.OnUpdate();
 
                 // check for completion
-                if (_c)
+                if (_completed)
                 {
                     tweener.flag |= TweenerFlag.Deleting; // add deletion flag
                     if (tweener.flag.HasFlag(TweenerFlag.ForceNoOnComplete) == false)
                         tweener.OnComplete();
                 }
             }
-            
-            deletion_phase:
+
+			// deletion phase
             for (var i = 0; i < _tweeners.Length; i++)
             {
                 // check if contains a delete flag
@@ -97,8 +98,10 @@ namespace AnimFlex.Tweener
                     _tweeners.RemoveAt(i--);
                 }
             }
-            
+
+#if UNITY_EDITOR
             Profiler.EndSample();
+#endif
         }
 
         public void AddTweener(Tweener tweener)
@@ -121,7 +124,7 @@ namespace AnimFlex.Tweener
                 throw new NullReferenceException("tweener");
             if (tweener.flag.HasFlag(TweenerFlag.Deleting))
                 throw new Exception("Tweener has already been destroyed!");
-            
+
             tweener.flag |= TweenerFlag.Deleting;
 
             if (complete)
@@ -134,7 +137,7 @@ namespace AnimFlex.Tweener
             {
                 tweener.flag |= TweenerFlag.ForceNoOnComplete;
             }
-            
+
         }
     }
 }

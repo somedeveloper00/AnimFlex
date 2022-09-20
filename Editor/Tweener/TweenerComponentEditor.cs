@@ -27,7 +27,7 @@ namespace AnimFlex.Editor.Tweener
                 
             serializedObject.ApplyModifiedProperties();
             
-            if(StyleSettings.Instance.repaintEveryFrame)
+            if(AFEditorSettings.Instance.repaintEveryFrame)
                 Repaint();
         }
     }

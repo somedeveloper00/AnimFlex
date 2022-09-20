@@ -12,7 +12,7 @@ namespace AnimFlex.Sequencer
         Paused = 1 << 1,
         Deleting = 1 << 2
     }
-    
+
     [Serializable]
     public sealed partial class Sequence
     {
@@ -23,7 +23,7 @@ namespace AnimFlex.Sequencer
 
         internal void OnPlay() => onPlay();
         internal void OnComplete() => onComplete();
-        
+
         internal SequenceFlags flags;
 
 
@@ -38,7 +38,7 @@ namespace AnimFlex.Sequencer
 
         internal void Tick(float deltaTime)
         {
-            init_phase:
+	        // init phase
             for (int i = 0; i < nodes.Length; i++)
             {
                 if (nodes[i].flags.HasFlag(ClipNodeFlags.PendingActive))
@@ -48,7 +48,7 @@ namespace AnimFlex.Sequencer
                 }
             }
 
-            tick_phase:
+            // tick phase
             for (int i = 0; i < nodes.Length; i++)
             {
                 if (nodes[i].flags.HasFlag(ClipNodeFlags.Active))

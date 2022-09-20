@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -6,24 +7,28 @@ using UnityEngine.Serialization;
 
 namespace AnimFlex.Editor
 {
-    public class StyleSettings : ScriptableObject
+    public class AFEditorSettings : ScriptableObject
     {
-        private static StyleSettings m_instance; 
-        public static StyleSettings Instance
+	    private static string m_path;
+        private static AFEditorSettings m_instance;
+        public static AFEditorSettings Instance
         {
             get
             {
+                if (!File.Exists(m_path))
+                {
+                    m_instance = CreateInstance<AFEditorSettings>();
+                    m_instance.name = "StyleSettings";
+                    AssetDatabase.CreateAsset(m_instance, m_path);
+                    AssetDatabase.Refresh();
+
+	                Debug.LogWarning($"AnimFlex settings file not found! Created a new one at {m_path}.\n" +
+	                                 $"You should make sure not to delete the .ind file in Editor/Resource subfolder of AnimFlex root.");
+                }
+
                 if (m_instance == null)
                 {
-                    var path = AFEditorUtils.GetPathRelative("StyleSettings.asset");
-                    if (!File.Exists(path))
-                    {
-                        m_instance = CreateInstance<StyleSettings>();
-                        m_instance.name = "StyleSettings";
-                        AssetDatabase.CreateAsset(m_instance, path);
-                        AssetDatabase.Refresh();
-                    }
-                    m_instance = AssetDatabase.LoadAssetAtPath<StyleSettings>(path);
+                    m_instance = AssetDatabase.LoadAssetAtPath<AFEditorSettings>(m_path);
                 }
                 return m_instance;
             }
@@ -46,15 +51,21 @@ namespace AnimFlex.Editor
         public Color popupCol;
         public bool repaintEveryFrame = true;
 
+
+        private void OnEnable()
+        {
+	        m_path = AFEditorUtils.GetPathRelative("StyleSettings.asset");
+        }
+
         // refresh
         private void OnValidate() => AFStyles.Refresh();
-        
+
         [SettingsProvider]
-        private static SettingsProvider CreateSettingsProvider() 
+        private static SettingsProvider CreateSettingsProvider()
         {
-            var provider = new SettingsProvider("AnimFlex/General", SettingsScope.Project)
+            var provider = new SettingsProvider("AnimFlex/Editor", SettingsScope.Project)
             {
-                label = "General",
+                label = "AnimFlex Editor Settings",
                 guiHandler = searchContext =>
                 {
                     UnityEditor.Editor editor = null;

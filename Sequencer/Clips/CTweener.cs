@@ -10,7 +10,7 @@ namespace AnimFlex.Sequencer.Clips
         [Tooltip("If checked, it'll play the next clip right away. otherwise it'll wait for the tween to finish")]
         public bool playNextOnStart = false;
         public T tweenerGenerator;
-        
+
         protected override void OnStart()
         {
             if (playNextOnStart)
@@ -23,7 +23,7 @@ namespace AnimFlex.Sequencer.Clips
             }
             else
             {
-                Debug.LogError($"Could not generate tweener! playing the next clip...");
+                Debug.LogWarning($"Could not generate tweener! playing the next clip...");
                 PlayNext();
             }
         }
