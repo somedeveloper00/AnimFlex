@@ -63,9 +63,9 @@ namespace AnimFlex.Editor.Sequencer
 
             linePos.x += linePos.width;
             float width = position.width - (linePos.x - position.x)
-                                         - 50 // delay label
-                                         - 55  // delay field
-                                         - 5 // space
+                                         - 45  // delay label
+                                         - 40  // delay field
+                                         - 5   // space
                                          - 15; // X button at end
 
             linePos.width = width * 0.3f;
@@ -90,14 +90,14 @@ namespace AnimFlex.Editor.Sequencer
             }
 
             linePos.x += 5 + linePos.width;
-            linePos.width = 50;
+            linePos.width = 45;
             GUI.Label(linePos, "Delay :", AFStyles.Label);
 
             linePos.x += linePos.width;
-            linePos.width = 55;
-            using (new AFStyles.EditorLabelWidth())
+            linePos.width = 40;
+            // using (new AFStyles.EditorLabelWidth())
             {
-                _delayProp.floatValue = EditorGUI.FloatField(linePos, new GUIContent("   "), _delayProp.floatValue);
+                _delayProp.floatValue = EditorGUI.FloatField(linePos, GUIContent.none, _delayProp.floatValue);
             }
         }
 

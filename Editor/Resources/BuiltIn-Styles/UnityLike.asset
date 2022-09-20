@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: UnityLike
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-  fontSize: 13
+  fontSize: 12
   bigFontSize: 15
   bigHeight: 20
-  height: 20
-  verticalSpace: 2
+  height: 18
+  verticalSpace: 4
   buttonDefCol: {r: 1, g: 1, b: 1, a: 0.6509804}
-  buttonYellowCol: {r: 0.8988769, g: 1, b: 0, a: 0.70980394}
-  labelCol: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.9411765}
+  buttonYellowCol: {r: 0.9007633, g: 1, b: 0, a: 0.70980394}
+  labelCol: {r: 0.83800006, g: 0.83800006, b: 0.83800006, a: 1}
   labelCol_Hover: {r: 1, g: 1, b: 1, a: 1}
   BoxCol: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 1}
   BoxColDarker: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 0.8156863}
   backgroundBoxCol: {r: 0.8962264, g: 0.8962264, b: 0.8962264, a: 1}
   backgroundBoxColDarker: {r: 0, g: 0, b: 0, a: 1}
-  popupCol: {r: 0.8980392, g: 1, b: 0, a: 0.77254903}
-  repaintEveryFrame: 0
+  popupCol: {r: 1, g: 0.8692064, b: 0, a: 0.77254903}
+  repaintEveryFrame: 1

@@ -140,7 +140,7 @@ namespace AnimFlex.Editor
 
         public static void Refresh()
         {
-            _button = _yellowButton = _specialLabel = _bigButton = _textField = _bigTextField = _popup = null;
+            _label = _button = _yellowButton = _specialLabel = _bigButton = _textField = _bigTextField = _popup = null;
         }
 
         private static GUIStyle _button;
