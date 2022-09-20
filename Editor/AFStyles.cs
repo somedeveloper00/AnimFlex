@@ -164,7 +164,8 @@ namespace AnimFlex.Editor
             {
                 if (_bigButton != null) return _bigButton;
                 _bigButton = new GUIStyle(Button);
-                _bigButton.fontSize = 18;
+                _bigButton.fontSize = AFEditorSettings.Instance.bigFontSize;
+                _bigButton.richText = true;
                 return _bigButton;
             }
         }
@@ -176,7 +177,7 @@ namespace AnimFlex.Editor
             {
                 if (_clearButton != null) return _clearButton;
                 _clearButton = new GUIStyle(Button);
-                _clearButton.fontSize = 18;
+                _clearButton.fontSize = AFEditorSettings.Instance.bigFontSize;
                 _clearButton.alignment = TextAnchor.MiddleCenter;
 
                 var tex = new Texture2D(2, 2);

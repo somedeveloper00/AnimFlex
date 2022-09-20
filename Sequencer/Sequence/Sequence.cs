@@ -26,51 +26,109 @@ namespace AnimFlex.Sequencer
 
         internal SequenceFlags flags;
 
+		#region Public playback tools
+
+        public void Pause() => flags |= SequenceFlags.Paused;
+
+        public void Resume() => flags &= ~SequenceFlags.Paused;
+
+        public void Stop() => flags |= SequenceFlags.Deleting;
 
         public void Play()
         {
-            if (nodes.Length <= 0) return;
-            for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
-            SequenceController.Instance.AddSequence(this);
-            ActivateClip(0);
-            OnPlay();
+	        if (nodes.Length <= 0) return;
+	        for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
+	        SequenceController.Instance.AddSequence(this);
+	        ActivateClip(0);
+	        OnPlay();
         }
 
-        internal void Tick(float deltaTime)
+		#endregion
+
+
+		#region Internal helpers
+
+		internal void Tick(float deltaTime)
+		{
+			// init phase
+			for (int i = 0; i < nodes.Length; i++)
+			{
+				if (nodes[i].flags.HasFlag(ClipNodeFlags.PendingActive))
+				{
+					nodes[i].Reset();
+					nodes[i].flags = ClipNodeFlags.Active;
+				}
+			}
+
+			// tick phase
+			for (int i = 0; i < nodes.Length; i++)
+			{
+				if (nodes[i].flags.HasFlag(ClipNodeFlags.Active))
+				{
+					nodes[i].Tick(deltaTime);
+				}
+			}
+		}
+
+		internal void EditorValidate()
+		{
+			foreach (var node in nodes) node.OnValidate();
+		}
+
+		internal void ActivateClip(int index)
+		{
+			nodes[index].flags = ClipNodeFlags.PendingActive;
+		}
+
+		internal void DeactivateClipNode(ClipNode clipNode)
+		{
+			clipNode.flags = ClipNodeFlags.PendingDeactive;
+		}
+
+		#endregion
+
+#region Clip manipulations
+
+        public void RemoveClipNodeAtIndex(int index)
         {
-	        // init phase
-            for (int i = 0; i < nodes.Length; i++)
-            {
-                if (nodes[i].flags.HasFlag(ClipNodeFlags.PendingActive))
-                {
-                    nodes[i].Reset();
-                    nodes[i].flags = ClipNodeFlags.Active;
-                }
-            }
-
-            // tick phase
-            for (int i = 0; i < nodes.Length; i++)
-            {
-                if (nodes[i].flags.HasFlag(ClipNodeFlags.Active))
-                {
-                    nodes[i].Tick(deltaTime);
-                }
-            }
+	        var nodesList = nodes.ToList();
+	        nodesList.RemoveAt(index);
+	        nodes = nodesList.ToArray();
         }
 
-        internal void EditorValidate()
+        public void RemoveClipNode(ClipNode node)
         {
-            foreach (var node in nodes) node.OnValidate();
+	        RemoveClipNodeAtIndex(Array.IndexOf(nodes, node));
         }
 
-        internal void ActivateClip(int index)
+        public void MoveClipNode(int fromIndex, int toIndex)
         {
-            nodes[index].flags = ClipNodeFlags.PendingActive;
+	        (nodes[fromIndex], nodes[toIndex]) = (nodes[toIndex], nodes[fromIndex]);
         }
 
-        internal void DeactivateClipNode(ClipNode clipNode)
+        public void AddNewClipNode(Clip clip)
         {
-            clipNode.flags = ClipNodeFlags.PendingDeactive;
+	        var tmp = nodes.ToList();
+	        tmp.Add(new ClipNode
+	        {
+		        clip = clip,
+		        name = $"Node {nodes.Length}"
+	        });
+	        nodes = tmp.ToArray();
         }
+
+        public void InsertNewClipAt(Clip clip, int index)
+        {
+	        var tmp = nodes.ToList();
+	        tmp.Insert(index, new ClipNode
+	        {
+		        clip = clip,
+		        name = $"Node {index}",
+	        });
+	        nodes = tmp.ToArray();
+        }
+
+
+#endregion
     }
 }

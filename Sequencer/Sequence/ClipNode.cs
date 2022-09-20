@@ -10,20 +10,20 @@ namespace AnimFlex.Sequencer
         Active = 1 << 1,
         PendingDeactive = 1 << 2
     }
-    
+
     [Serializable]
     public class ClipNode
     {
         [SerializeField] internal string name;
         [SerializeField] internal float delay;
         [SerializeReference] internal Clip clip;
-        
+
         /// <summary>
         /// index of this clip node inside the Sequencer
         /// </summary>
         public int Index { get; private set; }
         [field: NonSerialized] public Sequence sequence { get; private set; }
- 
+
         private float t = 0;
         internal ClipNodeFlags flags;
         private bool started = false;
@@ -32,7 +32,7 @@ namespace AnimFlex.Sequencer
         public void PlayNextClipNode()
         {
             if(sequence.nodes.Length == Index + 1)
-                sequence.Complete();
+                sequence.Stop();
             else
                 PlayClipNode(Index + 1);
         }
@@ -46,7 +46,7 @@ namespace AnimFlex.Sequencer
             this.sequence = sequence;
             clip.Init(this);
         }
-        
+
         internal void Reset()
         {
             t = 0;
@@ -67,7 +67,7 @@ namespace AnimFlex.Sequencer
                 else
                 {
                     // update/tick of the clip
-                    if(clip.hasTick()) 
+                    if(clip.hasTick())
                         clip.Tick();
                 }
             }

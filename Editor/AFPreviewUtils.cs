@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using AnimFlex.Core;
 using AnimFlex.Sequencer;
 using AnimFlex.Tweener;
+using ICSharpCode.NRefactory.Ast;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -13,7 +15,7 @@ using UnityEditor.Experimental.SceneManagement;
 
 namespace AnimFlex.Editor
 {
-    public static class PreviewUtils
+    public static class AFPreviewUtils
     {
         private static float lastTickTime;
 
@@ -24,6 +26,7 @@ namespace AnimFlex.Editor
         }
 
         private static GlobalObjectId lastSelected;
+        private static Scene startedScene; // the scene may change in a preview
 
         // event never used
 #pragma warning disable CS0067
@@ -39,36 +42,48 @@ namespace AnimFlex.Editor
             }
         }
 
-        public static void StartPreviewMode()
+        /// <summary>
+        /// trys to start the preview system. returns true if successful
+        /// </summary>
+        public static bool StartPreviewMode()
         {
             if (EditorApplication.isPlaying)
             {
                 Debug.LogError("Can't start preview mode while in play mode!");
-                return;
+                return false;
             }
             if (isActive)
             {
                 StopPreviewMode();
                 Debug.LogWarning("Preview already in progress: automatically stopped the previous one.");
             }
-
             if (PrefabStageUtility.GetCurrentPrefabStage() != null)
             {
                 Debug.LogError("Previewing AnimFlex in prefab mode is not supported. Your other choice is to create an empty sample scene for previewing your assets.");
-                return;
+                return false;
+            }
+            if (EditorSceneManager.sceneCount > 1)
+            {
+	            Debug.LogError("Previewing AnimFlex while having multiple scenes opened, is not supported yet.");
+	            return false;
             }
 
             // save all changes
             while (EditorSceneManager.GetActiveScene().isDirty)
             {
-                if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return;
+                if(EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == false) return false;
             }
+
+            // keep track of started scene. because scene may change during preview
+            startedScene = EditorSceneManager.GetActiveScene();
 
             // keep track of selection
             if (Selection.activeGameObject != null)
             {
                 lastSelected = GlobalObjectId.GetGlobalObjectIdSlow(Selection.activeGameObject);
             }
+
+
 
             AnimFlexCore.Initialize();
             EditorApplication.update += EditorTick;
@@ -98,12 +113,13 @@ namespace AnimFlex.Editor
                 component.hideFlags |= HideFlags.NotEditable;
             }
 
-            // marking all scenes dirty for later revertion
-            EditorSceneManager.MarkAllScenesDirty();
+
 
 
             // start scene view menu
             SceneView.duringSceneGui += OnSceneGUI;
+
+            return true;
         }
 
         private static void EditorTick()
@@ -123,18 +139,20 @@ namespace AnimFlex.Editor
 
             EditorApplication.update -= EditorTick;
 
-
             // restore selection
             EditorSceneManager.sceneOpened += OnEditorSceneManagerOnsceneOpened;
             // close scene view menu
             SceneView.duringSceneGui -= OnSceneGUI;
 
-            // discard new changes
-            AFEditorUtils.ReloadUnsavedDirtyScene();
+            // discard new changes & end preview
+            EditorApplication.delayCall += () =>
+            {
+	            EditorSceneManager.OpenScene(startedScene.path, OpenSceneMode.Single);
+	            isActive = false;
+				GC.Collect();
+				Debug.Log("Preview stopped");
+            };
 
-            GC.Collect();
-            isActive = false;
-            Debug.Log("Preview stopped");
         }
 
         private static void OnEditorSceneManagerOnsceneOpened(Scene scene, OpenSceneMode openSceneMode)
@@ -157,9 +175,9 @@ namespace AnimFlex.Editor
                     200,
                     60));
 
-            GUI.color = AFStyles.BoxColor;
+            GUI.color = AFStyles.BoxColorDarker;
 
-            EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.BoxColorDarker);
+            // EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.BoxColorDarker);
             using (new GUILayout.HorizontalScope(EditorStyles.helpBox, GUILayout.ExpandHeight(true)))
             {
                 GUI.color = Color.white;
@@ -180,9 +198,12 @@ namespace AnimFlex.Editor
                 StopPreviewMode();
                 return;
             }
-            StartPreviewMode();
-            sequence.Play();
-            sequence.onComplete += StopPreviewMode;
+
+            if (StartPreviewMode())
+            {
+	            sequence.Play();
+	            sequence.onComplete += StopPreviewMode;
+            }
         }
 
         public static void PreviewTweener(TweenerGenerator generator)
@@ -195,11 +216,13 @@ namespace AnimFlex.Editor
                     return;
                 }
 
-                StartPreviewMode();
-                if (generator.TryGenerateTween(out var tweener) == false)
+                if (StartPreviewMode())
                 {
-                    Debug.LogError("Could not generate the tween");
-                    StopPreviewMode();
+	                if (generator.TryGenerateTween(out var tweener) == false)
+	                {
+	                    Debug.LogError("Could not generate the tween");
+	                    StopPreviewMode();
+	                }
                 }
             };
         }

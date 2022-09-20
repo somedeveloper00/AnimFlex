@@ -12,12 +12,12 @@ namespace AnimFlex.Editor.Sequencer
         private SerializedProperty _nameProp;
         private SerializedProperty _delayProp;
         private SerializedProperty _clipProp;
-        
-        
+
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             position.width = Mathf.Max(position.width, 350);
-            
+
             using (new AFStyles.CenteredEditorStyles())
             {
                 using (new AFStyles.GuiColor(Color.white))
@@ -50,7 +50,7 @@ namespace AnimFlex.Editor.Sequencer
 
             return linePos.height;
         }
-        
+
         private void DrawHeader(Rect position)
         {
             var linePos = new Rect(position);
@@ -58,16 +58,20 @@ namespace AnimFlex.Editor.Sequencer
             linePos.x += 10;
             linePos.width = 10;
             linePos.height = AFStyles.BigHeight;
-            
+
             property.isExpanded = EditorGUI.Foldout(linePos, property.isExpanded, "");
 
             linePos.x += linePos.width;
-            float width = position.width - 30 - 10 - 40 - 60 - 10 - 170 + 185;
+            float width = position.width - (linePos.x - position.x)
+                                         - 50 // delay label
+                                         - 55  // delay field
+                                         - 5 // space
+                                         - 15; // X button at end
 
             linePos.width = width * 0.3f;
             using (new AFStyles.GuiBackgroundColor(Color.clear))
                 _nameProp.stringValue = EditorGUI.TextField(linePos, _nameProp.stringValue, AFStyles.BigTextField);
-            
+
             // display clip type
             var type = AFEditorUtils.FindType(_clipProp.GetValue().GetType().FullName);
             linePos.x += linePos.width;
@@ -85,12 +89,12 @@ namespace AnimFlex.Editor.Sequencer
                 });
             }
 
-            linePos.x += 10 + linePos.width;
-            linePos.width = 40;
+            linePos.x += 5 + linePos.width;
+            linePos.width = 50;
             GUI.Label(linePos, "Delay :", AFStyles.Label);
 
             linePos.x += linePos.width;
-            linePos.width = 50;
+            linePos.width = 55;
             using (new AFStyles.EditorLabelWidth())
             {
                 _delayProp.floatValue = EditorGUI.FloatField(linePos, new GUIContent("   "), _delayProp.floatValue);
@@ -100,17 +104,17 @@ namespace AnimFlex.Editor.Sequencer
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             GetProperties(property);
-            
+
             var singleLine = AFStyles.Height + AFStyles.VerticalSpace;
             float height = 0;
-            
+
             height += AFStyles.BigHeight + AFStyles.VerticalSpace * 2;
             if (property.isExpanded)
             {
                 height += EditorGUI.GetPropertyHeight(_clipProp, GUIContent.none, true);
                 height += AFStyles.VerticalSpace;
             }
-            
+
             return height;
         }
         private void GetProperties(SerializedProperty property)
@@ -119,7 +123,7 @@ namespace AnimFlex.Editor.Sequencer
             _nameProp = property.FindPropertyRelative(nameof(ClipNode.name));
             _delayProp = property.FindPropertyRelative(nameof(ClipNode.delay));
             _clipProp = property.FindPropertyRelative(nameof(ClipNode.clip));
-            
+
         }
 
     }
