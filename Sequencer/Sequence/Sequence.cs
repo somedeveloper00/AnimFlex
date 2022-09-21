@@ -10,7 +10,7 @@ namespace AnimFlex.Sequencer
     {
         Initialized = 1 << 0, // for OnPlay event
         Paused = 1 << 1,
-        Deleting = 1 << 2
+        Stopping = 1 << 2
     }
 
     [Serializable]
@@ -22,17 +22,20 @@ namespace AnimFlex.Sequencer
         public event Action onComplete = delegate { };
 
         internal void OnPlay() => onPlay();
-        internal void OnComplete() => onComplete();
+        internal void OnComplete()
+        {
+	        onComplete();
+        }
 
         internal SequenceFlags flags;
 
-		#region Public playback tools
+#region Public playback tools
 
         public void Pause() => flags |= SequenceFlags.Paused;
 
         public void Resume() => flags &= ~SequenceFlags.Paused;
 
-        public void Stop() => flags |= SequenceFlags.Deleting;
+        public void Stop() => flags |= SequenceFlags.Stopping;
 
         public void Play()
         {
@@ -43,10 +46,10 @@ namespace AnimFlex.Sequencer
 	        OnPlay();
         }
 
-		#endregion
+#endregion
 
 
-		#region Internal helpers
+#region Internal helpers
 
 		internal void Tick(float deltaTime)
 		{
@@ -85,7 +88,7 @@ namespace AnimFlex.Sequencer
 			clipNode.flags = ClipNodeFlags.PendingDeactive;
 		}
 
-		#endregion
+#endregion
 
 #region Clip manipulations
 
@@ -127,7 +130,6 @@ namespace AnimFlex.Sequencer
 	        });
 	        nodes = tmp.ToArray();
         }
-
 
 #endregion
     }

@@ -177,7 +177,7 @@ namespace AnimFlex.Editor
 
             GUI.color = AFStyles.BoxColorDarker;
 
-            // EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.BoxColorDarker);
+            EditorGUI.DrawRect(new Rect(0, 0, 200, 60), AFStyles.BoxColorDarker);
             using (new GUILayout.HorizontalScope(EditorStyles.helpBox, GUILayout.ExpandHeight(true)))
             {
                 GUI.color = Color.white;

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 859f53b6587045209dc05ede6b4fc62c, type: 3}
-  m_Name: StyleSettings
+  m_Name: Flat
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 13

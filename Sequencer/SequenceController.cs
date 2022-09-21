@@ -45,7 +45,7 @@ namespace AnimFlex.Sequencer
             // remove phase
             for (int i = 0; i < _sequences.Length; i++)
             {
-                if (_sequences[i].flags.HasFlag(SequenceFlags.Deleting))
+                if (_sequences[i].flags.HasFlag(SequenceFlags.Stopping))
                 {
                     _sequences[i].OnComplete();
                     _sequences.RemoveAt(i--);
@@ -70,7 +70,7 @@ namespace AnimFlex.Sequencer
             {
                 if (_sequences[i] == sequence)
                 {
-                    sequence.flags |= SequenceFlags.Deleting;
+                    sequence.flags |= SequenceFlags.Stopping;
                     return;
                 }
             }

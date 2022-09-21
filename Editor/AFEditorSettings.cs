@@ -40,21 +40,28 @@ namespace AnimFlex.Editor
         }
 
 #region Setting props
+	    [Serializable] public struct ThemeBasedColor
+	    {
+		    public Color darkColor, lightColor;
+
+		    public static implicit operator Color(ThemeBasedColor themeBasedColor)
+		    {
+			    return EditorGUIUtility.isProSkin ? themeBasedColor.darkColor : themeBasedColor.lightColor;
+		    }
+	    }
         public Font font;
         public int fontSize;
         public int bigFontSize;
         public float bigHeight;
         public float height;
         public float verticalSpace;
-        public Color buttonDefCol;
-        public Color buttonYellowCol;
-        public Color labelCol;
-        public Color labelCol_Hover;
-        [FormerlySerializedAs("tweeerBoxCol")] public Color BoxCol;
-        [FormerlySerializedAs("tweeerBoxCol")] public Color BoxColDarker;
-        public Color backgroundBoxCol;
-        public Color backgroundBoxColDarker;
-        public Color popupCol;
+        public ThemeBasedColor buttonDefCol;
+        public ThemeBasedColor labelCol;
+        public ThemeBasedColor labelCol_Hover;
+        [FormerlySerializedAs("tweeerBoxCol")] public ThemeBasedColor BoxCol;
+        [FormerlySerializedAs("tweeerBoxCol")] public ThemeBasedColor BoxColDarker;
+        public ThemeBasedColor backgroundBoxCol;
+        public ThemeBasedColor popupCol;
         public bool repaintEveryFrame = true;
 #endregion
 
@@ -66,6 +73,8 @@ namespace AnimFlex.Editor
 	    private static int _currentSelectedResetFileIndex;
 	    private static string[] _resetPaths;
 	    private static string[] _resetNames;
+	    private static float _lastTimeUpdated = 0;
+	    private const float UPDATE_INTERVAL = 2;
 
         [SettingsProvider]
         private static SettingsProvider CreateSettingsProvider()
@@ -98,17 +107,24 @@ namespace AnimFlex.Editor
 		        }
 
 		        // update list
-		        if (_resetPaths == null || _resetPaths.Any(path => File.Exists(path) == false))
+		        if (_lastTimeUpdated - EditorApplication.timeSinceStartup > UPDATE_INTERVAL || _resetPaths == null ||
+		            _resetPaths.Any(path => File.Exists(path) == false))
 		        {
-			        _resetPaths = Directory.GetFiles(AFEditorUtils.GetPathRelative("BuiltIn-Styles/"))
-				        .Where(str => !str.EndsWith(".meta")).ToArray();
-			        _resetNames = _resetPaths
-				        .Select(path => ObjectNames.NicifyVariableName(Path.GetFileNameWithoutExtension(path)))
-				        .ToArray();
+			        _lastTimeUpdated = (float)EditorApplication.timeSinceStartup;
+			        UpdateResetsList();
 		        }
 
 		        _currentSelectedResetFileIndex = EditorGUILayout.Popup(_currentSelectedResetFileIndex, _resetNames);
 	        }
+        }
+
+        private static void UpdateResetsList()
+        {
+	        _resetPaths = Directory.GetFiles(AFEditorUtils.GetPathRelative("BuiltIn-Styles/"))
+		        .Where(str => !str.EndsWith(".meta")).ToArray();
+	        _resetNames = _resetPaths
+		        .Select(path => ObjectNames.NicifyVariableName(Path.GetFileNameWithoutExtension(path)))
+		        .ToArray();
         }
 
         private static void ResetTo(string filePath)
