@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer
@@ -31,18 +32,6 @@ namespace AnimFlex.Sequencer
         internal SequenceFlags flags;
 
 
-        internal void OnActivate()
-        {
-	        for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
-	        ActivateClip(0);
-	        onPlay();
-        }
-
-        internal void OnStop()
-        {
-	        flags = 0; // empty flags
-	        onComplete();
-        }
 
 
 #region Public playback tools
@@ -106,10 +95,24 @@ namespace AnimFlex.Sequencer
 #endregion
 
 
-#region Internal helpers
+#region Internals
+
+	    internal void OnActivate()
+	    {
+		    for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
+		    ActivateClip(0);
+		    onPlay(); 
+	    }
+
+	    internal void OnStop()
+	    {
+		    flags = 0; // empty flags
+		    onComplete();
+	    }
 
 		internal void Tick(float deltaTime)
 		{
+
 			// init phase
 			for (int i = 0; i < nodes.Length; i++)
 			{

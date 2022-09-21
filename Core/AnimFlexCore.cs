@@ -15,7 +15,7 @@ namespace AnimFlex.Core
         public TweenerController TweenerController { get; private set; }
         public EaseEvaluator EaseEvaluator { get; private set; }
         public SequenceController SequenceController { get; private set; }
-        
+
         public static AnimFlexCore Instance => m_instance;
         private static AnimFlexCore m_instance;
 
@@ -39,18 +39,18 @@ namespace AnimFlex.Core
             var go = new GameObject("_AnimFlex_mgr");
             go.isStatic = true;
             var core = go.AddComponent<AnimFlexCore>();
-            
+
             // initializing locally
             {
                 m_instance = core;
-            
+
                 // initialize systems in order
                 core.Settings = AnimFlexSettings.Initialize();
                 core.TweenerController = new TweenerController();
                 core.EaseEvaluator = new EaseEvaluator();
                 core.SequenceController = new SequenceController();
             }
-            
+
 #if UNITY_EDITOR
             if(Application.isPlaying)
 #endif
@@ -77,8 +77,8 @@ namespace AnimFlex.Core
 
         public void Tick(float deltaTime)
         {
-            TweenerController.Tick(deltaTime);
             SequenceController.Tick(deltaTime);
+            TweenerController.Tick(deltaTime);
         }
     }
 }
