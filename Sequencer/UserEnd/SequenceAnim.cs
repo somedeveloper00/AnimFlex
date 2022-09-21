@@ -24,12 +24,14 @@ namespace AnimFlex.Sequencer.UserEnd
         {
 	        if (playOnEnable)
 	        {
-		        if (resetOnPlay)
-		        {
-			        sequence.Stop();
-		        }
-                PlaySequence();
+		        PlaySequence();
 	        }
+        }
+
+        private void OnDisable()
+        {
+	        if(sequence.IsActive())
+				sequence.Stop();
         }
 
         private void OnValidate()
@@ -39,12 +41,7 @@ namespace AnimFlex.Sequencer.UserEnd
 
         public void PlaySequence()
         {
-            sequence.Play();
-        }
-
-        private void OnDestroy()
-        {
-            sequence.Stop();
+	        sequence.PlayOrRestart();
         }
     }
 }

@@ -7,6 +7,7 @@ using ICSharpCode.NRefactory.Ast;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 #if !UNITY_2021_1_OR_NEWER
@@ -47,24 +48,31 @@ namespace AnimFlex.Editor
         /// </summary>
         public static bool StartPreviewMode()
         {
+	        Profiler.BeginSample("AnimFlex preview start");
+
             if (EditorApplication.isPlaying)
             {
                 Debug.LogError("Can't start preview mode while in play mode!");
+                Profiler.EndSample();
                 return false;
             }
             if (isActive)
             {
                 StopPreviewMode();
                 Debug.LogWarning("Preview already in progress: automatically stopped the previous one.");
+                Profiler.EndSample();
+                return false;
             }
             if (PrefabStageUtility.GetCurrentPrefabStage() != null)
             {
                 Debug.LogError("Previewing AnimFlex in prefab mode is not supported. Your other choice is to create an empty sample scene for previewing your assets.");
+                Profiler.EndSample();
                 return false;
             }
             if (EditorSceneManager.sceneCount > 1)
             {
 	            Debug.LogError("Previewing AnimFlex while having multiple scenes opened, is not supported yet.");
+	            Profiler.EndSample();
 	            return false;
             }
 
@@ -89,7 +97,6 @@ namespace AnimFlex.Editor
             EditorApplication.update += EditorTick;
             lastTickTime = (float)EditorApplication.timeSinceStartup;
             isActive = true;
-            Debug.Log("Preview started.");
 
             // handling sudden play mode
             EditorApplication.playModeStateChanged += change =>
@@ -109,7 +116,6 @@ namespace AnimFlex.Editor
             foreach (var component in Object.FindObjectsOfType<Component>())
             {
                 var flags = component.hideFlags;
-                // onEnd += () => component.hideFlags = flags;
                 component.hideFlags |= HideFlags.NotEditable;
             }
 
@@ -119,11 +125,15 @@ namespace AnimFlex.Editor
             // start scene view menu
             SceneView.duringSceneGui += OnSceneGUI;
 
+            Debug.Log("Preview started.");
+            Profiler.EndSample();
             return true;
         }
 
         private static void EditorTick()
         {
+	        Profiler.BeginSample("AnimFlex Preview Tick");
+
             // ignoring long frames altogether (maybe user changed the window or whatever else)
             if (EditorApplication.timeSinceStartup - lastTickTime < 1f)
             {
@@ -131,10 +141,13 @@ namespace AnimFlex.Editor
                 SceneView.RepaintAll();
             }
             lastTickTime = (float)EditorApplication.timeSinceStartup;
+
+            Profiler.EndSample();
         }
 
         public static void StopPreviewMode()
         {
+	        Profiler.BeginSample("AnimFlex preview stop");
             if(!isActive) return;
 
             EditorApplication.update -= EditorTick;
@@ -147,12 +160,13 @@ namespace AnimFlex.Editor
             // discard new changes & end preview
             EditorApplication.delayCall += () =>
             {
-	            EditorSceneManager.OpenScene(startedScene.path, OpenSceneMode.Single);
 	            isActive = false;
+	            EditorSceneManager.OpenScene(startedScene.path, OpenSceneMode.Single);
 				GC.Collect();
 				Debug.Log("Preview stopped");
             };
 
+            Profiler.EndSample();
         }
 
         private static void OnEditorSceneManagerOnsceneOpened(Scene scene, OpenSceneMode openSceneMode)

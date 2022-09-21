@@ -62,15 +62,18 @@ namespace AnimFlex.Editor.Sequencer
 
                 using (new AFStyles.GuiForceActive())
                 {
-                    if (GUILayout.Button(
-                            text: AFPreviewUtils.isActive ? "Stop Preview" : "Preview Sequence", style: AFStyles.BigButton,
-                            GUILayout.Height(height: AFStyles.BigHeight), GUILayout.Width(200)))
-                    {
-                        if (AFPreviewUtils.isActive)
-                            AFPreviewUtils.StopPreviewMode();
-                        else
-                            AFPreviewUtils.PreviewSequence(sequence: _sequence);
-                    }
+	                using (new EditorGUI.DisabledScope(Application.isPlaying))
+	                {
+		                var text = AFPreviewUtils.isActive ? "Stop Preview" : "Preview Sequence";
+		                if (GUILayout.Button(text, AFStyles.BigButton,
+			                    GUILayout.Height(AFStyles.BigHeight), GUILayout.Width(200)))
+		                {
+			                if (AFPreviewUtils.isActive)
+				                AFPreviewUtils.StopPreviewMode();
+			                else
+				                AFPreviewUtils.PreviewSequence(_sequence);
+		                }
+	                }
                 }
 
                 GUILayout.FlexibleSpace();

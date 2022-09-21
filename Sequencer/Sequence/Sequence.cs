@@ -8,42 +8,99 @@ namespace AnimFlex.Sequencer
     [Flags]
     internal enum SequenceFlags
     {
-        Initialized = 1 << 0, // for OnPlay event
-        Paused = 1 << 1,
-        Stopping = 1 << 2
+        Active = 1 << 1,
+        Paused = 1 << 2,
+        Stopping = 1 << 3
     }
 
     [Serializable]
     public sealed partial class Sequence
     {
-        [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
-
+        /// <summary>
+        /// executes when the sequence is played.
+        /// </summary>
         public event Action onPlay = delegate { };
+
+        /// <summary>
+        /// executes when the sequence is completed or stopped
+        /// </summary>
         public event Action onComplete = delegate { };
 
-        internal void OnPlay() => onPlay();
-        internal void OnComplete()
-        {
-	        onComplete();
-        }
+        [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
 
         internal SequenceFlags flags;
 
+
+        internal void OnActivate()
+        {
+	        for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
+	        ActivateClip(0);
+	        onPlay();
+        }
+
+        internal void OnStop()
+        {
+	        flags = 0; // empty flags
+	        onComplete();
+        }
+
+
 #region Public playback tools
 
+	    /// <summary>
+	    /// pauses the sequencer.
+	    /// </summary>
         public void Pause() => flags |= SequenceFlags.Paused;
 
+	    /// <summary>
+	    /// resumes the sequencer if it was paused.
+	    /// </summary>
         public void Resume() => flags &= ~SequenceFlags.Paused;
 
-        public void Stop() => flags |= SequenceFlags.Stopping;
+	    /// <summary>
+	    /// stops the sequencer. note that the stopping process will not happen right away.
+	    /// </summary>
+        public void Stop()
+	    {
+		    if (!IsActive())
+		    {
+			    Debug.LogWarning("Sequencer is not active, so there's nothing to stop.");
+			    return;
+		    }
+		    flags |= SequenceFlags.Stopping;
+	    }
 
+	    /// <summary>
+	    /// plays the sequence. if you're unsure if the sequencer is already active or not,
+	    /// call <see cref="PlayOrRestart"/> instead.
+	    /// </summary>
         public void Play()
         {
+	        if (IsActive())
+	        {
+		        Debug.LogError($"The sequence is already active. You cannot play an active sequencer. You can call {nameof(PlayOrRestart)} instead.");
+	        }
+
 	        if (nodes.Length <= 0) return;
-	        for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
-	        SequenceController.Instance.AddSequence(this);
-	        ActivateClip(0);
-	        OnPlay();
+	        SequenceController.Instance.AddNewSequence(this);
+        }
+
+	    /// <summary>
+	    /// If the sequence is already active, this will restart it, or if it's not activated, it'll call <see cref="Play"/>
+	    /// automatically. <para/>
+	    /// Note that this will act a little bit slower than <see cref="Play"/> would
+	    /// </summary>
+        public void PlayOrRestart()
+        {
+	        if (IsActive() == false) // play
+	        {
+		        Play();
+	        }
+	        else // restart
+	        {
+		        Stop();
+		        SequenceController.delayedCall += Play;
+	        }
         }
 
 #endregion
@@ -87,6 +144,8 @@ namespace AnimFlex.Sequencer
 		{
 			clipNode.flags = ClipNodeFlags.PendingDeactive;
 		}
+
+		internal bool IsActive() => flags.HasFlag(SequenceFlags.Active);
 
 #endregion
 

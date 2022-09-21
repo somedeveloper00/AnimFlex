@@ -31,13 +31,19 @@ namespace AnimFlex.Sequencer
         public void Deactivate() => sequence.DeactivateClipNode(this);
         public void PlayNextClipNode()
         {
+	        if(!sequence.IsActive()) return;
+
             if(sequence.nodes.Length == Index + 1)
                 sequence.Stop();
             else
                 PlayClipNode(Index + 1);
         }
 
-        public void PlayClipNode (int index) => sequence.ActivateClip(index);
+        public void PlayClipNode (int index)
+        {
+	        if(!sequence.IsActive()) return;
+	        sequence.ActivateClip(index);
+        }
 
         /// <summary>
         /// forcefully ends the clip
@@ -77,15 +83,16 @@ namespace AnimFlex.Sequencer
             t += deltaTime;
             if (t > delay)
             {
+                // start of the clip
                 if (!started)
                 {
-                    // start of the clip
+                    started = true; // first set this to true, so if clip.Play() threw errors,
+                                    // they won't get executed in the next Tick
                     clip.Play();
-                    started = true;
                 }
+                // update/tick of the clip
                 else
                 {
-                    // update/tick of the clip
                     if(clip.hasTick())
                         clip.Tick(deltaTime);
                 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 13
   bigFontSize: 15
-  bigHeight: 24
+  bigHeight: 18
   height: 20
   verticalSpace: 4
   buttonDefCol:
@@ -39,4 +39,4 @@ MonoBehaviour:
   popupCol:
     darkColor: {r: 0, g: 0.9225335, b: 1, a: 0.9098039}
     lightColor: {r: 0, g: 0.22304837, b: 0.8396226, a: 0.9098039}
-  repaintEveryFrame: 1
+  repaintEveryFrame: 0

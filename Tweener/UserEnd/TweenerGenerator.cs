@@ -173,12 +173,16 @@ namespace AnimFlex.Tweener
 
 
             // add Unity events
-            tweener.onStart += onStart.Invoke;
-            tweener.onComplete += () => onComplete.Invoke();
-            tweener.onKill += onKill.Invoke;
-            tweener.onUpdate += onUpdate.Invoke;
+            if (tweener != null)
+            {
+	            tweener.onStart += onStart.Invoke;
+	            tweener.onComplete += () => onComplete.Invoke();
+	            tweener.onKill += onKill.Invoke;
+	            tweener.onUpdate += onUpdate.Invoke;
+				return true;
+            }
 
-            return true;
+			return false;
         }
 
 
@@ -224,15 +228,18 @@ namespace AnimFlex.Tweener
                 {
                     for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++)
                     {
-                        r.Add(selections[i].transform.GetChild(childIndex).GetComponent<TFrom>());
+	                    var child = selections[i].transform.GetChild(childIndex);
+	                    if(!child.gameObject.activeInHierarchy)
+		                    continue;
+	                    if (child.TryGetComponent<TFrom>(out var comp))
+		                    r.Add(comp);
                     }
                 }
                 else if (selections[i].type == SelectionType.GetAllChildren)
                 {
                     foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
-                    {
-                        r.Add(obj);
-                    }
+	                    if(obj.gameObject.activeInHierarchy)
+							r.Add(obj);
                 }
             }
 
