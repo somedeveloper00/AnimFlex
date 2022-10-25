@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AnimFlex.Editor
 {
-    public static class AFStyles
+    public class AFStyles
     {
         public class CenteredEditorStyles : IDisposable
         {

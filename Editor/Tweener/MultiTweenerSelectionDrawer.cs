@@ -24,7 +24,7 @@ namespace AnimFlex.Editor.Tweener
             pos.x += pos.width;
             pos.width = 120;
 
-            if(typeProp.enumValueIndex < 0 || typeProp.enumValueIndex >= 3)
+            if(typeProp.enumValueIndex < 0 || typeProp.enumValueIndex >= 4)
                 typeProp.enumValueIndex = 0;
             var type = (AFSelection.SelectionType)typeProp.enumValueIndex;
 

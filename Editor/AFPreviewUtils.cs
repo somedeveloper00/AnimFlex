@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Reflection;
 using AnimFlex.Core;
 using AnimFlex.Sequencer;
 using AnimFlex.Tweener;
-using ICSharpCode.NRefactory.Ast;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
