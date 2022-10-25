@@ -173,6 +173,7 @@ namespace AnimFlex.Tweener
 					Debug.Log($"col: {graphicColor}");
 					graphic.color = graphicColor;
                 },
+                () => graphic != null,
                 endFade, ease, duration, delay, curve);
         }
 
