@@ -113,8 +113,8 @@ namespace AnimFlex.Tweener
             return tweener;
         }
 
-        public static Tweener<Color> Generate(
-            Func<Color> getter, Action<Color> setter, Color endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
+        public static Tweener<Color32> Generate(
+            Func<Color32> getter, Action<Color32> setter, Color32 endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerColor
             {

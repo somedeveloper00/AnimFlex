@@ -8,7 +8,8 @@ namespace AnimFlex.Sequencer.Clips
     {
         protected override void OnStart()
         {
-            Node.sequence.Complete();
+            Node.sequence.Stop();
         }
+        public override void OnEnd() { }
     }
 }

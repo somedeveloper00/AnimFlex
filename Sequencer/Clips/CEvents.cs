@@ -14,7 +14,7 @@ namespace AnimFlex.Sequencer.Clips
             Event.Invoke();
             PlayNext();
         }
-
+        public override void OnEnd() { }
     }
 
     public abstract class CEvent<T> : Clip
@@ -27,6 +27,7 @@ namespace AnimFlex.Sequencer.Clips
             Event.Invoke(Value);
             PlayNext();
         }
+        public override void OnEnd() { }
     }
 
     public abstract class CEvent<T1, T2> : Clip
@@ -40,6 +41,7 @@ namespace AnimFlex.Sequencer.Clips
             Event.Invoke(Value1, Value2);
             PlayNext();
         }
+        public override void OnEnd() { }
     }
 
     public abstract class CEvent<T1, T2, T3> : Clip
@@ -54,6 +56,7 @@ namespace AnimFlex.Sequencer.Clips
             Event.Invoke(Value1, Value2, Value3);
             PlayNext();
         }
+        public override void OnEnd() { }
     }
 
     [DisplayName("Event (string)")]

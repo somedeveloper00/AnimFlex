@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AnimFlex.Editor
 {
-    public static class AFStyles
+    public class AFStyles
     {
         public class CenteredEditorStyles : IDisposable
         {
@@ -101,8 +101,8 @@ namespace AnimFlex.Editor
                 EditorStyles.label.fontSize = AFEditorSettings.Instance.fontSize;
                 EditorStyles.label.alignment = TextAnchor.MiddleCenter;
                 EditorStyles.label.normal.textColor = AFEditorSettings.Instance.labelCol;
-                EditorStyles.label.hover.textColor = Color.white;
-                EditorStyles.label.onHover.textColor = Color.white;
+                EditorStyles.label.hover.textColor = AFEditorSettings.Instance.labelCol_Hover;
+                EditorStyles.label.onHover.textColor = AFEditorSettings.Instance.labelCol_Hover;
 
                 EditorStyles.largeLabel.font = AFEditorSettings.Instance.font;
                 EditorStyles.largeLabel.fontSize = AFEditorSettings.Instance.bigFontSize;
@@ -140,7 +140,7 @@ namespace AnimFlex.Editor
 
         public static void Refresh()
         {
-            _button = _yellowButton = _specialLabel = _bigButton = _textField = _bigTextField = _popup = null;
+            _label = _button = _specialLabel = _bigButton = _bigTextField = _popup = null;
         }
 
         private static GUIStyle _button;
@@ -164,7 +164,8 @@ namespace AnimFlex.Editor
             {
                 if (_bigButton != null) return _bigButton;
                 _bigButton = new GUIStyle(Button);
-                _bigButton.fontSize = 18;
+                _bigButton.fontSize = AFEditorSettings.Instance.bigFontSize;
+                _bigButton.richText = true;
                 return _bigButton;
             }
         }
@@ -176,7 +177,8 @@ namespace AnimFlex.Editor
             {
                 if (_clearButton != null) return _clearButton;
                 _clearButton = new GUIStyle(Button);
-                _clearButton.fontSize = 18;
+                _clearButton.fontSize = AFEditorSettings.Instance.bigFontSize;
+                _clearButton.normal.textColor = AFEditorSettings.Instance.buttonDefCol;
                 _clearButton.alignment = TextAnchor.MiddleCenter;
 
                 var tex = new Texture2D(2, 2);
@@ -189,20 +191,6 @@ namespace AnimFlex.Editor
                 _clearButton.normal.background = _clearButton.hover.background =
                     _clearButton.onHover.background = tex;
                 return _clearButton;
-            }
-        }
-
-        private static GUIStyle _yellowButton;
-        public static GUIStyle YellowButton
-        {
-            get
-            {
-                if (_yellowButton != null) return _yellowButton;
-                _yellowButton = new GUIStyle(GUI.skin.button);
-                _yellowButton.normal.textColor = AFEditorSettings.Instance.buttonYellowCol;
-                _yellowButton.font = AFEditorSettings.Instance.font;
-                _yellowButton.fontSize = AFEditorSettings.Instance.fontSize;
-                return _yellowButton;
             }
         }
 
@@ -252,21 +240,6 @@ namespace AnimFlex.Editor
             }
         }
 
-        private static GUIStyle _textField;
-        public static GUIStyle TextField
-        {
-            get
-            {
-                if (_textField != null) return _textField;
-                _textField = new GUIStyle(EditorStyles.textField);
-                _textField.font = AFEditorSettings.Instance.font;
-                _textField.alignment = TextAnchor.MiddleCenter;
-                _textField.fontSize = AFEditorSettings.Instance.fontSize;
-                _textField.fixedHeight = 0;
-                return _textField;
-            }
-        }
-
         private static GUIStyle _popup;
         public static GUIStyle Popup
         {
@@ -286,9 +259,6 @@ namespace AnimFlex.Editor
             }
         }
 
-        public static Rect PadX(this Rect rect, float pad) =>
-            new Rect(rect.x + pad, rect.y, rect.width - pad * 2, rect.height);
-
         public static bool DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, bool value, string tooltip, out bool result)
         {
             var options = new GUIContent[]
@@ -297,7 +267,7 @@ namespace AnimFlex.Editor
             };
             using var check = new EditorGUI.ChangeCheckScope();
             using (new AFStyles.EditorLabelWidth(0))
-                result = EditorGUI.Popup(position, GUIContent.none, value ? 0 : 1, options, AFStyles.Popup) == 0;
+	            result = EditorGUI.Popup(position, GUIContent.none, value ? 0 : 1, options, AFStyles.Popup) == 0;
             return check.changed;
         }
 
@@ -334,39 +304,6 @@ namespace AnimFlex.Editor
                 using(new GuiColor(Color.yellow))
                     GUI.Label(position, guiContent, style);
             }
-        }
-        public static void DrawBigTextField(SerializedProperty stringProperty, params GUILayoutOption[] options)
-        {
-            // changing editor styles and keeping their old states
-            var style = new GUIStyle(EditorStyles.textField);
-            EditorStyles.textField.fontSize = AFEditorSettings.Instance.bigFontSize;
-            EditorStyles.textField.font = AFEditorSettings.Instance.font;
-            EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
-            EditorStyles.textField.fixedHeight = AFStyles.BigHeight;
-
-            var list = options.ToList();
-            list.Add(GUILayout.Height(AFStyles.BigHeight));
-            options = list.ToArray();
-
-            GUI.backgroundColor = Color.clear;
-
-            using (new GuiBackgroundColor(Color.clear))
-            {
-                using (new EditorLabelWidth(0))
-                {
-                    GUILayout.BeginVertical();
-                    stringProperty.stringValue = EditorGUILayout.TextField(stringProperty.stringValue, options);
-                    GUILayout.Space(5);
-                    GUILayout.EndVertical();
-                }
-            }
-
-            // reverting the editor styles old states
-            EditorStyles.textField.font  = style.font;
-            EditorStyles.textField.fontSize = style.fontSize;
-            EditorStyles.textField.fontStyle = style.fontStyle;
-            EditorStyles.textField.alignment = style.alignment;
-            EditorStyles.textField.fixedHeight = style.fixedHeight;
         }
 
         public static float Height => AFEditorSettings.Instance.height;

@@ -9,10 +9,11 @@ namespace AnimFlex.Sequencer.Clips
     {
         [Tooltip("The node index to play after this node")]
         public int index;
-        
+
         protected override void OnStart()
         {
             PlayIndex(index);
         }
+        public override void OnEnd() { }
     }
 }
