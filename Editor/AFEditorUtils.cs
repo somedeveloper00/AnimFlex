@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using AnimFlex.Sequencer;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Component = UnityEngine.Component;
@@ -259,29 +258,5 @@ namespace AnimFlex.Editor
             }
         }
 
-        /// <summary>
-        /// taken from Unity Internal EditModeLauncher file
-        /// </summary>
-        public static void ReloadUnsavedDirtyScene()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                var ReloadScene = typeof(EditorSceneManager).GetMethod("ReloadScene",
-                    BindingFlags.Default | BindingFlags.Static | BindingFlags.NonPublic);
-
-
-                for (var i = 0; i < SceneManager.sceneCount; i++)
-                {
-                    var scene = SceneManager.GetSceneAt(i);
-                    var isSceneNotPersisted = string.IsNullOrEmpty(scene.path);
-                    var isSceneDirty = scene.isDirty;
-                    if (!isSceneNotPersisted && isSceneDirty)
-                    {
-                        Debug.Log($"reloading scene {scene.name}");
-                        ReloadScene.Invoke(null, new object[] { scene });
-                    }
-                }
-            };
-        }
     }
 }

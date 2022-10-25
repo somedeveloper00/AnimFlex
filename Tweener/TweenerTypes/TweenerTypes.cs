@@ -18,7 +18,7 @@ namespace AnimFlex.Tweener
         internal override void Set(float t) => setter(startValue + (endValue - startValue) * t);
     }
 
-    
+
     internal class TweenerVector3 : Tweener<Vector3>
     {
         internal override void Set(float t) => setter(Vector3.LerpUnclamped(startValue, endValue, t));
@@ -37,7 +37,7 @@ namespace AnimFlex.Tweener
         internal override void Set(float t) => setter(Quaternion.LerpUnclamped(startValue, endValue, t));
     }
 
-    internal class TweenerColor : Tweener<Color>
+    internal class TweenerColor : Tweener<Color32>
     {
         internal override void Set(float t) => setter(Color.LerpUnclamped(startValue, endValue, t));
     }

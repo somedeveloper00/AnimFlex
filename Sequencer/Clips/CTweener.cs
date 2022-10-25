@@ -11,6 +11,8 @@ namespace AnimFlex.Sequencer.Clips
         public bool playNextOnStart = false;
         public T tweenerGenerator;
 
+        private Tweener.Tweener tweener;
+
         protected override void OnStart()
         {
             if (playNextOnStart)
@@ -18,6 +20,7 @@ namespace AnimFlex.Sequencer.Clips
 
             if (tweenerGenerator.TryGenerateTween(out var tweener))
             {
+	            this.tweener = tweener;
                 if (!playNextOnStart)
                     tweener.onComplete += PlayNext;
             }
@@ -27,5 +30,11 @@ namespace AnimFlex.Sequencer.Clips
                 PlayNext();
             }
         }
+
+        public override void OnEnd()
+        {
+	        TweenerController.Instance.KillTweener(tweener, true, false);
+        }
+
     }
 }

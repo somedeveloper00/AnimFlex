@@ -60,12 +60,12 @@ namespace AnimFlex.Editor.Tweener
 
             using (new AFStyles.GuiForceActive())
             {
-                if (GUI.Button(pos,  PreviewUtils.isActive ? "Stop" : "Play Tweener", AFStyles.Button))
+                if (GUI.Button(pos,  AFPreviewUtils.isActive ? "Stop" : "Play Tweener", AFStyles.Button))
                 {
-                    if(PreviewUtils.isActive)
-                        PreviewUtils.StopPreviewMode();
+                    if(AFPreviewUtils.isActive)
+                        AFPreviewUtils.StopPreviewMode();
                     else
-                        PreviewUtils.PreviewTweener(target);
+                        AFPreviewUtils.PreviewTweener(target);
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace AnimFlex.Editor.Tweener
         protected virtual float DrawValue_Height()
         {
             var targetProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.target));
-            return EditorGUI.GetPropertyHeight(targetProp);
+            return Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(targetProp));
         }
         protected virtual void DrawValue(Rect position)
         {
@@ -218,7 +218,6 @@ namespace AnimFlex.Editor.Tweener
             var targetProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.target));
             var relativeProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.relative));
 
-            float height = 0;
             var pos = new Rect(position);
             pos.height = AFStyles.Height;
 
@@ -228,7 +227,6 @@ namespace AnimFlex.Editor.Tweener
             pos.x += pos.width;
             pos.width = position.width - 80 - 80;
             EditorGUI.PropertyField(pos, targetProp, GUIContent.none);
-            height += EditorGUI.GetPropertyHeight(targetProp);
 
             pos.x += pos.width;
             pos.width = 80;

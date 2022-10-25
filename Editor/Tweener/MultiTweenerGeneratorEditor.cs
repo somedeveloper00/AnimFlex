@@ -11,7 +11,7 @@ namespace AnimFlex.Editor.Tweener
         {
             var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
             var height = Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(selectionsProp));
-            
+
             if(selectionsProp.arraySize == 0)
                 height += AFStyles.Height + AFStyles.VerticalSpace;
             return height;
@@ -20,7 +20,7 @@ namespace AnimFlex.Editor.Tweener
         protected override void DrawFrom(Rect position)
         {
             var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
-            
+
             var pos = new Rect(position);
 
             using (var check = new EditorGUI.ChangeCheckScope())
@@ -44,19 +44,14 @@ namespace AnimFlex.Editor.Tweener
             }
         }
 
-        protected override float DrawTiming_Height()
-        {
-            return base.DrawTiming_Height();
-        }
-
         protected override void DrawTiming(Rect position)
         {
             var durationProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.duration));
             var delayProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.delay));
             var multiDelayProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.multiDelay));
             var pingPongProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.pingPong));
-            
-            
+
+
             var pos = new Rect(position);
             pos.width = (position.width - 80) * 0.35f;
             using (new AFStyles.EditorLabelWidth(80))
@@ -74,7 +69,7 @@ namespace AnimFlex.Editor.Tweener
             using (new AFStyles.EditorLabelWidth(80))
                 using (new AFStyles.EditorFieldMinWidth(pos, 40))
                     EditorGUI.PropertyField(pos, multiDelayProp, new GUIContent("Multi-Delay :", multiDelayProp.tooltip));
-            
+
 
             pos.x += pos.width;
             pos.width = 80;
