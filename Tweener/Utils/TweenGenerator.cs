@@ -9,12 +9,13 @@ namespace AnimFlex.Tweener
     public partial class Tweener
     {
         public static Tweener<float> Generate(
-            Func<float> getter, Action<float> setter, float endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
+            Func<float> getter, Action<float> setter, Func<bool> isValid, float endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerFloat
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
@@ -26,12 +27,13 @@ namespace AnimFlex.Tweener
         }
 
         public static Tweener<int> Generate(
-            Func<int> getter, Action<int> setter, int endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
+            Func<int> getter, Action<int> setter, Func<bool> isValid, int endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerInt
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
@@ -43,13 +45,14 @@ namespace AnimFlex.Tweener
         }
 
         public static Tweener<Vector2> Generate(
-            Func<Vector2> getter, Action<Vector2> setter, Vector2 endValue, Ease ease = Ease.InOutSine, float duration = 1,
+            Func<Vector2> getter, Action<Vector2> setter, Func<bool> isValid, Vector2 endValue, Ease ease = Ease.InOutSine, float duration = 1,
             float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerVector2
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
@@ -61,13 +64,14 @@ namespace AnimFlex.Tweener
         }
 
         public static Tweener<Vector3> Generate(
-            Func<Vector3> getter, Action<Vector3> setter, Vector3 endValue, Ease ease = Ease.InOutSine, float duration = 1,
+            Func<Vector3> getter, Action<Vector3> setter, Func<bool> isValid, Vector3 endValue, Ease ease = Ease.InOutSine, float duration = 1,
             float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerVector3
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
@@ -79,13 +83,14 @@ namespace AnimFlex.Tweener
         }
 
         public static Tweener<Quaternion> Generate(
-            Func<Quaternion> getter, Action<Quaternion> setter, Quaternion endValue, Ease ease = Ease.InOutSine, float duration = 1,
+            Func<Quaternion> getter, Action<Quaternion> setter, Func<bool> isValid, Quaternion endValue, Ease ease = Ease.InOutSine, float duration = 1,
             float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerQuaternion
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
@@ -97,12 +102,13 @@ namespace AnimFlex.Tweener
         }
 
         public static Tweener<Rect> Generate(
-            Func<Rect> getter, Action<Rect> setter, Rect endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
+            Func<Rect> getter, Action<Rect> setter, Func<bool> isValid, Rect endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerRect
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,
@@ -114,12 +120,13 @@ namespace AnimFlex.Tweener
         }
 
         public static Tweener<Color> Generate(
-            Func<Color> getter, Action<Color> setter, Color endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
+            Func<Color> getter, Action<Color> setter, Func<bool> isValid, Color endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null)
         {
             var tweener = new TweenerColor
             {
                 getter = getter,
                 setter = setter,
+                isValid = isValid,
                 endValue = endValue,
                 ease = ease,
                 duration = duration,

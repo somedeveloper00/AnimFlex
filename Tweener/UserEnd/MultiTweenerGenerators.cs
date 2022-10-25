@@ -43,7 +43,9 @@ namespace AnimFlex.Tweener
                 {
                     t = value;
                     fromObject.rotation = Quaternion.Euler(Vector3.LerpUnclamped(startRot, toRot, t));
-                }, 1, ease, duration, delay, curve);
+                },
+                () => fromObject != null,
+                1, ease, duration, delay, curve);
         }
     }
 
@@ -62,7 +64,9 @@ namespace AnimFlex.Tweener
                 {
                     t = value;
                     fromObject.localRotation = Quaternion.Euler(Vector3.LerpUnclamped(startRot, toRot, t));
-                }, 1, ease, duration, delay, curve);
+                }, 
+                () => fromObject != null,
+                1, ease, duration, delay, curve);
         }
     }
 
@@ -97,7 +101,9 @@ namespace AnimFlex.Tweener
                 {
                     t = value;
                     onSet?.Invoke(t);
-                }, 1, ease, duration, delay, curve);
+                }, 
+                () => fromObject != null,
+                1, ease, duration, delay, curve);
         }
     }
 

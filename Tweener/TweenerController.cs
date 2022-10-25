@@ -41,43 +41,51 @@ namespace AnimFlex.Tweener
                 }
             }
 
-			// setter phase
+			// setter (or tick) phase
             bool _completed = false; // mark for tweener's completion
             for (var i = 0; i < _tweeners.Length; i++)
             {
                 var tweener = _tweeners[i];
                 var totalTime = tweener.duration + tweener.delay;
 
-                var t = tweener._t + deltaTime;
-
-                // apply loop
-                if (tweener.loops != 0 && t >= totalTime)
+                // is not valid, set it as completed
+                if (!tweener.IsValid())
                 {
-                    t %= totalTime;
-                    t += tweener.delay - tweener.loopDelay;
-                    tweener.loops--;
+                    _completed = true;
                 }
-
-                // to avoid repeated evaluations
-                if(tweener._t == t) continue;
-
-                tweener._t = t; // save for next Ticks
-
-
-
-                _completed = t >= totalTime; // completion check
-                t = _completed ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
-
-
-                // apply ping pong
-                if (tweener.pingPong && t != 0)
+                else
                 {
-                    t *= 2;
-                    if (t > 1) t = 2 - t;
-                }
+                    var t = tweener._t + deltaTime;
 
-                tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
-                tweener.OnUpdate();
+                    // apply loop
+                    if (tweener.loops != 0 && t >= totalTime)
+                    {
+                        t %= totalTime;
+                        t += tweener.delay - tweener.loopDelay;
+                        tweener.loops--;
+                    }
+
+                    // to avoid repeated evaluations
+                    if (tweener._t == t) continue;
+
+                    tweener._t = t; // save for next Ticks
+
+
+
+                    _completed = t >= totalTime; // completion check
+                    t = _completed ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
+
+
+                    // apply ping pong
+                    if (tweener.pingPong && t != 0)
+                    {
+                        t *= 2;
+                        if (t > 1) t = 2 - t;
+                    }
+
+                    tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
+                    tweener.OnUpdate();
+                }
 
                 // check for completion
                 if (_completed)
@@ -129,7 +137,7 @@ namespace AnimFlex.Tweener
 
             if (complete)
             {
-                // manipulate it's inner time
+                // manipulate it's time, and let Tick call it's setter() on the next loop
                 tweener._t = tweener.delay + tweener.duration;
             }
 

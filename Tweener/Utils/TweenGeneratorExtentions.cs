@@ -18,6 +18,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => transform.position,
                 (value) => transform.position = value,
+                () => transform != null,
                 endPosition, ease, duration, delay, curve);
         }
         #endregion
@@ -36,6 +37,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => transform.localPosition,
                 (value) => transform.localPosition = value,
+                () => transform != null,
                 endPosition, ease, duration, delay, curve);
         }
 
@@ -55,6 +57,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => transform.rotation,
                 (value) => transform.rotation = value,
+                () => transform != null,
                 endRotation, ease, duration, delay, curve);
         }
 
@@ -73,6 +76,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => transform.localRotation,
                 (value) => transform.localRotation = value,
+                () => transform != null,
                 endRotation, ease, duration, delay, curve);
         }
         public static Tweener AnimLocalRotationTo(this Transform transform, Vector3 endRotation, AnimationCurve curve, float duration = 1, float delay = 0) =>
@@ -95,6 +99,7 @@ namespace AnimFlex.Tweener
                     vec = Vector3.LerpUnclamped(fromVec, endRotation, t);
                     transform.rotation = Quaternion.Euler(vec);
                 },
+                () => transform != null,
                 1, ease, duration, delay, curve);
         }
 
@@ -123,6 +128,7 @@ namespace AnimFlex.Tweener
                     vec = Vector3.Lerp(fromVec, endRotation, t);
                     transform.rotation = Quaternion.Euler(vec);
                 },
+                () => transform != null,
                 1, ease, duration, delay, curve);
         }
 
@@ -143,6 +149,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => transform.localScale,
                 (value) => transform.localScale = value,
+                () => transform != null,
                 endScale, ease, duration, delay, curve);
         }
 
@@ -161,6 +168,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => graphic.color.a,
                 (value) => graphic.color = new Color(graphic.color.r, graphic.color.g, graphic.color.b, value),
+                () => graphic != null,
                 endFade, ease, duration, delay, curve);
         }
         
@@ -175,6 +183,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => material.color.a,
                 (value) => material.color = new Color(material.color.r, material.color.g, material.color.b, value),
+                () => material != null,
                 endFade, ease, duration, delay, curve);
         }
 
@@ -194,6 +203,7 @@ namespace AnimFlex.Tweener
                     var material = renderer.material;
                     material.color = new Color(material.color.r, material.color.g, material.color.b, value);
                 },
+                () => renderer != null,
                 endFade, ease, duration, delay, curve);
         }
 
@@ -209,6 +219,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => canvasGroup.alpha,
                 (value) => canvasGroup.alpha = value,
+                () => canvasGroup != null,
                 endFade, ease, duration, delay, curve);
         }
 
@@ -227,6 +238,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => graphic.color,
                 (value) => graphic.color = value,
+                () => graphic != null,
                 endColor, ease, duration, delay, curve);
         }
 
@@ -242,6 +254,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => material.color,
                 (value) => material.color = value,
+                () => material != null,
                 endColor, ease, duration, delay, curve);
         }
 
@@ -257,6 +270,7 @@ namespace AnimFlex.Tweener
             return Tweener.Generate(
                 () => renderer.material.color,
                 (value) => renderer.material.color = value,
+                () => renderer != null,
                 endColor, ease, duration, delay, curve);
         }
         

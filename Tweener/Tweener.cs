@@ -29,7 +29,14 @@ namespace AnimFlex.Tweener
     
     public abstract partial class Tweener
     {
+        /// <summary>
+        /// Checks whether or not the <see cref="Tweener"/> is valid. (e.g. could check if <see cref="GameObject"/> is <c>enabled</c>
+        /// </summary>
+        internal Func<bool> isValid;
+
+        /// <summary>
         /// per-tween T value for evaluation
+        /// </summary>
         internal float _t = 0;
         
         /// <summary>
@@ -115,7 +122,9 @@ namespace AnimFlex.Tweener
         #endregion
 
         #region helpers
-        public void Kill(bool complete, bool onKillCallback) => TweenerController.Instance.KillTweener(this, complete, onKillCallback);
+        public void Kill(bool complete, bool onKillCallback) => 
+            TweenerController.Instance.KillTweener(this, complete, onKillCallback);
+        public bool IsValid() => isValid is null || isValid();
         #endregion
     }
 
