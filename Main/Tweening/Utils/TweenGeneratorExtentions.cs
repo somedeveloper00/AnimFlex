@@ -170,7 +170,6 @@ namespace AnimFlex.Tweening
                 (value) =>
                 {
                     var graphicColor = new Color(graphic.color.r, graphic.color.g, graphic.color.b, value);
-                    Debug.Log($"col: {graphicColor}");
                     graphic.color = graphicColor;
                 },
                 endFade, ease, duration, delay, curve,
