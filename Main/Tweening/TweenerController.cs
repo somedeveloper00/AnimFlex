@@ -28,7 +28,7 @@ namespace AnimFlex.Tweening
 	        Profiler.BeginSample("Tweener Tick");
 #endif
 
-            _tweeners.LetEveryoneIn(); // flush the array
+            _tweeners.FlushQueueIn(); // flush the array
 
             // init phase
             for (var i = 0; i < _tweeners.Length; i++)

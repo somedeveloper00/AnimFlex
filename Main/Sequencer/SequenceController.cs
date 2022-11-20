@@ -24,7 +24,7 @@ namespace AnimFlex.Sequencer
 #if UNITY_EDITOR
 	        Profiler.BeginSample("Sequencer Tick");
 #endif
-            _sequences.LetEveryoneIn(); // flush the array
+            _sequences.FlushQueueIn(); // flush the array
 
             // init phase
             for (int i = 0; i < _sequences.Length; i++)

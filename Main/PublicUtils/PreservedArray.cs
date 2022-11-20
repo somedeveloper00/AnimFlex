@@ -62,7 +62,7 @@ namespace AnimFlex
         /// <summary>
         /// lets all queued elements in the active array range, and clears the queue list
         /// </summary>
-        public void LetEveryoneIn()
+        public void FlushQueueIn()
         {
             Length += queueLength;
             queueLength = 0;
