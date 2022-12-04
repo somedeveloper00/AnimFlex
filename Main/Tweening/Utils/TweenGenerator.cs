@@ -133,5 +133,23 @@ namespace AnimFlex.Tweening
             };
             return tweener;
         }
+
+        public static Tweener<string> Generate(
+            Func<string> getter, Action<string> setter, string endValue, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimationCurve customCurve = null, Func<bool> isValid = null)
+        {
+            var tweener = new TweenerString
+            {
+                getter = getter,
+                setter = setter,
+                isValid = isValid,
+                endValue = endValue,
+                ease = ease,
+                duration = duration,
+                delay = delay,
+                customCurve = customCurve,
+                useCurve = customCurve != null
+            };
+            return tweener;
+        }
     }
 }

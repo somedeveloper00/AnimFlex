@@ -15,8 +15,8 @@ MonoBehaviour:
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 13
   bigFontSize: 15
-  bigHeight: 18
-  height: 20
+  bigHeight: 20
+  height: 18
   verticalSpace: 4
   buttonDefCol:
     darkColor: {r: 0.8584906, g: 0.8584906, b: 0.8584906, a: 1}

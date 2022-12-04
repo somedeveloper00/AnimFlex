@@ -7,7 +7,7 @@ namespace AnimFlex
 	[Serializable]
 	public class TweenerGeneratorLightColor : TweenerGenerator<Light, Color>
 	{
-		protected override Tweening.Tweener GenerateTween(AnimationCurve curve)
+		protected override Tweener GenerateTween(AnimationCurve curve)
 		{
 			return fromObject.AnimLightColorTo(target, ease, duration, delay, curve);
 		}
@@ -16,7 +16,7 @@ namespace AnimFlex
 	[Serializable]
 	public class TweenerGeneratorLightIntensity : TweenerGenerator<Light, float>
 	{
-		protected override Tweening.Tweener GenerateTween(AnimationCurve curve)
+		protected override Tweener GenerateTween(AnimationCurve curve)
 		{
 			return fromObject.AnimLightIntensityTo(target, ease, duration, delay, curve);
 		}
@@ -25,7 +25,7 @@ namespace AnimFlex
 	[Serializable]
 	public class TweenerGeneratorLightRange : TweenerGenerator<Light, float>
 	{
-		protected override Tweening.Tweener GenerateTween(AnimationCurve curve)
+		protected override Tweener GenerateTween(AnimationCurve curve)
 		{
 			return fromObject.AnimLightRangeTo(target, ease, duration, delay, curve);
 		}

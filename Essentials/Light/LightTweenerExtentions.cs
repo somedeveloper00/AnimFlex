@@ -7,20 +7,20 @@ public static class LightTweenerExtentions
 {
 
 	public static Tweener<Color> AnimLightColorTo(this Light light, Color color, AnimationCurve curve,
-		float delay = 0, float duration = 1) =>
-		AnimLightColorTo(light, color, Ease.Linear, delay, duration, curve);
+		float duration = 1, float delay = 0) =>
+		AnimLightColorTo(light, color, Ease.Linear, duration, delay, curve);
 
 	public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease = Ease.InOutSine,
-		float delay = 0, float duration = 1) =>
-		AnimLightColorTo(light, color, ease, delay, duration, null);
+		float duration = 1, float delay = 0) =>
+		AnimLightColorTo(light, color, ease, duration, delay, null);
 	
 	public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease = Ease.InOutSine,
-		float delay = 0, float duration = 1, AnimationCurve curve = null)
+		float duration = 1, float delay = 0, AnimationCurve curve = null)
 	{
 		return Tweener.Generate(
 			() => light.color,
 			(value) => light.color = value,
-			color, ease, delay, duration, curve,
+			color, ease, duration, delay, curve,
 			() => light != null);
 	}
 
