@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 0}
   labelAlignment: 0
-  fontSize: 13
-  bigFontSize: 13
+  fontSize: 12
+  bigFontSize: 12
   bigHeight: 20
   height: 20
   verticalSpace: 2
