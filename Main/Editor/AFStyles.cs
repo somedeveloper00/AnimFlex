@@ -8,12 +8,12 @@ namespace AnimFlex.Editor
 {
     public class AFStyles
     {
-        public class CenteredEditorStyles : IDisposable
+        public class AlignedEditorStyles : IDisposable
         {
-            public CenteredEditorStyles()
+            public AlignedEditorStyles()
             {
-                EditorStyles.textField.alignment = TextAnchor.MiddleCenter;
-                EditorStyles.numberField.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.textField.alignment = AFEditorSettings.Instance.labelAlignment;
+                EditorStyles.numberField.alignment = AFEditorSettings.Instance.labelAlignment;
             }
             public void Dispose()
             {
@@ -90,28 +90,32 @@ namespace AnimFlex.Editor
             private GUIStyle labelStyle;
             private GUIStyle largeLabelStyle;
             private GUIStyle popupStyle;
+            private UnityEditor.Editor _editor;
 
-            public StyledGuiScope()
-            {
+            /// <summary>
+            /// if editor is null, it won't automatically repaint
+            /// </summary>
+            public StyledGuiScope(UnityEditor.Editor editor = null) {
+                _editor = editor;
                 labelStyle = new GUIStyle(EditorStyles.label);
                 largeLabelStyle = new GUIStyle(EditorStyles.largeLabel);
                 popupStyle = new GUIStyle(EditorStyles.popup);
 
                 EditorStyles.label.font = AFEditorSettings.Instance.font;
                 EditorStyles.label.fontSize = AFEditorSettings.Instance.fontSize;
-                EditorStyles.label.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.label.alignment = AFEditorSettings.Instance.labelAlignment;
                 EditorStyles.label.normal.textColor = AFEditorSettings.Instance.labelCol;
                 EditorStyles.label.hover.textColor = AFEditorSettings.Instance.labelCol_Hover;
                 EditorStyles.label.onHover.textColor = AFEditorSettings.Instance.labelCol_Hover;
 
                 EditorStyles.largeLabel.font = AFEditorSettings.Instance.font;
                 EditorStyles.largeLabel.fontSize = AFEditorSettings.Instance.bigFontSize;
-                EditorStyles.largeLabel.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.largeLabel.alignment = AFEditorSettings.Instance.labelAlignment;
                 EditorStyles.largeLabel.normal.textColor = AFEditorSettings.Instance.labelCol;
 
                 EditorStyles.popup.font = AFEditorSettings.Instance.font;
                 EditorStyles.popup.fontSize = AFEditorSettings.Instance.fontSize;
-                EditorStyles.popup.alignment = TextAnchor.MiddleCenter;
+                EditorStyles.popup.alignment = AFEditorSettings.Instance.labelAlignment;
                 EditorStyles.popup.normal.textColor = AFEditorSettings.Instance.popupCol;
             }
 
@@ -134,13 +138,20 @@ namespace AnimFlex.Editor
                 EditorStyles.popup.alignment = popupStyle.alignment;
                 EditorStyles.popup.normal.textColor = popupStyle.normal.textColor;
 
+                if ( _editor != null && AFEditorSettings.Instance.repaintEveryFrame ) {
+                    _editor.Repaint();
+                }
             }
 
         }
 
-        public static void Refresh()
-        {
-            _label = _button = _specialLabel = _bigButton = _bigTextField = _popup = null;
+        public static void Refresh() {
+            // set all styles to null for refresh
+            var styleFIs = typeof(AFStyles).GetFields( BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Default )
+                .Where( t => t.Name.StartsWith( "_" ) && t.GetType() == typeof(GUIStyle) );
+            foreach (var fieldInfo in styleFIs) {
+                fieldInfo.SetValue( null, null );
+            }
         }
 
         private static GUIStyle _button;
@@ -202,7 +213,7 @@ namespace AnimFlex.Editor
                 if (_specialLabel != null) return _specialLabel;
                 _specialLabel = new GUIStyle(GUI.skin.label);
                 _specialLabel.font = AFEditorSettings.Instance.font;
-                _specialLabel.alignment = TextAnchor.MiddleCenter;
+                _specialLabel.alignment = AFEditorSettings.Instance.labelAlignment;
                 _specialLabel.fontSize = AFEditorSettings.Instance.fontSize;
                 _specialLabel.normal.textColor = AFEditorSettings.Instance.labelCol;
                 _specialLabel.hover.textColor = _specialLabel.onHover.textColor = AFEditorSettings.Instance.labelCol_Hover;
@@ -218,7 +229,7 @@ namespace AnimFlex.Editor
                 if (_label != null) return _label;
                 _label = new GUIStyle(GUI.skin.label);
                 _label.font = AFEditorSettings.Instance.font;
-                _label.alignment = TextAnchor.MiddleCenter;
+                _label.alignment = AFEditorSettings.Instance.labelAlignment;
                 _label.fontSize = AFEditorSettings.Instance.fontSize;
                 return _label;
             }
@@ -233,7 +244,7 @@ namespace AnimFlex.Editor
                 _bigTextField = new GUIStyle(EditorStyles.textField);
                 _bigTextField.font = AFEditorSettings.Instance.font;
                 // _bigTextField.fontStyle = FontStyle.Bold;
-                _bigTextField.alignment = TextAnchor.MiddleCenter;
+                _bigTextField.alignment = AFEditorSettings.Instance.labelAlignment;
                 _bigTextField.fontSize = AFEditorSettings.Instance.bigFontSize;
                 _bigTextField.fixedHeight = 0;
                 return _bigTextField;
@@ -259,6 +270,24 @@ namespace AnimFlex.Editor
             }
         }
 
+        private static GUIStyle _foldout;
+        public static GUIStyle Foldout
+        {
+            get
+            {
+                if (_foldout != null) return _foldout;
+                _foldout = new GUIStyle(EditorStyles.foldout);
+                _foldout.font = AFEditorSettings.Instance.font;
+                _foldout.fontSize = AFEditorSettings.Instance.fontSize;
+                _foldout.fixedHeight = 0;
+                _foldout.normal.textColor = _foldout.hover.textColor = _foldout.active.textColor =
+                    _foldout.focused.textColor = AFEditorSettings.Instance.labelCol;
+                return _foldout;
+            }
+        }
+
+
+        
         public static bool DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, bool value, string tooltip, out bool result)
         {
             var options = new GUIContent[]
@@ -298,7 +327,7 @@ namespace AnimFlex.Editor
                 var style = new GUIStyle(EditorStyles.helpBox);
                 style.font = AFEditorSettings.Instance.font;
                 style.fontSize = AFEditorSettings.Instance.fontSize;
-                style.alignment = TextAnchor.MiddleCenter;
+                style.alignment = AFEditorSettings.Instance.labelAlignment;
                 style.wordWrap = false;
 
                 using(new GuiColor(Color.yellow))

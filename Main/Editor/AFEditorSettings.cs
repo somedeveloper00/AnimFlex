@@ -50,6 +50,7 @@ namespace AnimFlex.Editor
 		    }
 	    }
         public Font font;
+        public TextAnchor labelAlignment;
         public int fontSize;
         public int bigFontSize;
         public float bigHeight;

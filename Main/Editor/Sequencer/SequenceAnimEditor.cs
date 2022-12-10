@@ -52,8 +52,6 @@ namespace AnimFlex.Editor.Sequencer
             serializedObject.ApplyModifiedProperties();
         }
 
-        public override bool RequiresConstantRepaint() => AFEditorSettings.Instance.repaintEveryFrame;
-
         private void DrawPlayback()
         {
             using (new GUILayout.HorizontalScope())
@@ -93,7 +91,7 @@ namespace AnimFlex.Editor.Sequencer
                 displayHeader: false, displayAddButton: false, displayRemoveButton: false);
             _nodeClipList.drawElementCallback = (rect, index, active, focused) =>
             {
-                using (new AFStyles.StyledGuiScope())
+                using (new AFStyles.StyledGuiScope(this))
                 {
                     var nodeProp = _clipNodesProp.GetArrayElementAtIndex(index);
                     EditorGUI.PropertyField(rect, nodeProp, GUIContent.none, true);

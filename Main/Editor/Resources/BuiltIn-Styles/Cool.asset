@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Cool
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 12800000, guid: 29eefaaa5ed57904a8a3b86c16aadd8c, type: 3}
+  labelAlignment: 4
   fontSize: 18
   bigFontSize: 21
   bigHeight: 24

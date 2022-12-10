@@ -18,7 +18,7 @@ namespace AnimFlex.Editor.Sequencer
         {
             position.width = Mathf.Max(position.width, 350);
 
-            using (new AFStyles.CenteredEditorStyles())
+            using (new AFStyles.AlignedEditorStyles())
             {
                 using (new AFStyles.GuiColor(Color.white))
                 {

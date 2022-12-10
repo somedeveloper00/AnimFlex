@@ -13,21 +13,20 @@ namespace AnimFlex.Editor.Tweener
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(TweenerPosition.playOnStart)));
 
-            using (new AFStyles.GuiColor(AFStyles.BoxColorDarker))
-            {
-	            using (new AFStyles.GuiColor(Color.white))
+            using (new AFStyles.StyledGuiScope( this )) {
+	            using (new AFStyles.GuiColor(AFStyles.BoxColorDarker))
 	            {
-		            if (!AFPreviewUtils.isActive)
+		            // using (new AFStyles.GuiColor(Color.white))
 		            {
-						EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(TweenerPosition.generator)));
+			            if (!AFPreviewUtils.isActive)
+			            {
+							EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(TweenerPosition.generator)));
+			            }
 		            }
 	            }
             }
 
             serializedObject.ApplyModifiedProperties();
-
-            if(AFEditorSettings.Instance.repaintEveryFrame)
-                Repaint();
         }
     }
 }
