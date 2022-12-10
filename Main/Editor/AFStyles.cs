@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -147,8 +148,9 @@ namespace AnimFlex.Editor
 
         public static void Refresh() {
             // set all styles to null for refresh
-            var styleFIs = typeof(AFStyles).GetFields( BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Default )
-                .Where( t => t.Name.StartsWith( "_" ) && t.GetType() == typeof(GUIStyle) );
+            var styleFIs = typeof(AFStyles)
+                .GetFields( BindingFlags.NonPublic | BindingFlags.Static )
+                .Where( t => t.Name.StartsWith( "_" ) && t.FieldType == typeof(GUIStyle) );
             foreach (var fieldInfo in styleFIs) {
                 fieldInfo.SetValue( null, null );
             }
