@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Unity-Default
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 0}
-  labelAlignment: 3
+  labelAlignment: 0
   fontSize: 13
-  bigFontSize: 16
-  bigHeight: 16
-  height: 14
-  verticalSpace: 3
+  bigFontSize: 13
+  bigHeight: 20
+  height: 20
+  verticalSpace: 2
   buttonDefCol:
     darkColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 1}
     lightColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
@@ -38,6 +38,6 @@ MonoBehaviour:
     darkColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
     lightColor: {r: 0.95199996, g: 0.95199996, b: 0.95199996, a: 1}
   popupCol:
-    darkColor: {r: 0.97254896, g: 1, b: 0, a: 0.9098039}
-    lightColor: {r: 0.4985207, g: 0.5283019, b: 0, a: 0.9098039}
+    darkColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 1}
+    lightColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
   repaintEveryFrame: 1
