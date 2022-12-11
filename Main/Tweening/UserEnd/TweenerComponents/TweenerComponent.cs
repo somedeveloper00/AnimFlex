@@ -20,7 +20,7 @@ namespace AnimFlex.Tweening
 
 	public abstract class TweenerComponent<T> : TweenerComponent where T : TweenerGenerator, new()
 	{
-		public T generator;
+		public T generator = new T();
 
 		[Tooltip( "If checked, it'll play right when the game object activates" )] [SerializeField]
 		internal bool playOnStart;
