@@ -4,21 +4,7 @@ using UnityEngine.Events;
 
 namespace AnimFlex.Tweening
 {
-	public abstract class TweenerComponent : MonoBehaviour
-	{
-		public abstract Ease ease { get; set; }
-		public abstract float duration { get; set; }
-		public abstract float delay { get; set; }
-		public abstract UnityEvent onStart { get; }
-		public abstract UnityEvent onComplete { get; }
-		public abstract UnityEvent onKill { get; }
-		public abstract UnityEvent onUpdate { get; }
-		public abstract bool TryGetTweener(out Tweener tweener);
-		public abstract Tweener PlayOrRestart();
-		public abstract void Kill(bool complete = true, bool onCompleteCallback = true);
-	}
-
-	public abstract class TweenerComponent<T> : TweenerComponent where T : TweenerGenerator, new()
+	public abstract class MultiTweenerComponent<T> : TweenerComponent where T : MultiTweenerGenerator, new()
 	{
 		public T generator = new T();
 
@@ -52,28 +38,28 @@ namespace AnimFlex.Tweening
 
 		public override UnityEvent onStart => generator.onStart;
 
-		public TweenerComponent<T> OnStart(Action onStart) {
+		public MultiTweenerComponent<T> OnStart(Action onStart) {
 			generator.onStart.AddListener( onStart.Invoke );
 			return this;
 		}
 
 		public override UnityEvent onComplete => generator.onComplete;
 
-		public TweenerComponent<T> OnComplete(Action onComplete) {
+		public MultiTweenerComponent<T> OnComplete(Action onComplete) {
 			generator.onComplete.AddListener( onComplete.Invoke );
 			return this;
 		}
 
 		public override UnityEvent onKill => generator.onKill;
 
-		public TweenerComponent<T> OnKill(Action onKill) {
+		public MultiTweenerComponent<T> OnKill(Action onKill) {
 			generator.onKill.AddListener( onKill.Invoke );
 			return this;
 		}
 
 		public override UnityEvent onUpdate => generator.onUpdate;
 
-		public TweenerComponent<T> OnUpdate(Action onUpdate) {
+		public MultiTweenerComponent<T> OnUpdate(Action onUpdate) {
 			generator.onUpdate.AddListener( onUpdate.Invoke );
 			return this;
 		}

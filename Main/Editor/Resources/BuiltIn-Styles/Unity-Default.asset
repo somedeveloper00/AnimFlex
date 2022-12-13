@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Unity-Default
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 0}
-  labelAlignment: 0
+  labelAlignment: 3
   fontSize: 12
   bigFontSize: 12
   bigHeight: 20
@@ -32,8 +32,8 @@ MonoBehaviour:
     darkColor: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
   BoxColDarker:
-    darkColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 1}
-    lightColor: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
+    darkColor: {r: 0.291, g: 0.291, b: 0.291, a: 1}
+    lightColor: {r: 0.872, g: 0.872, b: 0.872, a: 1}
   backgroundBoxCol:
     darkColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
     lightColor: {r: 0.95199996, g: 0.95199996, b: 0.95199996, a: 1}

@@ -42,7 +42,7 @@ namespace AnimFlex.Core
         public float deltaTimeIgnoreThreshold = 0.2f;
 
         [Tooltip("Maximum amount of tweens (marked as Deleted) to actually delete per frame")]
-        public int maxTweenDeletionPerFrame = 5;
+        public int maxTweenerGarbageCollectPerFrame = 5;
 
         [Tooltip("Maximum amount of tweens at once")]
         public int maxTweenCount = 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
