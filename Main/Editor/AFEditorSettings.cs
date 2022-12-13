@@ -49,6 +49,8 @@ namespace AnimFlex.Editor
 			    return EditorGUIUtility.isProSkin ? themeBasedColor.darkColor : themeBasedColor.lightColor;
 		    }
 	    }
+
+	    public bool useSpecialStyle = true;
         public Font font;
         public TextAnchor labelAlignment;
         public int fontSize;

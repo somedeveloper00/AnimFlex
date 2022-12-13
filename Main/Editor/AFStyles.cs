@@ -13,11 +13,13 @@ namespace AnimFlex.Editor
         {
             public AlignedEditorStyles()
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return;
                 EditorStyles.textField.alignment = AFEditorSettings.Instance.labelAlignment;
                 EditorStyles.numberField.alignment = AFEditorSettings.Instance.labelAlignment;
             }
             public void Dispose()
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return;
                 EditorStyles.textField.alignment = TextAnchor.UpperLeft;
                 EditorStyles.numberField.alignment = TextAnchor.UpperLeft;
             }
@@ -97,6 +99,7 @@ namespace AnimFlex.Editor
             /// if editor is null, it won't automatically repaint
             /// </summary>
             public StyledGuiScope(UnityEditor.Editor editor = null) {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return;
                 _editor = editor;
                 labelStyle = new GUIStyle(EditorStyles.label);
                 largeLabelStyle = new GUIStyle(EditorStyles.largeLabel);
@@ -122,6 +125,7 @@ namespace AnimFlex.Editor
 
             public void Dispose()
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return;
                 EditorStyles.label.font = labelStyle.font;
                 EditorStyles.label.fontSize = labelStyle.fontSize;
                 EditorStyles.label.alignment = labelStyle.alignment;
@@ -161,6 +165,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return GUI.skin.button;
                 if (_button != null) return _button;
                 _button = new GUIStyle(GUI.skin.button);
                 _button.normal.textColor = AFEditorSettings.Instance.buttonDefCol;
@@ -175,6 +180,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return Button;
                 if (_bigButton != null) return _bigButton;
                 _bigButton = new GUIStyle(Button);
                 _bigButton.fontSize = AFEditorSettings.Instance.bigFontSize;
@@ -188,6 +194,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return GUI.skin.button;
                 if (_clearButton != null) return _clearButton;
                 _clearButton = new GUIStyle(Button);
                 _clearButton.fontSize = AFEditorSettings.Instance.bigFontSize;
@@ -212,6 +219,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return GUI.skin.label;
                 if (_specialLabel != null) return _specialLabel;
                 _specialLabel = new GUIStyle(GUI.skin.label);
                 _specialLabel.font = AFEditorSettings.Instance.font;
@@ -228,6 +236,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return GUI.skin.label;
                 if (_label != null) return _label;
                 _label = new GUIStyle(GUI.skin.label);
                 _label.font = AFEditorSettings.Instance.font;
@@ -242,6 +251,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return EditorStyles.textField;
                 if (_bigTextField != null) return _bigTextField;
                 _bigTextField = new GUIStyle(EditorStyles.textField);
                 _bigTextField.font = AFEditorSettings.Instance.font;
@@ -258,6 +268,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return EditorStyles.popup;
                 if (_popup != null) return _popup;
                 _popup = new GUIStyle(EditorStyles.popup);
                 _popup.font = AFEditorSettings.Instance.font;
@@ -277,6 +288,7 @@ namespace AnimFlex.Editor
         {
             get
             {
+                if ( !AFEditorSettings.Instance.useSpecialStyle ) return EditorStyles.foldout;
                 if (_foldout != null) return _foldout;
                 _foldout = new GUIStyle(EditorStyles.foldout);
                 _foldout.font = AFEditorSettings.Instance.font;

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 859f53b6587045209dc05ede6b4fc62c, type: 3}
   m_Name: StyleSettings
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
+  useSpecialStyle: 0
   font: {fileID: 0}
   labelAlignment: 3
   fontSize: 12
@@ -40,4 +41,4 @@ MonoBehaviour:
   popupCol:
     darkColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 1}
     lightColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
-  repaintEveryFrame: 1
+  repaintEveryFrame: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AnimFlex
 {
-	[AddComponentMenu("AnimFlex/Tweener/Text/TextMesh")]
+	[AddComponentMenu("AnimFlex/Tweener/Text/Tweener TextMesh")]
 	public class TweenerTMP_Text : TweenerComponent<TweenerGeneratorTMP_Text>
 	{
 		

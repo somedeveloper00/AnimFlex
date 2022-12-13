@@ -5,6 +5,7 @@ using UnityEngine;
 namespace AnimFlex.Editor.Tweener
 {
     [CustomEditor(typeof(TweenerComponent), true)]
+    [CanEditMultipleObjects]
     public class TweenerComponentEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
