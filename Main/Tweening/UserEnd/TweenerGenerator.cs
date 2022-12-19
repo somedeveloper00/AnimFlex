@@ -201,6 +201,7 @@ namespace AnimFlex.Tweening
 		{
 			Direct,
 			GetChildren,
+			GetChildrenNext,
 			GetAllChildren,
 			Ignore
 		}
@@ -210,6 +211,7 @@ namespace AnimFlex.Tweening
 		[Tooltip( "The type of selection.\n" +
 		          "**Direct** : The object is directly added to the list of objects to tween.\n\n" +
 		          "**Get Children** : The 1st row children of this object will be added to the list of objects to tween.\n\n" +
+		          "**Get Children Next** : The first child of the 1st row children of this object will be added to the list of objects to tween.\n\n" +
 		          "**Get All Children** : All the children of this object will be added to the list of objects to tween.\n\n" +
 		          "**Ignore** : These objects will be ignored from this MultiTweener.\n\n" +
 		          "+ advanced: The phase they'll be respected is Direct, GetChildren and lastly Ignore. And there'll be no repeated " +
@@ -239,6 +241,13 @@ namespace AnimFlex.Tweening
 					foreach ( var obj in selections[i].transform.GetComponentsInChildren<TFrom>() )
 						if ( obj.gameObject.activeInHierarchy )
 							r.Add( obj );
+				}
+				else if ( selections[i].type == SelectionType.GetChildrenNext ) {
+					foreach ( Transform child in selections[i].transform ) {
+						if ( child.gameObject.activeInHierarchy )
+						if ( child.TryGetComponentInChildrenOnly<TFrom>( out var comp ) )
+							r.Add( comp );
+					}
 				}
 			}
 

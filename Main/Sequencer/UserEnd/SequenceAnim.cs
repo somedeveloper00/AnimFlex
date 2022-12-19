@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AnimFlex.Tweening;
 using UnityEngine;
 
@@ -20,28 +21,30 @@ namespace AnimFlex.Sequencer.UserEnd
 
         public Sequence sequence = new Sequence();
 
-        private void OnEnable()
-        {
-	        if (playOnEnable)
-	        {
+        private void OnEnable() {
+	        if ( playOnEnable ) {
 		        PlaySequence();
 	        }
         }
 
-        private void OnDisable()
-        {
-	        if(sequence.IsActive())
-				sequence.Stop();
+        private void OnDisable() {
+	        if ( sequence.IsActive() )
+		        sequence.Stop();
         }
 
-        private void OnValidate()
-        {
-            sequence.EditorValidate();
+        private void OnValidate() {
+	        sequence.EditorValidate();
         }
 
-        public void PlaySequence()
-        {
+        public void PlaySequence() {
 	        sequence.PlayOrRestart();
+        }
+
+        public async Task PlaySequenceAsync() {
+	        PlaySequence();
+	        bool done = false;
+	        sequence.onComplete += () => done = true;
+	        while ( !done ) await Task.Yield();
         }
     }
 }

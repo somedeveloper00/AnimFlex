@@ -12,37 +12,19 @@ namespace AnimFlex.Editor.Tweener
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            var objectRefProp = property.FindPropertyRelative(nameof(AFSelection.transform));
             var typeProp = property.FindPropertyRelative(nameof(AFSelection.type));
+            var objectRefProp = property.FindPropertyRelative(nameof(AFSelection.transform));
 
             var pos = new Rect(position);
 
             pos.height = AFStyles.Height;
-            pos.width -= 120;
-            EditorGUI.PropertyField(pos, objectRefProp, GUIContent.none);
+            pos.width = 130;
+            var type = drawSelectionType( pos );
 
             pos.x += pos.width;
-            pos.width = 120;
+            pos.width = position.width - 130;
+            EditorGUI.PropertyField(pos, objectRefProp, GUIContent.none);
 
-            if(typeProp.enumValueIndex < 0 || typeProp.enumValueIndex >= 4)
-                typeProp.enumValueIndex = 0;
-            var type = (AFSelection.SelectionType)typeProp.enumValueIndex;
-
-            using (var check = new EditorGUI.ChangeCheckScope())
-            {
-                using (new AFStyles.EditorLabelWidth(1))
-                {
-                    type = (AFSelection.SelectionType)EditorGUI.Popup(
-                        pos,
-                        typeProp.enumValueIndex,
-                        typeProp.enumDisplayNames
-                            .Select(label => new GUIContent(label, typeProp.tooltip)).ToArray(),
-                        AFStyles.Popup);
-                }
-
-                if (check.changed)
-                    typeProp.enumValueIndex = (int)type;
-            }
 
             // error check
             pos.x = position.x;
@@ -64,6 +46,28 @@ namespace AnimFlex.Editor.Tweener
             }
 
             EditorGUI.EndProperty();
+
+            AFSelection.SelectionType drawSelectionType(Rect rect) {
+                if ( typeProp.enumValueIndex < 0 || typeProp.enumValueIndex >= 4 )
+                    typeProp.enumValueIndex = 0;
+                var type = (AFSelection.SelectionType)typeProp.enumValueIndex;
+
+                using (var check = new EditorGUI.ChangeCheckScope()) {
+                    using (new AFStyles.EditorLabelWidth( 1 )) {
+                        type = (AFSelection.SelectionType)EditorGUI.Popup(
+                            rect,
+                            typeProp.enumValueIndex,
+                            typeProp.enumDisplayNames
+                                .Select( label => new GUIContent( label, typeProp.tooltip ) ).ToArray(),
+                            AFStyles.Popup );
+                    }
+
+                    if ( check.changed )
+                        typeProp.enumValueIndex = (int)type;
+                }
+
+                return type;
+            }
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
