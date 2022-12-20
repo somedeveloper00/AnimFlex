@@ -7,15 +7,14 @@ namespace AnimFlex.Sequencer
     {
         [NonSerialized] public ClipNode Node;
 
-        protected void PlayNext() => Node.PlayNextClipNode();
-        protected void PlayIndex(int index) => Node.PlayClipNode(index);
+        protected void PlayNext(bool endSelf = true) => Node.StartNextClipNode( endSelf );
+        protected void PlayIndex(int index) => Node.sequence?.StartClip( index );
 
-        internal void Init(ClipNode node)
-        {
+        internal void Init(ClipNode node) {
             Node = node;
         }
 
-        internal void Play() => OnStart();
+        internal void Start() => OnStart();
 
         /// <summary>
         /// Executes when the clip plays. it should call to another clip node when finished (see other examples as reference)
@@ -23,25 +22,36 @@ namespace AnimFlex.Sequencer
         protected abstract void OnStart();
 
         /// <summary>
-        /// If the clip needs to complete immediately, this will be called. this should finish any time sensitive process
-        /// immediately as if the process is done.
-        /// It should NOT start other nodes.
-        /// </summary>
-        public abstract void OnEnd();
-
-        /// <summary>
-        /// if true, it'll receive <c>Tick()</c> callback every Update
-        /// </summary>
-        public virtual bool hasTick() => false;
-
-        /// <summary>
-        /// executes every Update time if <c>hasTick()</c> is true
-        /// </summary>
-        public virtual void Tick(float deltaTime) { }
-
-        /// <summary>
         /// Editor-only
         /// </summary>
         public virtual void OnValidate() { }
+
+        
+#region Optional Interfaces
+
+        /// <summary>
+        /// clip node gets callback every Update
+        /// </summary>
+        public interface IHasTick
+        {
+            /// <summary>
+            /// executes every Update time if <c>hasTick()</c> is true
+            /// </summary>
+            public void Tick(float deltaTime);
+        }
+        
+        /// <summary>
+        /// clip node gets callback on end
+        /// </summary>
+        public interface IHasEnd
+        {
+            /// <summary>
+            /// executes when the clip is actually going to end (during end phase from <see cref="Sequence"/>
+            /// </summary>
+            public void OnEnd();
+        }
+
+#endregion
     }
+    
 }

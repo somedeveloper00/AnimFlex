@@ -15,9 +15,8 @@ namespace AnimFlex.Sequencer.Clips
         internal abstract Type GetValueType();
 #endif
 
-	    public override void OnEnd() { }
     }
-    public abstract class CWaitUntil<T> : CWaitUntil
+    public abstract class CWaitUntil<T> : CWaitUntil, Clip.IHasTick
     {
 #if UNITY_EDITOR
         internal override Type GetValueType() => typeof(T);
@@ -52,9 +51,7 @@ namespace AnimFlex.Sequencer.Clips
             passedTime = 0;
         }
 
-        public override bool hasTick() => true;
-
-        public override void Tick(float deltaTime)
+        public void Tick(float deltaTime)
         {
 	        passedTime += deltaTime;
             if(passedTime > checkEvery)

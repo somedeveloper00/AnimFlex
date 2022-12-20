@@ -32,9 +32,11 @@ namespace AnimFlex.Sequencer.UserEnd
 		        sequence.Stop();
         }
 
-        private void OnValidate() {
-	        sequence.EditorValidate();
-        }
+#if UNITY_EDITOR
+	    private void OnValidate() {
+		    sequence.EditorValidate();
+	    }
+#endif
 
         public void PlaySequence() {
 	        sequence.PlayOrRestart();

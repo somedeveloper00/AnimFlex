@@ -12,7 +12,6 @@ namespace AnimFlex.Sequencer.Clips
         public int indexElse;
 
         internal abstract Type GetValueType();
-        public override void OnEnd() { }
     }
 
     public abstract class CGotoIf<T> : CGotoIf

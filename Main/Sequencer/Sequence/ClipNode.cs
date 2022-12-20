@@ -3,105 +3,106 @@ using UnityEngine;
 
 namespace AnimFlex.Sequencer
 {
-    [Flags]
-    public enum ClipNodeFlags
-    {
-        PendingActive = 1 << 1,
-        Active = 1 << 2,
-        PendingDeactive = 1 << 3
-    }
+	[Flags]
+	public enum ClipNodeFlags
+	{
+		None = 0,
+		PendingStart = 1 << 0,
+		Active = 1 << 1,
+		PendingEnd = 1 << 2
+	}
 
-    [Serializable]
-    public class ClipNode
-    {
-        [SerializeField] internal string name;
-        [SerializeField] internal float delay;
-        [SerializeReference] internal Clip clip;
+	public static class ClipNodeFlagsExtensions
+	{
+		public static bool HasFlagFast(this ClipNodeFlags value, ClipNodeFlags flag) => (value & flag) != 0;
+	}
 
-        /// <summary>
-        /// index of this clip node inside the Sequencer
-        /// </summary>
-        public int Index { get; private set; }
-        [field: NonSerialized] public Sequence sequence { get; private set; }
+	[Serializable]
+	public class ClipNode
+	{
+		[SerializeField] internal string name;
+		[SerializeField] internal float delay;
+		[SerializeReference] internal Clip clip;
 
-        private float t = 0;
-        internal ClipNodeFlags flags = 0; // no flags on start
-        private bool started = false;
+		/// <summary>
+		/// index of this clip node inside the Sequencer
+		/// </summary>
+		[field: NonSerialized]
+		public int Index { get; private set; }
 
-        public void Deactivate() => sequence.DeactivateClipNode(this);
-        public void PlayNextClipNode()
-        {
-	        if(!sequence.IsActive()) return;
+		[field: NonSerialized] public Sequence sequence { get; private set; }
 
-            if(sequence.nodes.Length == Index + 1)
-                sequence.Stop();
-            else
-                PlayClipNode(Index + 1);
-        }
+		private float t = 0;
+		internal ClipNodeFlags flags = ClipNodeFlags.None; // no flags on start
+		private bool started = false;
 
-        public void PlayClipNode (int index)
-        {
-	        if(!sequence.IsActive()) return;
-	        sequence.ActivateClip(index);
-        }
+		/// <summary>
+		/// Marks the clip as ending
+		/// </summary>
+		public void End() {
+			sequence.EndClip( Index );
+		}
 
-        /// <summary>
-        /// forcefully ends the clip
-        /// </summary>
-        internal void End()
-        {
-			clip.OnEnd();
-        }
+		public void StartNextClipNode(bool endSelf = true) {
+			if ( !sequence.IsActive() ) return;
 
-        /// <summary>
-        /// initialization of the clip node. it injects variables
-        /// </summary>
-        /// <param name="sequence">The sequencer this ClipNode is attached to</param>
-        /// <param name="index">The index of this ClipNode in the sequencer's <c>nodes</c> array</param>
-        internal void Init(Sequence sequence, int index)
-        {
-            Index = index;
-            this.sequence = sequence;
-            clip.Init(this);
-            Reset();
-        }
+			if ( endSelf ) End();
+			if ( sequence.nodes.Length == Index + 1 )
+				sequence.Stop();
+			else
+				sequence.StartClip( Index + 1 );
+		}
 
-        /// <summary>
-        /// resets variables. used for re-playing the already played node
-        /// </summary>
-        internal void Reset()
-        {
-            t = 0;
-            started = false;
-        }
+		/// <summary>
+		/// on actually ending the clip node
+		/// </summary>
+		internal void onEnd() {
+			if ( clip is Clip.IHasEnd endClip ) endClip.OnEnd();
+		}
 
-        /// <summary>
-        /// Updates the ClipNode's Clip.</summary>
-        /// <param name="deltaTime">The time interval from the last Tick to now</param>
-        internal void Tick(float deltaTime)
-        {
-            t += deltaTime;
-            if (t > delay)
-            {
-                // start of the clip
-                if (!started)
-                {
-                    started = true; // first set this to true, so if clip.Play() threw errors,
-                                    // they won't get executed in the next Tick
-                    clip.Play();
-                }
-                // update/tick of the clip
-                else
-                {
-                    if(clip.hasTick())
-                        clip.Tick(deltaTime);
-                }
-            }
-        }
+		/// <summary>
+		/// initialization of the clip node. it injects variables
+		/// </summary>
+		/// <param name="sequence">The sequencer this ClipNode is attached to</param>
+		/// <param name="index">The index of this ClipNode in the sequencer's <c>nodes</c> array</param>
+		internal void Init(Sequence sequence, int index) {
+			Index = index;
+			this.sequence = sequence;
+			clip.Init( this );
+		}
 
-        internal void OnValidate()
-        {
-            clip.OnValidate();
-        }
-    }
+		/// <summary>
+		/// resets variables. used for re-playing the already played node
+		/// </summary>
+		internal void Reset() {
+			t = 0;
+			started = false;
+		}
+
+		/// <summary>
+		/// Updates the ClipNode's Clip.</summary>
+		/// <param name="deltaTime">The time interval from the last Tick to now</param>
+		internal void Tick(float deltaTime) {
+			t += deltaTime;
+			if ( t > delay ) {
+				// start of the clip
+				if ( !started ) {
+					started = true; // first set this to true, so if clip.Play() threw errors,
+					// they won't get executed in the next Tick
+					clip.Start();
+				}
+				// update/tick of the clip
+				else {
+					if ( clip is Clip.IHasTick tickClip ) {
+						tickClip.Tick( deltaTime );
+						Debug.Log( $"tick {Index}" );
+					}
+				}
+			}
+		}
+
+		internal void OnValidate() {
+			clip.OnValidate();
+		}
+	}
 }
