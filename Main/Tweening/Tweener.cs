@@ -138,7 +138,7 @@ namespace AnimFlex.Tweening
 
 		/// <summary>
 		/// <para> checks if the tweener has valid setter/getters through the validator function <see cref="isValid"/></para>
-		/// <para> if you want to casually check if the tweener is ok, you can do null check</para>
+		/// <para> if you want to casually check if the tweener is active, you can do null check</para>
 		/// </summary>
 		public bool IsValid() => !flag.HasFlag( TweenerFlag.Deleting ) && (isValid is null || isValid());
 
