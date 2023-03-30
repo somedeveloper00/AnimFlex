@@ -4,11 +4,11 @@ using AnimFlex.Sequencer.Clips;
 
 namespace AnimFlex
 {
-	[DisplayName("UI Text")]
+	[DisplayName("Tweener UI Text")]
 	[Category("Tweener/Text/UI")]
 	public class CTweenerUiText : CTweener<TweenerGeneratorUiText> { }
 	
-	[DisplayName("Textmesh Text")]
+	[DisplayName("Tweener Textmesh Text")]
 	[Category("Tweener/Text/Textmesh")]
 	public class CTweenerTMP_Text : CTweener<TweenerGeneratorTMP_Text> { }
 }

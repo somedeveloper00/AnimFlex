@@ -3,15 +3,15 @@ using AnimFlex.Sequencer.Clips;
 
 namespace AnimFlex
 {
-	[DisplayName("Light Color")]
+	[DisplayName("Tweener Light Color")]
 	[Category("Tweener/Light/Color")]
 	public class CTweenerLightColor : CTweener<TweenerGeneratorLightColor> { }
 
-	[DisplayName("Light Intensity")]
+	[DisplayName("Tweener Light Intensity")]
 	[Category("Tweener/Light/Intensity")]
 	public class CTweenerLightIntensity : CTweener<TweenerGeneratorLightIntensity> { }
 
-	[DisplayName("Light Range")]
+	[DisplayName("Tweener Light Range")]
 	[Category("Tweener/Light/Range")]
 	public class CTweenerLightRange : CTweener<TweenerGeneratorLightRange> { }
 }
