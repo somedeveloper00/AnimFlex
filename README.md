@@ -1,5 +1,8 @@
 # AnimFlex
 ### A fast (faster than DOTween) and simple to use Sequencer & Tweener.
+![out](https://user-images.githubusercontent.com/79690923/228872528-1906deef-836b-43fd-9ffe-9638e94faae0.gif)
+
+
 ![image](https://user-images.githubusercontent.com/79690923/228853422-6c74dee5-ead2-48e3-9edd-0859c01a54f9.png)
 
 ## Systems
