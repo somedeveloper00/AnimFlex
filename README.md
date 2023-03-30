@@ -48,20 +48,20 @@ GetComponent<Projector>().projector.AnimProjectorFieldOfViewTo( 40f );
 ```
 
 ### Clips
-* All of the tweeners. They have a normal and a *multi* clip; the *multi* tweener clips apply a tweener to multiple targets with the given set of rules.
+* All of the tweeners. They have a normal and a *multi* clip; the *multi* tweener clips apply a tweener to multiple targets with the given set of rules.  
 ![image](https://user-images.githubusercontent.com/79690923/228864137-fc660ed8-c79b-4114-b51c-4a1c588d754f.png)
-* Unity Events (primitive aruments up to 3). You can easily expand the system to add an event clip with your special argument type(s)
+* Unity Events (primitive aruments up to 3). You can easily expand the system to add an event clip with your special argument type(s)  
 ![image](https://user-images.githubusercontent.com/79690923/228865336-8c151721-9c4b-4752-af27-e011db1855b5.png)
-* Branching. **goto** and **if statement** (if statements support primitive conditions. you can expand that)
+* Branching. **goto** and **if statement** (if statements support primitive conditions. you can expand that)  
 ![image](https://user-images.githubusercontent.com/79690923/228866194-028596c4-72f0-495f-b45a-427a62a28dc1.png)
 ![image](https://user-images.githubusercontent.com/79690923/228866630-bf484cfd-0f4e-4059-bafb-731814c23bbe.png)
-* Log. Performs a simple Unity console log
+* Log. Performs a simple Unity console log  
 ![image](https://user-images.githubusercontent.com/79690923/228866988-ec41fa8b-9349-46f2-922d-21ca3fcb550b.png)
-* Set Value. They can modify a value from a given component thorugh reflection. (They support primitive value types, but you can easily expand that)
+* Set Value. They can modify a value from a given component thorugh reflection. (They support primitive value types, but you can easily expand that)  
 ![image](https://user-images.githubusercontent.com/79690923/228867603-0dd1ff1d-d529-490c-990f-2d6c73d1056a.png)
-* Wait Until. They wait for the given field to meed a specific condition. (They support primitive types and basic equal oprtator, but you can easily expand that)
+* Wait Until. They wait for the given field to meed a specific condition. (They support primitive types and basic equal oprtator, but you can easily expand that)  
 ![image](https://user-images.githubusercontent.com/79690923/228868805-0ffdcc3b-afe1-436d-a136-dfa0b6c70e44.png)
-* Misc. They're helper clips, i.e. **Empty** clip does nothing and can be used to make notes, and **End** finishes the clip on reach.
+* Misc. They're helper clips, i.e. **Empty** clip does nothing and can be used to make notes, and **End** finishes the clip on reach.  
 ![image](https://user-images.githubusercontent.com/79690923/228869776-d704a1c2-bf93-4941-bd78-e88522cdd9bc.png)
 
 
