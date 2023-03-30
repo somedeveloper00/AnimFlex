@@ -14,8 +14,8 @@ namespace AnimFlex
 			float duration = 1, float delay = 0) =>
 			AnimLightColorTo(light, color, ease, duration, delay, null);
 	
-		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0, AnimationCurve curve = null)
+		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease,
+			float duration, float delay, AnimationCurve curve)
 		{
 			return Tweener.Generate(
 				() => light.color,
@@ -33,8 +33,8 @@ namespace AnimFlex
 			float duration = 1, float delay = 0) =>
 			AnimLightIntensityTo(light, intensity, ease, duration, delay, null);
 
-		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0, AnimationCurve curve = null)
+		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, Ease ease,
+			float duration, float delay, AnimationCurve curve)
 		{
 			return Tweener.Generate(
 				() => light.intensity,
@@ -51,8 +51,8 @@ namespace AnimFlex
 			float duration = 1, float delay = 0) =>
 			AnimLightRangeTo(light, range, ease, duration, delay, null);
 
-		public static Tweener<float> AnimLightRangeTo(this Light light, float range, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0, AnimationCurve curve = null)
+		public static Tweener<float> AnimLightRangeTo(this Light light, float range, Ease ease,
+			float duration, float delay, AnimationCurve curve)
 		{
 			return Tweener.Generate(
 				() => light.range,

@@ -12,10 +12,10 @@ namespace AnimFlex.Essentials.TMP
 
 		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease = Ease.InOutSine,
 			float duration = 1, float delay = 0) =>
-			AnimTextTo( tmp_text, text, ease, duration, delay );
+			AnimTextTo( tmp_text, text, ease, duration, delay, null );
 
-		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0, AnimationCurve curve = null) {
+		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease,
+			float duration, float delay, AnimationCurve curve) {
 			return Tweener.Generate(
 				() => tmp_text.text,
 				(value) => tmp_text.text = value,
@@ -29,10 +29,10 @@ namespace AnimFlex.Essentials.TMP
 
 		public static Tweener<string> AnimTextTo(this Text ui_text, string text, Ease ease = Ease.InOutSine,
 			float duration = 1, float delay = 0) =>
-			AnimTextTo( ui_text, text, ease, duration, delay );
+			AnimTextTo( ui_text, text, ease, duration, delay, null );
 
-		public static Tweener<string> AnimTextTo(this Text ui_text, string text, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0, AnimationCurve curve = null) {
+		public static Tweener<string> AnimTextTo(this Text ui_text, string text, Ease ease,
+			float duration, float delay, AnimationCurve curve) {
 			return Tweener.Generate(
 				() => ui_text.text,
 				(value) => ui_text.text = value,

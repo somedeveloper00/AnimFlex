@@ -11,8 +11,8 @@ namespace AnimFlex.Essentials {
             float duration = 1, float delay = 0) =>
             AnimProjectorSizeTo(projector, size, ease, duration, delay, null);
 
-        public static Tweener<float> AnimProjectorSizeTo(this Projector projector, float size, Ease ease = Ease.InOutSine,
-            float duration = 1, float delay = 0, AnimationCurve curve = null)
+        public static Tweener<float> AnimProjectorSizeTo(this Projector projector, float size, Ease ease,
+            float duration, float delay, AnimationCurve curve)
         {
             return Tweener.Generate(
                 () => projector.orthographicSize,
@@ -30,8 +30,8 @@ namespace AnimFlex.Essentials {
             float duration = 1, float delay = 0) =>
             AnimProjectorAspectRatioTo(projector, aspectRatio, ease, duration, delay, null);
 
-        public static Tweener<float> AnimProjectorAspectRatioTo(this Projector projector, float aspectRatio, Ease ease = Ease.InOutSine,
-            float duration = 1, float delay = 0, AnimationCurve curve = null)
+        public static Tweener<float> AnimProjectorAspectRatioTo(this Projector projector, float aspectRatio, Ease ease,
+            float duration, float delay, AnimationCurve curve)
         {
             return Tweener.Generate(
                 () => projector.aspectRatio,
@@ -48,8 +48,8 @@ namespace AnimFlex.Essentials {
             float duration = 1, float delay = 0) =>
             AnimProjectorFieldOfViewTo(projector, fieldOfView, ease, duration, delay, null);
 
-        public static Tweener<float> AnimProjectorFieldOfViewTo(this Projector projector, float fieldOfView, Ease ease = Ease.InOutSine,
-            float duration = 1, float delay = 0, AnimationCurve curve = null)
+        public static Tweener<float> AnimProjectorFieldOfViewTo(this Projector projector, float fieldOfView, Ease ease,
+            float duration, float delay, AnimationCurve curve)
         {
             return Tweener.Generate(
                 () => projector.fieldOfView,
