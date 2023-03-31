@@ -41,12 +41,13 @@ namespace AnimFlex.Editor.Sequencer
 				EditorGUILayout.PropertyField(_resetOnPlayProp);
             }
 
-            GUILayout.Space(10);
-            DrawPlayback();
-            if (!AFPreviewUtils.isActive)
-            {
-	            DrawClipNodes();
-				DrawAddButton();
+            using (new EditorGUI.DisabledScope( Application.isPlaying )) {
+                GUILayout.Space( 10 );
+                DrawPlayback();
+                if (!AFPreviewUtils.isActive) {
+                    DrawClipNodes();
+                    DrawAddButton();
+                }
             }
 
             serializedObject.ApplyModifiedProperties();

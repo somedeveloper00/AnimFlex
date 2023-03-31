@@ -78,10 +78,10 @@ namespace AnimFlex.Editor
         public class GuiForceActive : IDisposable
         {
             private bool wasEnabled;
-            public GuiForceActive()
+            public GuiForceActive(bool disableInPlaymode = true)
             {
                 wasEnabled = GUI.enabled;
-                GUI.enabled = true;
+                GUI.enabled = !disableInPlaymode || !Application.isPlaying;
             }
             public void Dispose() => GUI.enabled = wasEnabled;
         }
