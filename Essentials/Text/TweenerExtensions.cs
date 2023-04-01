@@ -1,4 +1,5 @@
 ﻿using AnimFlex.Tweening;
+using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,11 +17,22 @@ namespace AnimFlex.Essentials.TMP
 
 		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease,
 			float duration, float delay, AnimationCurve curve) {
-			return Tweener.Generate(
-				() => tmp_text.text,
-				(value) => tmp_text.text = value,
-				text, ease, duration, delay, curve,
-				() => tmp_text != null );
+#if RTLTMP // support for rtl tmp
+			if (tmp_text is RTLTextMeshPro rtltmp) {
+				string val = rtltmp.OriginalText;
+				return Tweener.Generate(
+					() => rtltmp.OriginalText,
+					(value) => rtltmp.text = value,
+					text, ease, duration, delay, curve,
+					() => tmp_text != null );
+			}
+			else
+#endif
+				return Tweener.Generate(
+					() => tmp_text.text,
+					(value) => tmp_text.text = value,
+					text, ease, duration, delay, curve,
+					() => tmp_text != null );
 		}
 
 		public static Tweener<string> AnimTextTo(this Text ui_text, string text, AnimationCurve curve,

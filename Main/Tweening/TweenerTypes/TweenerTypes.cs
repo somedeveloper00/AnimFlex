@@ -50,14 +50,12 @@ namespace AnimFlex.Tweening
 		
 		internal override void Set(float t) {
 			if ( t < 0 ) {
-				rand = new System.Random(-1234567891);
 				char[] s = new char[-Mathf.CeilToInt(t * startValue.Length)];
 				for (int i = 0; i < s.Length; i++) 
 					s[i] = startValue[rand.Next( startValue.Length )];
 				setter( new string(s) + startValue );
 			}
 			else if ( t > 1 ) {
-				rand = new System.Random(-1234567891);
 				char[] s = new char[Mathf.FloorToInt( (t-1) * endValue.Length)];
 				for (int i = 0; i < s.Length; i++) 
 					s[i] = endValue[rand.Next( endValue.Length )];
