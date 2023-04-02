@@ -14,7 +14,7 @@ namespace AnimFlex.Tweening
 		public abstract UnityEvent onKill { get; }
 		public abstract UnityEvent onUpdate { get; }
 		public abstract bool TryGetTweener(out Tweener tweener);
-		public abstract Tweener PlayOrRestart();
+		public abstract void PlayOrRestart();
 		public abstract void Kill(bool complete = true, bool onCompleteCallback = true);
 	}
 
@@ -104,7 +104,7 @@ namespace AnimFlex.Tweening
 		/// <summary>
 		/// generates the tweener and plays it if it's not playing already. otherwise generates a new tweener and plays it.
 		/// </summary>
-		public override Tweener PlayOrRestart() {
+		public override void PlayOrRestart() {
 			// kill if already running
 			if ( m_tweener != null && !m_tweener.flag.HasFlag( TweenerFlag.Deleting ) )
 				Kill( false, false );
@@ -114,10 +114,7 @@ namespace AnimFlex.Tweening
 				if ( m_tweener == null ) {
 					Debug.LogError( $"Unexpected Error happened while generating tweener!" );
 				}
-				return m_tweener;
 			}
-
-			return null;
 		}
 
 		/// <summary>

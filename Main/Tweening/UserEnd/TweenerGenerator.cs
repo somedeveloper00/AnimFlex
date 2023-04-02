@@ -130,7 +130,13 @@ namespace AnimFlex.Tweening
     }
 
     // empty class for easier inspector coding :(
-    internal abstract class MultiTweenerGenerator : TweenerGenerator { }
+    internal abstract class MultiTweenerGenerator : TweenerGenerator {
+        [Tooltip("The delay between each tween")]
+        public float multiDelay = 0.2f;
+
+        [Tooltip("Reverses the order of selection (affects the final selection, not individually)")]
+        public bool reverseOrder = false;
+    }
 
 
     internal abstract class MultiTweenerGenerator<TFrom, TTo> : MultiTweenerGenerator where TFrom : Component
@@ -140,8 +146,6 @@ namespace AnimFlex.Tweening
         public AFSelection<TFrom>[] selections;
         public TTo target;
 
-        [Tooltip("The delay between each tween")]
-        public float multiDelay = 0.2f;
 
         protected abstract Tweener GenerateTween(TFrom fromObject, AnimationCurve curve, float delay);
 
@@ -154,17 +158,19 @@ namespace AnimFlex.Tweening
 
             var forObjects = AFSelection.GetSelectedObjects(selections);
 
-            if (forObjects == null)
-            {
-                Debug.LogError($"fromObject was null. The tween generation is impossible.");
+            if (forObjects == null) {
+                Debug.LogError( $"fromObject was null. The tween generation is impossible." );
                 return false;
+            }
+
+            if (reverseOrder) {
+                Array.Reverse( forObjects );
             }
 
             AnimationCurve curve = useCurve ? customCurve : null;
 
-            for (int i = 0; i < forObjects.Length; i++)
-            {
-                tweener = GenerateTween(forObjects[i], curve, delay + multiDelay * i);
+            for (int i = 0; i < forObjects.Length; i++) {
+                tweener = GenerateTween( forObjects[i], curve, delay + multiDelay * i );
                 tweener.@from = @from;
                 tweener.loops = loops;
                 tweener.loopDelay = loopDelay;
@@ -187,10 +193,7 @@ namespace AnimFlex.Tweening
 
 
 
-        internal override void Reset(GameObject gameObject)
-        {
-
-        }
+        internal override void Reset(GameObject gameObject) { }
 
         internal override Type GetFromValueType() => typeof(TFrom);
         internal override Type GetToValueType() => typeof(TTo);

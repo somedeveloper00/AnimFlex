@@ -11,36 +11,38 @@ namespace AnimFlex.Editor.Tweener
         {
             var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
             var height = Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(selectionsProp));
+            height += AFStyles.Height + AFStyles.VerticalSpace;
 
             if(selectionsProp.arraySize == 0)
                 height += AFStyles.Height + AFStyles.VerticalSpace;
             return height;
         }
 
-        protected override void DrawFrom(Rect position)
-        {
-            var selectionsProp = property.FindPropertyRelative(nameof(MultiTweenerGeneratorPosition.selections));
-
+        protected override void DrawFrom(Rect position) {
+            var selectionsProp = property.FindPropertyRelative( nameof(MultiTweenerGeneratorPosition.selections) );
+            var reverseProp = property.FindPropertyRelative( nameof(MultiTweenerGeneratorPosition.reverseOrder) );
+            
             var pos = new Rect(position);
 
-            using (var check = new EditorGUI.ChangeCheckScope())
-            {
-                EditorGUI.PropertyField(pos, selectionsProp, new GUIContent("Select :", selectionsProp.tooltip));
-                if (check.changed)
-                {
+            using (var check = new EditorGUI.ChangeCheckScope()) {
+                EditorGUI.PropertyField( pos, selectionsProp, new GUIContent( "Select :", selectionsProp.tooltip ) );
+                pos.y += EditorGUI.GetPropertyHeight( selectionsProp ) + AFStyles.VerticalSpace;
+                EditorGUI.PropertyField( pos, reverseProp, new GUIContent( "Reverse Selection : ", reverseProp.tooltip ) );
+                if (check.changed) {
                     property.serializedObject.ApplyModifiedProperties();
                     property.serializedObject.Update();
                 }
             }
 
             // null warning
-            if (selectionsProp.isArray && selectionsProp.arraySize == 0 || !selectionsProp.isArray && selectionsProp.objectReferenceValue == null)
+            if (selectionsProp.isArray && selectionsProp.arraySize == 0 ||
+                !selectionsProp.isArray && selectionsProp.objectReferenceValue == null) 
             {
                 pos.x = position.x;
-                pos.y += EditorGUI.GetPropertyHeight(selectionsProp) + AFStyles.VerticalSpace;
+                pos.y += pos.height + AFStyles.VerticalSpace;
                 pos.width = position.width;
                 pos.height = AFStyles.BigHeight;
-                AFStyles.DrawHelpBox(pos, "The \"From\" reference is empty!", MessageType.Warning);
+                AFStyles.DrawHelpBox( pos, "The \"From\" reference is empty!", MessageType.Warning );
             }
         }
 
