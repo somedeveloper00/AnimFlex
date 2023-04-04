@@ -73,6 +73,9 @@ https://www.youtube.com/watch?v=QNxzgGmmYhQ
 https://www.youtube.com/watch?v=lWghzbCR2ds  
 https://www.youtube.com/watch?v=e2mkIyX8hEY
 
+## 3rd party Support
+* [RTL Textmesh](https://github.com/pnarimani/RTLTMPro): add `RTLTMP` define
+
 ## TODO
 * Add `from` field to tweeners (so user-end will be able to set the tweener to start from any custom value)
 * Support Properties for `Set`, `Wait Until` and `If` clips
