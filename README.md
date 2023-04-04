@@ -68,7 +68,11 @@ GetComponent<Projector>().projector.AnimProjectorFieldOfViewTo( 40f );
 ![image](https://user-images.githubusercontent.com/79690923/228869776-d704a1c2-bf93-4941-bd78-e88522cdd9bc.png)
 
 
-## Youtube samples :
+## Youtube samples
 https://www.youtube.com/watch?v=QNxzgGmmYhQ  
 https://www.youtube.com/watch?v=lWghzbCR2ds  
 https://www.youtube.com/watch?v=e2mkIyX8hEY
+
+## TODO
+* Add `from` field to tweeners (so user-end will be able to set the tweener to start from any custom value)
+* Support Properties for `Set`, `Wait Until` and `If` clips
