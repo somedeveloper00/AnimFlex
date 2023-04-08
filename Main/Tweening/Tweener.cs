@@ -121,11 +121,15 @@ namespace AnimFlex.Tweening
         internal void OnKill() => onKill();
         #endregion
 
-        #region helpers
+#region helpers
         public void Kill(bool complete, bool onKillCallback) => 
             TweenerController.Instance.KillTweener(this, complete, onKillCallback);
-        public bool IsValid() => isValid is null || isValid();
-        #endregion
+
+        public bool IsActive() => IsValid() && !flag.HasFlag( TweenerFlag.Deleting );
+
+#endregion
+
+        internal bool IsValid() => isValid is null || isValid();
     }
 
     public abstract class Tweener<T> : Tweener

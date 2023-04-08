@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer
@@ -30,8 +28,6 @@ namespace AnimFlex.Sequencer
         [SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
 
         internal SequenceFlags flags;
-
-
 
 
 #region Public playback tools
@@ -92,8 +88,11 @@ namespace AnimFlex.Sequencer
 	        }
         }
 
+	    /// <summary>
+	    /// returns true if it's active and playing
+	    /// </summary>
+	    public bool IsPlaying() => IsActive();
 #endregion
-
 
 #region Internals
 
@@ -110,7 +109,7 @@ namespace AnimFlex.Sequencer
 		    onComplete();
 	    }
 
-		internal void Tick(float deltaTime)
+	    internal void Tick(float deltaTime)
 		{
 
 			// init phase
@@ -133,17 +132,17 @@ namespace AnimFlex.Sequencer
 			}
 		}
 
-		internal void EditorValidate()
+	    internal void EditorValidate()
 		{
 			foreach (var node in nodes) node.OnValidate();
 		}
 
-		internal void ActivateClip(int index)
+	    internal void ActivateClip(int index)
 		{
 			nodes[index].flags = ClipNodeFlags.PendingActive;
 		}
 
-		internal void DeactivateClipNode(ClipNode clipNode)
+	    internal void DeactivateClipNode(ClipNode clipNode)
 		{
 			clipNode.flags = ClipNodeFlags.PendingDeactive;
 		}
