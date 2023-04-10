@@ -79,3 +79,4 @@ https://www.youtube.com/watch?v=e2mkIyX8hEY
 ## TODO
 * Add `from` field to tweeners (so user-end will be able to set the tweener to start from any custom value)
 * Support Properties for `Set`, `Wait Until` and `If` clips
+* Add option to run on unscaled and manual time
