@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AnimFlex.Core;
+﻿using AnimFlex.Core;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR

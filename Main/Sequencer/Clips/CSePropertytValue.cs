@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Reflection;
-using UnityEngine;
 using Component = UnityEngine.Component;
 
 namespace AnimFlex.Sequencer.Clips

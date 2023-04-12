@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AnimFlex.Core;
-using UnityEngine;
 using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using AnimFlex.Tweening;
+﻿using AnimFlex.Tweening;
 using UnityEditor;
 using UnityEngine;
 

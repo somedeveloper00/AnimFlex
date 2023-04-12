@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using AnimFlex.Sequencer;
 using AnimFlex.Sequencer.Clips;
 using AnimFlex.Sequencer.UserEnd;
 using UnityEditor;

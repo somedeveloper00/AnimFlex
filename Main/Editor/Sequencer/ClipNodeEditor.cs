@@ -1,6 +1,5 @@
 ﻿using AnimFlex.Sequencer;
 using UnityEditor;
-using UnityEditor.Graphs;
 using UnityEngine;
 
 namespace AnimFlex.Editor.Sequencer

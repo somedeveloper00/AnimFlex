@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Reflection;
 using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Component = UnityEngine.Component;
 
 namespace AnimFlex.Editor

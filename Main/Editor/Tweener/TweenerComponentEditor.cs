@@ -1,6 +1,5 @@
 ﻿using AnimFlex.Tweening;
 using UnityEditor;
-using UnityEngine;
 
 namespace AnimFlex.Editor.Tweener
 {

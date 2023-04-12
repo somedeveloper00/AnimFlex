@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using AnimFlex.Sequencer;
+﻿using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEngine;
 
