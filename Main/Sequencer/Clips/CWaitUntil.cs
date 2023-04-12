@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AnimFlex.Sequencer.Clips
 {
+    [Serializable]
     public abstract class CWaitUntil : Clip
     {
-        public string valueName;
+        [FormerlySerializedAs("valueName")]
+        public string fieldName;
+        
         public Component component;
+        
         [Tooltip("In Seconds")]
         public float checkEvery = 0.1f;
 
@@ -36,12 +41,12 @@ namespace AnimFlex.Sequencer.Clips
             if(component is null)
                 throw new Exception("Component is null");
 
-            cachedFieldInfo = component.GetType().GetField(valueName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            cachedFieldInfo = component.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
             if (cachedFieldInfo is null)
-                throw new Exception($"{valueName} was not found on {component.name} of {component.gameObject} game object");
+                throw new Exception($"{fieldName} was not found on {component.name} of {component.gameObject} game object");
             if (cachedFieldInfo.FieldType != typeof(T))
-                throw new System.Exception($"Field type mismatch. {valueName} is {cachedFieldInfo.FieldType}, but {typeof(T)} was expected.");
+                throw new System.Exception($"Field type mismatch. {fieldName} is {cachedFieldInfo.FieldType}, but {typeof(T)} was expected.");
 
             return cachedFieldInfo;
         }
