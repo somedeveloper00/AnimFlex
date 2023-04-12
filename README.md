@@ -55,12 +55,12 @@ GetComponent<Projector>().projector.AnimProjectorFieldOfViewTo( 40f );
 ![image](https://user-images.githubusercontent.com/79690923/228864137-fc660ed8-c79b-4114-b51c-4a1c588d754f.png)
 * Unity Events (primitive aruments up to 3). You can easily expand the system to add an event clip with your special argument type(s)  
 ![image](https://user-images.githubusercontent.com/79690923/228865336-8c151721-9c4b-4752-af27-e011db1855b5.png)
-* Branching. **goto** and **if statement** (if statements support primitive conditions. you can expand that)  
+* Branching. **goto** and **if statement** both for **fields** and **properties** (if statements support primitive conditions. you can expand that)  
 ![image](https://user-images.githubusercontent.com/79690923/228866194-028596c4-72f0-495f-b45a-427a62a28dc1.png)
 ![image](https://user-images.githubusercontent.com/79690923/228866630-bf484cfd-0f4e-4059-bafb-731814c23bbe.png)
 * Log. Performs a simple Unity console log  
 ![image](https://user-images.githubusercontent.com/79690923/228866988-ec41fa8b-9349-46f2-922d-21ca3fcb550b.png)
-* Set Value. They can modify a value from a given component thorugh reflection. (They support primitive value types, but you can easily expand that)  
+* Set Value. both for **fields** and **properties**. They can modify a value from a given component thorugh reflection. (They support primitive value types, but you can easily expand that)  
 ![image](https://user-images.githubusercontent.com/79690923/228867603-0dd1ff1d-d529-490c-990f-2d6c73d1056a.png)
 * Wait Until. They wait for the given field to meed a specific condition. (They support primitive types and basic equal oprtator, but you can easily expand that)  
 ![image](https://user-images.githubusercontent.com/79690923/228868805-0ffdcc3b-afe1-436d-a136-dfa0b6c70e44.png)
@@ -78,5 +78,4 @@ https://www.youtube.com/watch?v=e2mkIyX8hEY
 
 ## TODO
 * Add `from` field to tweeners (so user-end will be able to set the tweener to start from any custom value)
-* Support Properties for `Set`, `Wait Until` and `If` clips
 * Add option to run on unscaled and manual time
