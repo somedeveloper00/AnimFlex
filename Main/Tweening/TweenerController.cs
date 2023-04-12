@@ -22,45 +22,37 @@ namespace AnimFlex.Tweening
         /// <summary>
         /// updates all active tweens. heart of the tweener
         /// </summary>
-        public void Tick(float deltaTime)
-        {
+        public void Tick(float deltaTime) {
 #if UNITY_EDITOR
-	        Profiler.BeginSample("Tweener Tick");
+            Profiler.BeginSample( "Tweener Tick" );
 #endif
-
             _tweeners.FlushQueueIn(); // flush the array
 
             // init phase
-            for (var i = 0; i < _tweeners.Length; i++)
-            {
+            for (var i = 0; i < _tweeners.Length; i++) {
                 var tweener = _tweeners[i];
-                if (tweener.flag.HasFlag(TweenerFlag.Initialized) == false)
-                {
+                if (tweener.flag.HasFlag( TweenerFlag.Initialized ) == false) {
                     tweener.flag |= TweenerFlag.Initialized;
                     tweener.Init();
                     tweener.OnStart();
                 }
             }
 
-			// setter (or tick) phase
+            // setter (or tick) phase
             bool _completed = false; // mark for tweener's completion
-            for (var i = 0; i < _tweeners.Length; i++)
-            {
+            for (var i = 0; i < _tweeners.Length; i++) {
                 var tweener = _tweeners[i];
                 var totalTime = tweener.duration + tweener.delay;
 
                 // is not valid, set it as completed
-                if (!tweener.IsValid())
-                {
+                if (!tweener.IsValid()) {
                     _completed = true;
                 }
-                else
-                {
+                else {
                     var t = tweener._t + deltaTime;
 
                     // apply loop
-                    if (tweener.loops != 0 && t >= totalTime)
-                    {
+                    if (tweener.loops != 0 && t >= totalTime) {
                         t %= totalTime;
                         t += tweener.delay - tweener.loopDelay;
                         tweener.loops--;
@@ -74,37 +66,35 @@ namespace AnimFlex.Tweening
 
 
                     _completed = t >= totalTime; // completion check
-                    t = _completed ? 1 : t <= tweener.delay ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
+                    t = _completed ? 1 :
+                        t <= tweener.delay ? 0 : ( t - tweener.delay ) / tweener.duration; // advanced clamp
 
 
                     // apply ping pong
-                    if (tweener.pingPong && t != 0)
-                    {
+                    if (tweener.pingPong && t != 0) {
                         t *= 2;
                         if (t > 1) t = 2 - t;
                     }
 
-                    tweener.Set(EaseEvaluator.Instance.EvaluateEase(tweener.ease, t, tweener.useCurve ? tweener.customCurve : null));
+                    tweener.Set( EaseEvaluator.Instance.EvaluateEase( tweener.ease, t,
+                        tweener.useCurve ? tweener.customCurve : null ) );
                     tweener.OnUpdate();
                 }
 
                 // check for completion
-                if (_completed)
-                {
+                if (_completed) {
                     tweener.flag |= TweenerFlag.Deleting; // add deletion flag
-                    if (tweener.flag.HasFlag(TweenerFlag.ForceNoOnComplete) == false)
+                    if (tweener.flag.HasFlag( TweenerFlag.ForceNoOnComplete ) == false)
                         tweener.OnComplete();
                 }
             }
 
-			// deletion phase
-            for (var i = 0; i < _tweeners.Length; i++)
-            {
+            // deletion phase
+            for (var i = 0; i < _tweeners.Length; i++) {
                 // check if contains a delete flag
-                if (_tweeners[i].flag.HasFlag(TweenerFlag.Deleting))
-                {
+                if (_tweeners[i].flag.HasFlag( TweenerFlag.Deleting )) {
                     _tweeners[i].OnKill();
-                    _tweeners.RemoveAt(i--);
+                    _tweeners.RemoveAt( i-- );
                 }
             }
 
