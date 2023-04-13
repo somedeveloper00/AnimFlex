@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AnimFlex.Core.Proxy;
 using AnimFlex.Sequencer;
 using AnimFlex.Sequencer.UserEnd;
@@ -19,19 +18,29 @@ namespace AnimFlex.Editor.Sequencer {
         private SerializedProperty _clipNodesProp;
         private SerializedProperty _useProxyAsCoreProp;
         private SerializedProperty _coreProxyProp;
+        private SerializedProperty _useDefaultCoreProxyProp;
+        private SerializedProperty _defaultCoreProxyProp;
 
         private ReorderableList _nodeClipList;
 
         private Vector2 _lastMousePos = Vector2.zero;
 
+
+        GUIContent[] _coreProxyTypeOptions = null;
+
         bool _showAdvanced = false;
         
         GUIContent _addCoreProxyGuiContent = new GUIContent( "Add", "Add a new Core Proxy Component to this Game Object" );
+        
 
         private void OnEnable() {
             _sequenceAnim = target as SequenceAnim;
             _sequence = _sequenceAnim.sequence;
             GetProperties();
+
+            const int START_LEN = 17; // "AnimFlexCoreProxy";
+            _coreProxyTypeOptions = AnimFlexCoreProxyHelper.AllCoreProxyTypes
+                .Select( t => new GUIContent( t.Name.Substring( 17 ), _defaultCoreProxyProp.tooltip ) ).ToArray();
 
             SetupNodeListDrawer();
         }
@@ -67,7 +76,23 @@ namespace AnimFlex.Editor.Sequencer {
             using (new GUILayout.HorizontalScope()) {
                 using (new AFStyles.EditorLabelWidth( 110 ))
                     EditorGUILayout.PropertyField( _useProxyAsCoreProp, GUILayout.Width( 130 ) );
+
                 if (_useProxyAsCoreProp.boolValue) {
+                    using (new AFStyles.EditorLabelWidth( 140 ))
+                        EditorGUILayout.PropertyField( _useDefaultCoreProxyProp, GUILayout.Width( 160 ) );
+                    
+                    if (_useDefaultCoreProxyProp.boolValue) {
+                        var result = EditorGUILayout.Popup( AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
+                            _defaultCoreProxyProp.stringValue ), _coreProxyTypeOptions );
+                        if (result != -1) {
+                            _defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];
+                        }
+                    }
+                }
+            }
+
+            using (new GUILayout.HorizontalScope()) {
+                if (_useProxyAsCoreProp.boolValue && !_useDefaultCoreProxyProp.boolValue) {
                     using (new AFStyles.EditorLabelWidth( 80 )) {
                         EditorGUILayout.PropertyField( _coreProxyProp );
                     }
@@ -75,14 +100,16 @@ namespace AnimFlex.Editor.Sequencer {
                     if (_coreProxyProp.objectReferenceValue == null) {
                         if (GUILayout.Button( _addCoreProxyGuiContent, GUILayout.Width( 60 ) )) {
                             // add core proxy component
-                            AFEditorUtils.GetTypeInstanceFromHierarchy<AnimflexCoreProxyBase>( type => {
+                            AFEditorUtils.GetTypeInstanceFromHierarchy<AnimflexCoreProxy>( type => {
                                 serializedObject.ApplyModifiedProperties();
                                 if (_sequenceAnim.TryGetComponent( type, out var comp )) {
-                                    _sequenceAnim.coreProxy = (AnimflexCoreProxyBase)comp;
+                                    _sequenceAnim.coreProxy = (AnimflexCoreProxy)comp;
                                 }
                                 else {
-                                    _sequenceAnim.coreProxy = (AnimflexCoreProxyBase)_sequenceAnim.gameObject.AddComponent( type );
+                                    _sequenceAnim.coreProxy =
+                                        (AnimflexCoreProxy)_sequenceAnim.gameObject.AddComponent( type );
                                 }
+
                                 serializedObject.Update();
                             } );
                         }
@@ -173,9 +200,11 @@ namespace AnimFlex.Editor.Sequencer {
 
         private void GetProperties() {
             _sequenceProp = serializedObject.FindProperty( nameof(SequenceAnim.sequence) );
-            _playOnStartProp = serializedObject.FindProperty( nameof(_sequenceAnim.playOnEnable) );
-            _resetOnPlayProp = serializedObject.FindProperty( nameof(_sequenceAnim.resetOnPlay) );
+            _playOnStartProp = serializedObject.FindProperty( nameof(SequenceAnim.playOnEnable) );
+            _defaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.defaultCoreProxy) );
+            _useDefaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.useDefaultCoreProxy) );
             _useProxyAsCoreProp = serializedObject.FindProperty( nameof(SequenceAnim.useProxyAsCore) );
+            _resetOnPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.resetOnPlay) );
             _coreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.coreProxy) );
             
             _clipNodesProp = _sequenceProp.FindPropertyRelative( nameof(Sequence.nodes) );

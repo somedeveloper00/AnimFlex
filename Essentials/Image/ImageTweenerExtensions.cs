@@ -20,8 +20,8 @@ namespace AnimFlex
 			return Tweener.Generate(
 				() => image.fillAmount,
 				(value) => image.fillAmount = value,
-				fill, ease, duration, delay, curve,
-				() => image != null);
+				fill, duration: duration, delay: delay, ease: ease,
+				customCurve: curve, isValid: () => image != null );
 		}
 	
 	}

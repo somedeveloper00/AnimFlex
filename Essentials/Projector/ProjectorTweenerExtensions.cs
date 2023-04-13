@@ -17,8 +17,8 @@ namespace AnimFlex.Essentials {
             return Tweener.Generate(
                 () => projector.orthographicSize,
                 (value) => projector.orthographicSize = value,
-                size, ease, duration, delay, curve,
-                () => projector != null);
+                size, duration: duration, delay: delay, ease: ease,
+                customCurve: curve, isValid: () => projector != null );
         }
 
         
@@ -36,8 +36,8 @@ namespace AnimFlex.Essentials {
             return Tweener.Generate(
                 () => projector.aspectRatio,
                 (value) => projector.aspectRatio = value,
-                aspectRatio, ease, duration, delay, curve,
-                () => projector != null);
+                aspectRatio, duration: duration, delay: delay, ease: ease,
+                customCurve: curve, isValid: () => projector != null );
         }
 
         public static Tweener<float> AnimProjectorFieldOfViewTo(this Projector projector, float fieldOfView, AnimationCurve curve,
@@ -54,8 +54,8 @@ namespace AnimFlex.Essentials {
             return Tweener.Generate(
                 () => projector.fieldOfView,
                 (value) => projector.fieldOfView = value,
-                fieldOfView, ease, duration, delay, curve,
-                () => projector != null);
+                fieldOfView, duration: duration, delay: delay, ease: ease,
+                customCurve: curve, isValid: () => projector != null );
         }
     }
 }

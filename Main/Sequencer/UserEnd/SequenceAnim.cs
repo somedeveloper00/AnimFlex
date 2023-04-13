@@ -1,4 +1,7 @@
-﻿using AnimFlex.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using AnimFlex.Core;
 using AnimFlex.Core.Proxy;
 using UnityEngine;
 
@@ -9,11 +12,20 @@ namespace AnimFlex.Sequencer.UserEnd {
 		[SerializeField] internal bool playOnEnable = true;
 
 		[Tooltip("Uses a Proxy as the core of this sequence. (Useful when you need custom tick update times, i.e. unscaled time or manual time). \n " +
-		         "You must assign the proxy in order for the sequence to work")]
+		         "You must assign the proxy in order for the sequence to work.\n" +
+		         "HAS NOTHING TO DO IN EDITOR")]
 		[SerializeField] internal bool useProxyAsCore = false;
 
+		[Tooltip( "Whether or not to use the default core proxy. if you choose to use a default core proxy, you need to make sure " +
+		          "that such core proxy exists" )]
+		[SerializeField] internal bool useDefaultCoreProxy;
+
+		[Tooltip( "The type of core proxy. You need to make sure that the selecetd default core proxy will be present at the" +
+		          " time of playing." )]
+		[SerializeField] internal string defaultCoreProxy;
+
 		[Tooltip("The Proxy to use for the sequence.")]
-		[SerializeField] internal AnimflexCoreProxyBase coreProxy;
+		[SerializeField] internal AnimflexCoreProxy coreProxy;
 
 		[Tooltip( "Whether or not to reset the sequence before re-starting it.\n" +
 		          "If you decide to reset on play, the previous state of the sequencer will be terminated immediately on restart, " +
@@ -43,7 +55,9 @@ namespace AnimFlex.Sequencer.UserEnd {
 
 		public void PlaySequence() {
 			sequence.sequenceController = useProxyAsCore
-				? coreProxy.core.SequenceController
+				? useDefaultCoreProxy
+					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy ).core.SequenceController
+					: coreProxy.core.SequenceController
 				: AnimFlexCore.Instance.SequenceController;
 			sequence.PlayOrRestart();
 		}

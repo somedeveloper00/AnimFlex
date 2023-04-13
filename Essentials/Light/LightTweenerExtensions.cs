@@ -39,8 +39,8 @@ namespace AnimFlex
 			return Tweener.Generate(
 				() => light.intensity,
 				(value) => light.intensity = value,
-				intensity, ease, duration, delay, curve,
-				() => light != null);
+				intensity, duration: duration, delay: delay, ease: ease,
+				customCurve: curve, isValid: () => light != null );
 		}
 
 		public static Tweener<float> AnimLightRangeTo(this Light light, float range, AnimationCurve curve,
@@ -57,8 +57,8 @@ namespace AnimFlex
 			return Tweener.Generate(
 				() => light.range,
 				(value) => light.range = value,
-				range, ease, duration, delay, curve,
-				() => light != null);
+				range, duration: duration, delay: delay, ease: ease,
+				customCurve: curve, isValid: () => light != null );
 		}
 	}
 }
