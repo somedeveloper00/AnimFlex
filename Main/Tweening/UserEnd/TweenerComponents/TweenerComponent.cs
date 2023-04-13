@@ -1,4 +1,5 @@
 ﻿using System;
+using AnimFlex.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -110,7 +111,7 @@ namespace AnimFlex.Tweening
 				Kill( false, false );
 
 			// generate new tweener if possible
-			if ( generator.TryGenerateTween( out m_tweener ) ) {
+			if ( generator.TryGenerateTween( null, out m_tweener ) ) {
 				if ( m_tweener == null ) {
 					Debug.LogError( $"Unexpected Error happened while generating tweener!" );
 				}

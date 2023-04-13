@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using AnimFlex.Core;
+﻿using AnimFlex.Core;
 using AnimFlex.Core.Proxy;
 using UnityEngine;
 
@@ -54,11 +51,12 @@ namespace AnimFlex.Sequencer.UserEnd {
 		}
 
 		public void PlaySequence() {
-			sequence.sequenceController = useProxyAsCore
+			var core = useProxyAsCore
 				? useDefaultCoreProxy
-					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy ).core.SequenceController
-					: coreProxy.core.SequenceController
-				: AnimFlexCore.Instance.SequenceController;
+					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy ).core
+					: coreProxy.core
+				: AnimFlexCore.Instance;
+			sequence.sequenceController = core.SequenceController;
 			sequence.PlayOrRestart();
 		}
 	}

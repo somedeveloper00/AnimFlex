@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace AnimFlex.Core.Proxy {
     public abstract class AnimflexCoreProxy : MonoBehaviour {
@@ -11,6 +12,11 @@ namespace AnimFlex.Core.Proxy {
                 m_core = gameObject.AddComponent<AnimFlexCore>();
                 return m_core;
             }
+        }
+
+
+        void OnDestroy() {
+            if (m_core) Destroy( m_core );
         }
 
         public abstract void LateUpdate();

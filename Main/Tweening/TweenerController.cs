@@ -5,7 +5,7 @@ using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
 
 namespace AnimFlex.Tweening {
-    internal class TweenerController {
+    public class TweenerController {
 
         internal TweenerController() {
             _tweeners = new PreservedArray<Tweener>( AnimFlexSettings.Instance.maxTweenCount );
@@ -17,7 +17,7 @@ namespace AnimFlex.Tweening {
         /// <summary>
         /// updates all active tweens. heart of the tweener
         /// </summary>
-        public void Tick(float deltaTime) {
+        internal void Tick(float deltaTime) {
 #if UNITY_EDITOR
             Profiler.BeginSample( "Tweener Tick" );
 #endif
@@ -98,7 +98,7 @@ namespace AnimFlex.Tweening {
 #endif
         }
 
-        public void AddTweener(Tweener tweener) {
+        internal void AddTweener(Tweener tweener) {
             if (tweener.flag.HasFlag( TweenerFlag.Created )) {
                 Debug.LogWarning( "Tweener already created! we'll remove it." );
                 tweener.flag |= TweenerFlag.Deleting;
@@ -110,7 +110,7 @@ namespace AnimFlex.Tweening {
             _tweeners.AddToQueue( tweener );
         }
 
-        public void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true) {
+        internal void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true) {
             if (tweener == null)
                 throw new NullReferenceException( "tweener" );
             if (tweener.flag.HasFlag( TweenerFlag.Deleting ))

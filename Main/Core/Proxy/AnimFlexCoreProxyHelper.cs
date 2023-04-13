@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace AnimFlex.Core.Proxy {
     /// <summary>
@@ -9,7 +10,7 @@ namespace AnimFlex.Core.Proxy {
     /// </summary>
     public static class AnimFlexCoreProxyHelper {
         
-        static readonly Dictionary<string, PropertyInfo> _cachedCurrentProps = new();
+        static readonly Dictionary<string, PropertyInfo> _cachedDefaultProps = new();
 
         /// <summary>
         /// the <see cref="Type.FullName"/> of all <see cref="AnimflexCoreProxy"/> types available in domain/app
@@ -32,7 +33,7 @@ namespace AnimFlex.Core.Proxy {
         /// Returns default proxy of the given type name
         /// </summary>
         public static AnimflexCoreProxy GetDefaultCoreProxy(string typeName) {
-            if (_cachedCurrentProps.TryGetValue( typeName, out var prop )) {
+            if (_cachedDefaultProps.TryGetValue( typeName, out var prop )) {
                 if (prop != null) return (AnimflexCoreProxy)prop.GetValue( null );
             }
             return GetDefaultCoreProxy( FindProxyType( typeName ) );
@@ -42,30 +43,26 @@ namespace AnimFlex.Core.Proxy {
         /// Returns default proxy of the given type
         /// </summary>
         public static T GetDefaultCoreProxy<T>() where T : AnimflexCoreProxy {
-            return (T)FindProperty_Current( typeof(T) ).GetValue( null );
+            return (T)FindProperty_Default( typeof(T) ).GetValue( null );
         }
 
         /// <summary>
         /// Returns default proxy of the given type
         /// </summary>
         public static AnimflexCoreProxy GetDefaultCoreProxy(Type type) {
-            return (AnimflexCoreProxy)FindProperty_Current( type ).GetValue( null );
+            return (AnimflexCoreProxy)FindProperty_Default( type ).GetValue( null );
         }
         
 
-        static PropertyInfo FindProperty_Current(Type t) =>
-            t.GetProperty( "Current", BindingFlags.Static | BindingFlags.Public | BindingFlags.GetProperty );
+        static PropertyInfo FindProperty_Default(Type t) =>
+            t.GetProperty( "Default", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetProperty );
 
         static Type FindProxyType(string typeName) {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                foreach (var type in assembly.GetTypes()) {
-                    if (type.FullName == typeName) {
-                        return type;
-                    }
-                }
+            var ind = AllCoreProxyTypeNames.IndexOf( typeName );
+            if (ind == -1) {
+                Debug.LogError( $"Core Proxy type not found: {typeName}" );
             }
-
-            throw new Exception( $"type with name not found: {typeName}" );
+            return AllCoreProxyTypes[ind];
         }
     }
 }

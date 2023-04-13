@@ -1,4 +1,5 @@
 ﻿using System;
+using AnimFlex.Core.Proxy;
 using AnimFlex.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +9,8 @@ namespace AnimFlex
 	[Serializable]
 	public class TweenerGeneratorImageFill : TweenerGenerator<Image, float>
 	{
-		protected override Tweener GenerateTween(AnimationCurve curve) {
-			return fromObject.AnimImageFillTo( target, ease, duration, delay, curve );
+		protected override Tweener GenerateTween(AnimflexCoreProxy proxy) {
+			return fromObject.AnimImageFillTo( target, duration, delay, ease, customCurve, proxy );
 		}
 	}
 }

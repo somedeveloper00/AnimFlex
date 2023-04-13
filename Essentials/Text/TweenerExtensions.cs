@@ -1,4 +1,5 @@
-﻿using AnimFlex.Tweening;
+﻿using AnimFlex.Core.Proxy;
+using AnimFlex.Tweening;
 using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,23 +8,20 @@ namespace AnimFlex.Essentials.TMP
 {
 	public static class TMP_TweenerExtensions
 	{
-		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, AnimationCurve curve,
-			float duration = 1, float delay = 0) =>
-			AnimTextTo( tmp_text, text, Ease.Linear, duration, delay, curve );
+		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimTextTo( tmp_text, text, duration, delay, Ease.Linear, curve, proxy );
 
-		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0) =>
-			AnimTextTo( tmp_text, text, ease, duration, delay, null );
+		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimTextTo( tmp_text, text, duration, delay, ease, null, proxy );
 
-		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, Ease ease,
-			float duration, float delay, AnimationCurve curve) {
+		public static Tweener<string> AnimTextTo(this TMPro.TMP_Text tmp_text, string text, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy) {
 #if RTLTMP // support for rtl tmp
 			if (tmp_text is RTLTextMeshPro rtltmp) {
 				string val = rtltmp.OriginalText;
 				return Tweener.Generate(
 					() => rtltmp.OriginalText,
 					(value) => rtltmp.text = value,
-					text, ease, duration, delay, curve,
+					text, duration, delay, ease, curve,
 					() => tmp_text != null );
 			}
 			else
@@ -31,24 +29,21 @@ namespace AnimFlex.Essentials.TMP
 				return Tweener.Generate(
 					() => tmp_text.text,
 					(value) => tmp_text.text = value,
-					text, ease, duration, delay, curve,
+					text, duration, delay, ease, curve,
 					() => tmp_text != null );
 		}
 
-		public static Tweener<string> AnimTextTo(this Text ui_text, string text, AnimationCurve curve,
-			float duration = 1, float delay = 0) =>
-			AnimTextTo( ui_text, text, Ease.Linear, duration, delay, curve );
+		public static Tweener<string> AnimTextTo(this Text ui_text, string text, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimTextTo( ui_text, text, duration, delay, Ease.Linear, curve, proxy );
 
-		public static Tweener<string> AnimTextTo(this Text ui_text, string text, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0) =>
-			AnimTextTo( ui_text, text, ease, duration, delay, null );
+		public static Tweener<string> AnimTextTo(this Text ui_text, string text, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimTextTo( ui_text, text, duration, delay, ease, null, proxy );
 
-		public static Tweener<string> AnimTextTo(this Text ui_text, string text, Ease ease,
-			float duration, float delay, AnimationCurve curve) {
+		public static Tweener<string> AnimTextTo(this Text ui_text, string text, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy) {
 			return Tweener.Generate(
 				() => ui_text.text,
 				(value) => ui_text.text = value,
-				text, ease, duration, delay, curve,
+				text, duration, delay, ease, curve,
 				() => ui_text != null );
 		}
 	}

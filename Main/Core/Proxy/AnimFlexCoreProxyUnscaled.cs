@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace AnimFlex.Core.Proxy {
     public class AnimFlexCoreProxyUnscaled : AnimflexCoreProxy {
@@ -11,7 +12,7 @@ namespace AnimFlex.Core.Proxy {
         void OnEnable() {
             if (setDefault) Default = this;
         }
-        
-        public override void LateUpdate() => core.Tick( Time.unscaledTime );
+
+        public override void LateUpdate() => core.Tick( Time.unscaledDeltaTime );
     }
 }

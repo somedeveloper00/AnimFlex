@@ -1,3 +1,4 @@
+using AnimFlex.Core.Proxy;
 using AnimFlex.Tweening;
 using UnityEngine;
 
@@ -6,59 +7,50 @@ namespace AnimFlex
 	public static class LightTweenerExtensions
 	{
 
-		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, AnimationCurve curve,
-			float duration = 1, float delay = 0) =>
-			AnimLightColorTo(light, color, Ease.Linear, duration, delay, curve);
+		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimLightColorTo(light, color, duration, delay, Ease.Linear, curve, proxy);
 
-		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0) =>
-			AnimLightColorTo(light, color, ease, duration, delay, null);
+		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimLightColorTo(light, color, duration, delay, ease, null, proxy);
 	
-		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease,
-			float duration, float delay, AnimationCurve curve)
+		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy) 
 		{
 			return Tweener.Generate(
 				() => light.color,
 				(value) => light.color = value,
-				color, ease, duration, delay, curve,
-				() => light != null);
+				color, duration, delay, ease, curve,
+				() => light != null, proxy );
 		}
 
 
-		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, AnimationCurve curve,
-			float duration = 1, float delay = 0) =>
-			AnimLightIntensityTo(light, intensity, Ease.Linear, duration, delay, curve);
+		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimLightIntensityTo(light, intensity, duration, delay, Ease.Linear, curve, proxy);
 
-		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0) =>
-			AnimLightIntensityTo(light, intensity, ease, duration, delay, null);
+		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimLightIntensityTo(light, intensity, duration, delay, ease, null, proxy);
 
-		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, Ease ease,
-			float duration, float delay, AnimationCurve curve)
+		public static Tweener<float> AnimLightIntensityTo(this Light light, float intensity, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy)
 		{
 			return Tweener.Generate(
 				() => light.intensity,
 				(value) => light.intensity = value,
-				intensity, duration: duration, delay: delay, ease: ease,
-				customCurve: curve, isValid: () => light != null );
+				intensity, duration, delay, ease,
+				curve, () => light != null, proxy );
 		}
 
-		public static Tweener<float> AnimLightRangeTo(this Light light, float range, AnimationCurve curve,
-			float duration = 1, float delay = 0) =>
-			AnimLightRangeTo(light, range, Ease.Linear, duration, delay, curve);
+		public static Tweener<float> AnimLightRangeTo(this Light light, float range, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimLightRangeTo(light, range, duration, delay, Ease.Linear, curve, proxy);
 
-		public static Tweener<float> AnimLightRangeTo(this Light light, float range, Ease ease = Ease.InOutSine,
-			float duration = 1, float delay = 0) =>
-			AnimLightRangeTo(light, range, ease, duration, delay, null);
+		public static Tweener<float> AnimLightRangeTo(this Light light, float range, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+			AnimLightRangeTo(light, range, duration, delay, ease, null, proxy);
 
-		public static Tweener<float> AnimLightRangeTo(this Light light, float range, Ease ease,
-			float duration, float delay, AnimationCurve curve)
+		public static Tweener<float> AnimLightRangeTo(this Light light, float range, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy)
 		{
 			return Tweener.Generate(
 				() => light.range,
 				(value) => light.range = value,
-				range, duration: duration, delay: delay, ease: ease,
-				customCurve: curve, isValid: () => light != null );
+				range, duration, delay, ease,
+				curve, () => light != null, proxy );
 		}
 	}
 }

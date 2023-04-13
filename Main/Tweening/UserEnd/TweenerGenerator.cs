@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AnimFlex.Core;
+using AnimFlex.Core.Proxy;
 using UnityEngine;
 using UnityEngine.Events;
 using Component = UnityEngine.Component;
@@ -14,9 +15,9 @@ namespace AnimFlex.Tweening
         internal abstract Type GetFromValueType();
         internal abstract Type GetToValueType();
         internal abstract void Reset(GameObject gameObject);
-        internal abstract bool TryGenerateTween(out Tweener tweener);
-
-        #region Data
+        internal abstract bool TryGenerateTween(AnimflexCoreProxy proxy, out Tweener tweener);
+        
+#region Data
 
         public AnimationCurve customCurve;
 
@@ -79,8 +80,8 @@ namespace AnimFlex.Tweening
         [Tooltip("The event to call when the tween is killed, whether it's completed or not.\n" +
                  "advanced: it gets called after the onComplete, but in the same frame so")]
         public UnityEvent onKill;
-        
-        #endregion
+    
+#endregion
 
     }
 
@@ -91,9 +92,9 @@ namespace AnimFlex.Tweening
 
         public TTo target;
 
-        protected abstract Tweener GenerateTween(AnimationCurve curve);
+        protected abstract Tweener GenerateTween(AnimflexCoreProxy proxy);
 
-        internal override bool TryGenerateTween(out Tweener tweener)
+        internal override bool TryGenerateTween(AnimflexCoreProxy proxy, out Tweener tweener)
         {
             tweener = null;
 
@@ -103,9 +104,9 @@ namespace AnimFlex.Tweening
                 return false;
             }
 
-            AnimationCurve curve = useCurve ? customCurve : null;
+            customCurve = useCurve ? customCurve : null;
 
-            tweener = GenerateTween(curve);
+            tweener = GenerateTween( proxy );
 
 
             // add Unity events
@@ -148,12 +149,12 @@ namespace AnimFlex.Tweening
         public TTo target;
 
 
-        protected abstract Tweener GenerateTween(TFrom fromObject, AnimationCurve curve, float delay);
+        protected abstract Tweener GenerateTween(AnimflexCoreProxy proxy, TFrom fromObject, AnimationCurve curve, float delay);
 
         /// <summary>
         /// returns the last generated tweener
         /// </summary>
-        internal override bool TryGenerateTween(out Tweener tweener)
+        internal override bool TryGenerateTween(AnimflexCoreProxy proxy, out Tweener tweener)
         {
             tweener = null;
 
@@ -171,7 +172,7 @@ namespace AnimFlex.Tweening
             AnimationCurve curve = useCurve ? customCurve : null;
 
             for (int i = 0; i < forObjects.Length; i++) {
-                tweener = GenerateTween( forObjects[i], curve, delay + multiDelay * i );
+                tweener = GenerateTween( proxy, forObjects[i], curve, delay + multiDelay * i );
                 tweener.@from = @from;
                 tweener.loops = loops;
                 tweener.loopDelay = loopDelay;

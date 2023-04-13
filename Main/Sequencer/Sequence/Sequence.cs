@@ -30,7 +30,7 @@ namespace AnimFlex.Sequencer {
 		/// <summary>
 		/// The controller of this sequence. should be assigned before <see cref="Play"/> or <see cref="PlayOrRestart"/>
 		/// </summary>
-		internal SequenceController sequenceController;
+		internal SequenceController sequenceController { get; set;  }
 
 		internal SequenceFlags flags;
 

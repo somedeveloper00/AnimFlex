@@ -21,7 +21,7 @@ namespace AnimFlex.Sequencer.Clips {
             if (playNextOnStart)
                 PlayNext();
 
-            if (tweenerGenerator.TryGenerateTween( out var tweener )) {
+            if (tweenerGenerator.TryGenerateTween( proxy, out var tweener )) {
                 this.tweener = tweener;
                 if (!playNextOnStart)
                     tweener.onComplete += PlayNext;

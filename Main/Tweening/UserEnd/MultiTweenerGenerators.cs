@@ -1,4 +1,5 @@
 ﻿using System;
+using AnimFlex.Core.Proxy;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,29 +10,29 @@ namespace AnimFlex.Tweening
     [Serializable]
     internal class MultiTweenerGeneratorPosition : MultiTweenerGenerator<Transform, Vector3>
     {
-        protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             var toPos = target;
             if (relative) toPos += fromObject.position;
-            return fromObject.AnimPositionTo(toPos, ease, duration, delay, curve);
+            return fromObject.AnimPositionTo(toPos, duration, delay, ease, curve, proxy);
         }
     }
 
     [Serializable]
     internal class MultiTweenerGeneratorLocalPosition : MultiTweenerGenerator<Transform, Vector3>
     {
-        protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             var toPos = target;
             if (relative) toPos += fromObject.localPosition;
-            return fromObject.AnimLocalPositionTo(toPos, ease, duration, delay, curve);
+            return fromObject.AnimLocalPositionTo(toPos, duration, delay, ease, curve, proxy);
         }
     }
 
     [Serializable]
     internal class MultiTweenerGeneratorRotation : MultiTweenerGenerator<Transform, Vector3>
     {
-        protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             Vector3 toRot = target;
             if (relative) toRot += fromObject.rotation.eulerAngles;
@@ -52,7 +53,7 @@ namespace AnimFlex.Tweening
     [Serializable]
     internal class MultiTweenerGeneratorLocalRotation : MultiTweenerGenerator<Transform, Vector3>
     {
-        protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             Vector3 toRot = target;
             if (relative) toRot += fromObject.localRotation.eulerAngles;
@@ -76,7 +77,7 @@ namespace AnimFlex.Tweening
         public bool position, rotation;
 
 
-        protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             float t = 0;
             Action<float> onSet = null;
@@ -110,7 +111,7 @@ namespace AnimFlex.Tweening
     [Serializable]
     internal class MultiTweenerGeneratorScale : MultiTweenerGenerator<Transform, Vector3>
     {
-        protected override Tweener GenerateTween(Transform fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             Vector3 toScl = target;
             if (relative)
@@ -122,7 +123,7 @@ namespace AnimFlex.Tweening
 		            toScl.z * localScale.z);
             }
 
-            return fromObject.AnimScaleTo(toScl, ease, duration, delay, curve);
+            return fromObject.AnimScaleTo(toScl, duration, delay, ease, curve, proxy);
         }
     }
 
@@ -133,33 +134,33 @@ namespace AnimFlex.Tweening
     [Serializable]
     internal class MultiTweenerGeneratorFadeGraphic : MultiTweenerGenerator<Graphic, float>
     {
-        protected override Tweener GenerateTween(Graphic fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Graphic fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
             if (relative) toVal *= fromObject.color.a;
-            return fromObject.AnimFadeTo(toVal, ease, duration, delay, curve);
+            return fromObject.AnimFadeTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
 
     [Serializable]
     internal class MultiTweenerGeneratorFadeRenderer : MultiTweenerGenerator<Renderer, float>
     {
-        protected override Tweener GenerateTween(Renderer fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Renderer fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
             if (relative) toVal *= fromObject.material.color.a;
-            return fromObject.AnimFadeTo(toVal, ease, duration, delay, curve);
+            return fromObject.AnimFadeTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
 
     [Serializable]
     internal class MultiTweenerGeneratorFadeCanvasGroup : MultiTweenerGenerator<CanvasGroup, float>
     {
-        protected override Tweener GenerateTween(CanvasGroup fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, CanvasGroup fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
             if (relative) toVal *= fromObject.alpha;
-            return fromObject.AnimFadeTo(toVal, ease, duration, delay, curve);
+            return fromObject.AnimFadeTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
 
@@ -170,22 +171,22 @@ namespace AnimFlex.Tweening
     [Serializable]
     internal class MultiTweenerGeneratorColorGraphic : MultiTweenerGenerator<Graphic, Color>
     {
-        protected override Tweener GenerateTween(Graphic fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Graphic fromObject, AnimationCurve curve, float delay)
         {
             var toVal = target;
             if (relative) toVal += fromObject.color;
-            return fromObject.AnimColorTo(toVal, ease, duration, delay, curve);
+            return fromObject.AnimColorTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
 
     [Serializable]
     internal class MultiTweenerGeneratorColorRenderer : MultiTweenerGenerator<Renderer, Color>
     {
-        protected override Tweener GenerateTween(Renderer fromObject, AnimationCurve curve, float delay)
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Renderer fromObject, AnimationCurve curve, float delay)
         {
             var toVal = target;
             if (relative) toVal += fromObject.material.color;
-            return fromObject.AnimColorTo(toVal, ease, duration, delay, curve);
+            return fromObject.AnimColorTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
 

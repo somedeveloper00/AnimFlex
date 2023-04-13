@@ -11,8 +11,8 @@ namespace AnimFlex.Core
     /// </summary>
     internal sealed class AnimFlexCore : MonoBehaviour {
         public AnimFlexSettings Settings { get; private set; } = AnimFlexSettings.Instance;
-        public TweenerController TweenerController { get; } = new TweenerController();
         public EaseEvaluator EaseEvaluator { get; } = new EaseEvaluator();
+        public TweenerController TweenerController { get; } = new TweenerController();
         public SequenceController SequenceController { get; } = new SequenceController();
 
         public static AnimFlexCore Instance => m_instance;

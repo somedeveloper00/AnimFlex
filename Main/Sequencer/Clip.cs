@@ -1,10 +1,13 @@
 using System;
+using AnimFlex.Core.Proxy;
 
 namespace AnimFlex.Sequencer
 {
     [Serializable]
-    public abstract class Clip
-    {
+    public abstract class Clip {
+
+        internal AnimflexCoreProxy proxy;
+        
         [NonSerialized] public ClipNode Node;
 
         protected void PlayNext() => Node.PlayNextClipNode();

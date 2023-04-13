@@ -1,4 +1,5 @@
 ﻿using System;
+using AnimFlex.Core.Proxy;
 using AnimFlex.Tweening;
 using UnityEngine;
 
@@ -7,27 +8,27 @@ namespace AnimFlex
 	[Serializable]
 	public class TweenerGeneratorLightColor : TweenerGenerator<Light, Color>
 	{
-		protected override Tweener GenerateTween(AnimationCurve curve)
+		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
 		{
-			return fromObject.AnimLightColorTo(target, ease, duration, delay, curve);
+			return fromObject.AnimLightColorTo(target, duration, delay, ease, customCurve, proxy);
 		}
 	}
 
 	[Serializable]
 	public class TweenerGeneratorLightIntensity : TweenerGenerator<Light, float>
 	{
-		protected override Tweener GenerateTween(AnimationCurve curve)
+		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
 		{
-			return fromObject.AnimLightIntensityTo(target, ease, duration, delay, curve);
+			return fromObject.AnimLightIntensityTo(target, duration, delay, ease, customCurve, proxy);
 		}
 	}
 
 	[Serializable]
 	public class TweenerGeneratorLightRange : TweenerGenerator<Light, float>
 	{
-		protected override Tweener GenerateTween(AnimationCurve curve)
+		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
 		{
-			return fromObject.AnimLightRangeTo(target, ease, duration, delay, curve);
+			return fromObject.AnimLightRangeTo(target, duration, delay, ease, customCurve, proxy);
 		}
 	}
 }

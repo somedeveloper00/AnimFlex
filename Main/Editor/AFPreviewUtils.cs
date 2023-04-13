@@ -226,7 +226,7 @@ namespace AnimFlex.Editor
                 }
 
                 if (StartPreviewMode()) {
-                    if (generator.TryGenerateTween( out var tweener ) == false) {
+                    if (generator.TryGenerateTween( null, out var tweener ) == false) {
                         Debug.LogError( "Could not generate the tween" );
                         StopPreviewMode();
                     }
