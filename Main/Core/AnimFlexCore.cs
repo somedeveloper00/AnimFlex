@@ -8,9 +8,8 @@ namespace AnimFlex.Core
     /// <summary>
     /// the first entry point for AnimFlex functionality
     /// </summary>
-    [AddComponentMenu("core")]
-    internal sealed class AnimFlexCore : MonoBehaviour
-    {
+    [AddComponentMenu( "core" )]
+    internal sealed class AnimFlexCore : MonoBehaviour {
         public AnimFlexSettings Settings { get; private set; }
         public TweenerController TweenerController { get; private set; }
         public EaseEvaluator EaseEvaluator { get; private set; }
@@ -19,24 +18,21 @@ namespace AnimFlex.Core
         public static AnimFlexCore Instance => m_instance;
         private static AnimFlexCore m_instance;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void Initialize()
-        {
-            if (m_instance != null)
-            {
+        [RuntimeInitializeOnLoadMethod( RuntimeInitializeLoadType.BeforeSceneLoad )]
+        public static void Initialize() {
+            if (m_instance != null) {
                 Debug.LogError(
-                    $"There should be only one instance of AnimFlexInitializer in the game." +
-                    $"the old instance will be destroyed!");
-                Destroy(m_instance);
+                    $"There should be only one instance of AnimFlexCore in the game." +
+                    $"the old instance will be destroyed!" );
+                Destroy( m_instance );
             }
 
             InitializeCoreGameObject();
         }
 
-        private static void InitializeCoreGameObject()
-        {
+        private static void InitializeCoreGameObject() {
             // setup the controller gameObject
-            var go = new GameObject("_AnimFlex_mgr");
+            var go = new GameObject( "_AnimFlex_mgr" );
             go.isStatic = true;
             var core = go.AddComponent<AnimFlexCore>();
 
@@ -52,33 +48,28 @@ namespace AnimFlex.Core
             }
 
 #if UNITY_EDITOR
-            if(Application.isPlaying)
+            if (Application.isPlaying)
 #endif
-            DontDestroyOnLoad(go);
+                DontDestroyOnLoad( go );
         }
 
-        private void Update()
-        {
-            Tick(Time.deltaTime);
+        private void LateUpdate() {
+            Tick( Time.deltaTime );
         }
 
 #if UNITY_EDITOR
-        private void OnValidate()
-        {
-            if (!Application.isPlaying && this != m_instance)
-            {
-                EditorApplication.delayCall += () =>
-                {
+        private void OnValidate() {
+            if (!Application.isPlaying && this != m_instance) {
+                EditorApplication.delayCall += () => {
                     // if (gameObject != null) DestroyImmediate(gameObject);
                 };
             }
         }
 #endif
 
-        public void Tick(float deltaTime)
-        {
-            SequenceController.Tick(deltaTime);
-            TweenerController.Tick(deltaTime);
+        public void Tick(float deltaTime) {
+            SequenceController.Tick( deltaTime );
+            TweenerController.Tick( deltaTime );
         }
     }
 }

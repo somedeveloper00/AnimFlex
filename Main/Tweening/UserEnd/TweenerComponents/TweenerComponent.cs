@@ -22,8 +22,8 @@ namespace AnimFlex.Tweening
 	{
 		public T generator = new T();
 
-		[Tooltip( "If checked, it'll play right when the game object activates" )] [SerializeField]
-		internal bool playOnStart;
+		[Tooltip( "If checked, it'll play right when the game object activates" )] 
+		[SerializeField] internal bool playOnStart;
 
 		private void Reset() {
 			if ( generator == null ) generator = new T();
