@@ -162,7 +162,7 @@ namespace AnimFlex.Editor
         }
 
         /// <summary>
-        /// Opens a popup for selecting a sub-class type of the given type T
+        /// Opens a popup for selecting a sub-class type of the given type T, and creates it and passes it if successful
         /// </summary>
         public static void CreateTypeInstanceFromHierarchy<T>(Action<T> onSelect) {
             var classTypes =
@@ -177,6 +177,25 @@ namespace AnimFlex.Editor
                     false, () => {
                         var val = Activator.CreateInstance( type );
                         onSelect( (T)val );
+                    } );
+            menu.ShowAsContext();
+        }
+
+        /// <summary>
+        /// Opens a popup for selecting a sub-class type of the given type T
+        /// </summary>
+        public static void GetTypeInstanceFromHierarchy<T>(Action<Type> onSelect) {
+            var classTypes =
+                from assemblyDomain in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assemblyDomain.GetTypes()
+                where type.IsSubclassOf( typeof(T) ) && !type.IsAbstract
+                select type;
+
+            var menu = new GenericMenu();
+            foreach (var type in classTypes)
+                menu.AddItem( new GUIContent( ObjectNames.NicifyVariableName( GetTypeName( type ) ) ),
+                    false, () => {
+                        onSelect( type );
                     } );
             menu.ShowAsContext();
         }

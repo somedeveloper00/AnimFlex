@@ -77,5 +77,4 @@ https://www.youtube.com/watch?v=e2mkIyX8hEY
 * [RTL Textmesh](https://github.com/pnarimani/RTLTMPro): add `RTLTMP` define
 
 ## TODO
-* Add `from` field to tweeners in inspector
-* Add option to run on unscaled and manual time
+* empty for now...

@@ -26,6 +26,12 @@ namespace AnimFlex.Tweening {
     }
 
     public abstract partial class Tweener {
+
+        /// <summary>
+        /// The <see cref="tweenerController"/> that this Tweener is using. It's assigned during it's construction
+        /// </summary>
+        internal TweenerController tweenerController;
+            
         /// <summary>
         /// Checks whether or not the <see cref="Tweener"/> is valid. (e.g. could check if <see cref="GameObject"/> is <c>enabled</c>
         /// </summary>
@@ -113,21 +119,22 @@ namespace AnimFlex.Tweening {
         internal void OnStart() => onStart();
         internal void OnUpdate() => onUpdate();
         internal void OnComplete() => onComplete();
-
         internal void OnKill() => onKill();
+        
+#endregion
+        
 
-        #endregion
-
-        #region helpers
-
+#region helpers
+        
         public void Kill(bool complete, bool onKillCallback) =>
-            TweenerController.Instance.KillTweener( this, complete, onKillCallback );
+            tweenerController.KillTweener( this, complete, onKillCallback );
 
         public bool IsActive() => IsValid() && !flag.HasFlag( TweenerFlag.Deleting );
-
-        #endregion
-
+        
+#endregion
+        
         internal bool IsValid() => isValid is null || isValid();
+
     }
 
     public abstract class Tweener<T> : Tweener {
@@ -135,26 +142,20 @@ namespace AnimFlex.Tweening {
         internal Action<T> setter;
         internal Func<T> getter;
 
+        /// <summary>
+        /// to be called after construction. point is to not force children to re-write the base constructor code everytime.
+        /// the generators should call this after initialization of variables. 
+        /// This is called before <see cref="Init"/>
+        /// </summary>
+        internal void Construct() {
+            this.tweenerController.AddTweener( this );
+        }
+
         internal override void Init() {
             startValue = getter();
             if (@from) {
                 ( startValue, endValue ) = ( endValue, startValue );
             }
-        }
-
-        internal Tweener(Func<T> getter, Action<T> setter, Func<bool> isValid, T endValue, Ease ease, float duration,
-            float delay, AnimationCurve customCurve, bool useCurve)
-        {
-            this.getter = getter;
-            this.setter = setter;
-            this.isValid = isValid;
-            this.endValue = endValue;
-            this.ease = ease;
-            this.duration = duration;
-            this.delay = delay;
-            this.customCurve = customCurve;
-            this.useCurve = useCurve;
-            TweenerController.Instance.AddTweener( this );
         }
     }
 }

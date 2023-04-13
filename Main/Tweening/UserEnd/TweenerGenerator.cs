@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnimFlex.Core;
 using UnityEngine;
 using UnityEngine.Events;
 using Component = UnityEngine.Component;
@@ -78,7 +79,7 @@ namespace AnimFlex.Tweening
         [Tooltip("The event to call when the tween is killed, whether it's completed or not.\n" +
                  "advanced: it gets called after the onComplete, but in the same frame so")]
         public UnityEvent onKill;
-
+        
         #endregion
 
     }

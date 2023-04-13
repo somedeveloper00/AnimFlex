@@ -203,38 +203,33 @@ namespace AnimFlex.Editor
             Handles.EndGUI();
         }
 
-        public static void PreviewSequence(Sequence sequence)
-        {
-            if (isActive)
-            {
+        public static void PreviewSequence(Sequence sequence) {
+            if (isActive) {
                 StopPreviewMode();
                 return;
             }
 
-            if (StartPreviewMode())
-            {
-	            sequence.Play();
-	            sequence.onComplete += StopPreviewMode;
+            if (StartPreviewMode()) {
+                // because update time doens't matter in editor preview
+                sequence.sequenceController = AnimFlexCore.Instance.SequenceController;
+                
+                sequence.Play();
+                sequence.onComplete += StopPreviewMode;
             }
         }
 
-        public static void PreviewTweener(TweenerGenerator generator)
-        {
-            EditorApplication.delayCall += () =>
-            {
-                if (isActive)
-                {
+        public static void PreviewTweener(TweenerGenerator generator) {
+            EditorApplication.delayCall += () => {
+                if (isActive) {
                     StopPreviewMode();
                     return;
                 }
 
-                if (StartPreviewMode())
-                {
-	                if (generator.TryGenerateTween(out var tweener) == false)
-	                {
-	                    Debug.LogError("Could not generate the tween");
-	                    StopPreviewMode();
-	                }
+                if (StartPreviewMode()) {
+                    if (generator.TryGenerateTween( out var tweener ) == false) {
+                        Debug.LogError( "Could not generate the tween" );
+                        StopPreviewMode();
+                    }
                 }
             };
         }

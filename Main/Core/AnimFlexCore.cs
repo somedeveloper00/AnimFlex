@@ -1,4 +1,5 @@
-﻿using AnimFlex.Sequencer;
+﻿using System;
+using AnimFlex.Sequencer;
 using AnimFlex.Tweening;
 using UnityEditor;
 using UnityEngine;
@@ -6,20 +7,19 @@ using UnityEngine;
 namespace AnimFlex.Core
 {
     /// <summary>
-    /// the first entry point for AnimFlex functionality
+    /// the first entry point for AnimFlex functionality. NOT TO BE USED MANUALLY
     /// </summary>
-    [AddComponentMenu( "core" )]
     internal sealed class AnimFlexCore : MonoBehaviour {
-        public AnimFlexSettings Settings { get; private set; }
-        public TweenerController TweenerController { get; private set; }
-        public EaseEvaluator EaseEvaluator { get; private set; }
-        public SequenceController SequenceController { get; private set; }
+        public AnimFlexSettings Settings { get; private set; } = AnimFlexSettings.Instance;
+        public TweenerController TweenerController { get; } = new TweenerController();
+        public EaseEvaluator EaseEvaluator { get; } = new EaseEvaluator();
+        public SequenceController SequenceController { get; } = new SequenceController();
 
         public static AnimFlexCore Instance => m_instance;
         private static AnimFlexCore m_instance;
 
         [RuntimeInitializeOnLoadMethod( RuntimeInitializeLoadType.BeforeSceneLoad )]
-        public static void Initialize() {
+        internal static void Initialize() {
             if (m_instance != null) {
                 Debug.LogError(
                     $"There should be only one instance of AnimFlexCore in the game." +
@@ -34,38 +34,29 @@ namespace AnimFlex.Core
             // setup the controller gameObject
             var go = new GameObject( "_AnimFlex_mgr" );
             go.isStatic = true;
+            AnimFlexSettings.Initialize();
             var core = go.AddComponent<AnimFlexCore>();
-
-            // initializing locally
-            {
-                m_instance = core;
-
-                // initialize systems in order
-                core.Settings = AnimFlexSettings.Initialize();
-                core.TweenerController = new TweenerController();
-                core.EaseEvaluator = new EaseEvaluator();
-                core.SequenceController = new SequenceController();
-            }
+            m_instance = core;
 
 #if UNITY_EDITOR
             if (Application.isPlaying)
 #endif
                 DontDestroyOnLoad( go );
         }
-
-        private void LateUpdate() {
-            Tick( Time.deltaTime );
-        }
-
+        
 #if UNITY_EDITOR
         private void OnValidate() {
             if (!Application.isPlaying && this != m_instance) {
                 EditorApplication.delayCall += () => {
-                    // if (gameObject != null) DestroyImmediate(gameObject);
+                    if (gameObject != null) DestroyImmediate(gameObject);
                 };
             }
         }
 #endif
+
+        void LateUpdate() {
+            Tick( Time.deltaTime );
+        }
 
         public void Tick(float deltaTime) {
             SequenceController.Tick( deltaTime );

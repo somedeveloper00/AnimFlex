@@ -8,7 +8,8 @@ namespace AnimFlex.Core
 {
     internal class AnimFlexSettings : ScriptableObject
     {
-        public static AnimFlexSettings Instance => AnimFlexCore.Instance.Settings;
+        public static AnimFlexSettings Instance { get; private set; }
+        
 
         public static AnimFlexSettings Initialize()
         {
@@ -20,8 +21,7 @@ namespace AnimFlex.Core
 #if UNITY_EDITOR
                 settings.name = "AnimFlexSettings";
 
-                if (!AssetDatabase.IsValidFolder("Assets/Resources"))
-                {
+                if (!AssetDatabase.IsValidFolder("Assets/Resources")) {
 	                AssetDatabase.CreateFolder("Assets", "Resources");
                 }
                 AssetDatabase.CreateAsset(settings, "Assets/Resources/AnimFlexSettings.asset");
@@ -30,6 +30,7 @@ namespace AnimFlex.Core
 #endif
             }
 
+            Instance = settings;
             return settings;
         }
 

@@ -121,7 +121,7 @@ namespace AnimFlex.Tweening
 		/// kills the tweener right away
 		/// </summary>
 		public override void Kill(bool complete = true, bool onCompleteCallback = true) {
-			TweenerController.Instance.KillTweener( m_tweener, complete, onCompleteCallback );
+			m_tweener?.tweenerController.KillTweener( m_tweener, complete, onCompleteCallback );
 		}
 	}
 }
