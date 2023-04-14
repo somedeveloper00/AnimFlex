@@ -1,19 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
-namespace AnimFlex.Sequencer
-{
+namespace AnimFlex.Sequencer {
     [Flags]
-    public enum ClipNodeFlags
-    {
+    public enum ClipNodeFlags {
         PendingActive = 1 << 1,
         Active = 1 << 2,
         PendingDeactive = 1 << 3
     }
 
     [Serializable]
-    public class ClipNode
-    {
+    public class ClipNode {
         [SerializeField] internal string name;
         [SerializeField] internal float delay;
         [SerializeReference] internal Clip clip;
@@ -22,35 +19,35 @@ namespace AnimFlex.Sequencer
         /// index of this clip node inside the Sequencer
         /// </summary>
         public int Index { get; private set; }
-        [field: NonSerialized] public Sequence sequence { get; private set; }
+
+        [field: NonSerialized]
+        public Sequence sequence { get; private set; }
 
         private float t = 0;
         internal ClipNodeFlags flags = 0; // no flags on start
         private bool started = false;
 
-        public void Deactivate() => sequence.DeactivateClipNode(this);
-        public void PlayNextClipNode()
-        {
-	        if(!sequence.IsActive()) return;
+        public void Deactivate() => sequence.DeactivateClipNode( this );
 
-            if(sequence.nodes.Length == Index + 1)
+        public void PlayNextClipNode() {
+            if (!sequence.IsActive()) return;
+
+            if (sequence.nodes.Length == Index + 1)
                 sequence.Stop();
             else
-                PlayClipNode(Index + 1);
+                PlayClipNode( Index + 1 );
         }
 
-        public void PlayClipNode (int index)
-        {
-	        if(!sequence.IsActive()) return;
-	        sequence.ActivateClip(index);
+        public void PlayClipNode(int index) {
+            if (!sequence.IsActive()) return;
+            sequence.ActivateClip( index );
         }
 
         /// <summary>
         /// forcefully ends the clip
         /// </summary>
-        internal void End()
-        {
-			clip.OnEnd();
+        internal void End() {
+            clip.OnEnd();
         }
 
         /// <summary>
@@ -58,19 +55,17 @@ namespace AnimFlex.Sequencer
         /// </summary>
         /// <param name="sequence">The sequencer this ClipNode is attached to</param>
         /// <param name="index">The index of this ClipNode in the sequencer's <c>nodes</c> array</param>
-        internal void Init(Sequence sequence, int index)
-        {
+        internal void Init(Sequence sequence, int index) {
             Index = index;
             this.sequence = sequence;
-            clip.Init(this);
+            clip.Init( this );
             Reset();
         }
 
         /// <summary>
         /// resets variables. used for re-playing the already played node
         /// </summary>
-        internal void Reset()
-        {
+        internal void Reset() {
             t = 0;
             started = false;
         }
@@ -78,29 +73,24 @@ namespace AnimFlex.Sequencer
         /// <summary>
         /// Updates the ClipNode's Clip.</summary>
         /// <param name="deltaTime">The time interval from the last Tick to now</param>
-        internal void Tick(float deltaTime)
-        {
+        internal void Tick(float deltaTime) {
             t += deltaTime;
-            if (t > delay)
-            {
+            if (t > delay) {
                 // start of the clip
-                if (!started)
-                {
+                if (!started) {
                     started = true; // first set this to true, so if clip.Play() threw errors,
-                                    // they won't get executed in the next Tick
+                    // they won't get executed in the next Tick
                     clip.Play();
                 }
                 // update/tick of the clip
-                else
-                {
-                    if(clip.hasTick())
-                        clip.Tick(deltaTime);
+                else {
+                    if (clip.hasTick())
+                        clip.Tick( deltaTime );
                 }
             }
         }
 
-        internal void OnValidate()
-        {
+        internal void OnValidate() {
             clip.OnValidate();
         }
     }

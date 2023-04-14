@@ -1,5 +1,4 @@
 ﻿using System;
-using AnimFlex.Core;
 using AnimFlex.Core.Proxy;
 using UnityEngine;
 // ReSharper disable Unity.NoNullPropagation

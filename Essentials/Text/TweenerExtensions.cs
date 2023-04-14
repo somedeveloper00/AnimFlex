@@ -22,7 +22,7 @@ namespace AnimFlex.Essentials.TMP
 					() => rtltmp.OriginalText,
 					(value) => rtltmp.text = value,
 					text, duration, delay, ease, curve,
-					() => tmp_text != null );
+					() => tmp_text != null, proxy );
 			}
 			else
 #endif
@@ -30,7 +30,7 @@ namespace AnimFlex.Essentials.TMP
 					() => tmp_text.text,
 					(value) => tmp_text.text = value,
 					text, duration, delay, ease, curve,
-					() => tmp_text != null );
+					() => tmp_text != null, proxy );
 		}
 
 		public static Tweener<string> AnimTextTo(this Text ui_text, string text, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
@@ -44,7 +44,7 @@ namespace AnimFlex.Essentials.TMP
 				() => ui_text.text,
 				(value) => ui_text.text = value,
 				text, duration, delay, ease, curve,
-				() => ui_text != null );
+				() => ui_text != null, proxy );
 		}
 	}
 }

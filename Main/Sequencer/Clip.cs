@@ -6,15 +6,14 @@ namespace AnimFlex.Sequencer
     [Serializable]
     public abstract class Clip {
 
-        internal AnimflexCoreProxy proxy;
+        internal AnimflexCoreProxy proxy { get; set; }
         
         [NonSerialized] public ClipNode Node;
 
         protected void PlayNext() => Node.PlayNextClipNode();
         protected void PlayIndex(int index) => Node.PlayClipNode(index);
 
-        internal void Init(ClipNode node)
-        {
+        internal void Init(ClipNode node) {
             Node = node;
         }
 

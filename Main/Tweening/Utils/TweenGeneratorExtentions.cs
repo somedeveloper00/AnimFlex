@@ -98,8 +98,7 @@ namespace AnimFlex.Tweening
                     vec = Vector3.LerpUnclamped(fromVec, endRotation, t);
                     transform.rotation = Quaternion.Euler(vec);
                 },
-                1, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => transform != null );
+                1, duration, delay, ease, curve, () => transform != null, proxy );
         }
 
         #endregion
@@ -127,8 +126,7 @@ namespace AnimFlex.Tweening
                     vec = Vector3.Lerp(fromVec, endRotation, t);
                     transform.rotation = Quaternion.Euler(vec);
                 },
-                1, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => transform != null );
+                1, duration, delay, ease, curve, () => transform != null, proxy );
         }
 
 
@@ -171,8 +169,7 @@ namespace AnimFlex.Tweening
                     var graphicColor = new Color(graphic.color.r, graphic.color.g, graphic.color.b, value);
                     graphic.color = graphicColor;
                 },
-                endFade, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => graphic != null );
+                endFade, duration, delay, ease, curve, () => graphic != null, proxy );
         }
 
         public static Tweener AnimFadeTo(this Material material, float endFade, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null)
@@ -186,8 +183,7 @@ namespace AnimFlex.Tweening
             return Tweener.Generate(
                 () => material.color.a,
                 (value) => material.color = new Color(material.color.r, material.color.g, material.color.b, value),
-                endFade, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => material != null );
+                endFade, duration, delay, ease, curve, () => material != null, proxy );
         }
 
 
@@ -206,8 +202,7 @@ namespace AnimFlex.Tweening
                     var material = renderer.material;
                     material.color = new Color(material.color.r, material.color.g, material.color.b, value);
                 },
-                endFade, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => renderer != null );
+                endFade, duration, delay, ease, curve, () => renderer != null, proxy );
         }
 
 
@@ -222,8 +217,7 @@ namespace AnimFlex.Tweening
             return Tweener.Generate(
                 () => canvasGroup.alpha,
                 (value) => canvasGroup.alpha = value,
-                endFade, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => canvasGroup != null );
+                endFade, duration, delay, ease, curve, () => canvasGroup != null, proxy );
         }
 
         #endregion

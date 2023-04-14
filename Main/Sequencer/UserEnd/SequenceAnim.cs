@@ -58,7 +58,6 @@ namespace AnimFlex.Sequencer.UserEnd {
 				: null;
 			foreach (var node in sequence.nodes) node.clip.proxy = proxy;
 			// ReSharper disable once Unity.NoNullPropagation
-			Debug.Log( proxy );
 			sequence.sequenceController = proxy?.core.SequenceController ?? AnimflexCoreProxy.MainDefault.core.SequenceController;
 			sequence.PlayOrRestart();
 		}
