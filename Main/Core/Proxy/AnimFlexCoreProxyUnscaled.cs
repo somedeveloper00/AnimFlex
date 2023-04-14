@@ -1,18 +1,16 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AnimFlex.Core.Proxy {
     public class AnimFlexCoreProxyUnscaled : AnimflexCoreProxy {
         
         [Tooltip( "Sets this proxy as default for this type" )] 
-        public bool setDefault = true;
+        [SerializeField] bool setDefault = true;
         
         public static AnimFlexCoreProxyUnscaled Default { get; private set; }
 
         void OnEnable() {
             if (setDefault) Default = this;
         }
-
-        public override void LateUpdate() => core.Tick( Time.unscaledDeltaTime );
+        protected override float GetDeltaTime() => Time.unscaledDeltaTime;
     }
 }

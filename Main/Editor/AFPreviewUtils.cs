@@ -1,5 +1,6 @@
 ﻿using System;
 using AnimFlex.Core;
+using AnimFlex.Core.Proxy;
 using AnimFlex.Sequencer;
 using AnimFlex.Tweening;
 using UnityEditor;
@@ -91,7 +92,7 @@ namespace AnimFlex.Editor
 
 
 
-            AnimFlexCore.Initialize();
+            AnimflexCoreProxy.Initialize();
             EditorApplication.update += EditorTick;
             lastTickTime = (float)EditorApplication.timeSinceStartup;
             isActive = true;
@@ -135,7 +136,7 @@ namespace AnimFlex.Editor
             // ignoring long frames altogether (maybe user changed the window or whatever else)
             if (EditorApplication.timeSinceStartup - lastTickTime < 1f)
             {
-                AnimFlexCore.Instance.Tick((float)EditorApplication.timeSinceStartup - lastTickTime);
+                AnimflexCoreProxy.MainDefault.core.Tick((float)EditorApplication.timeSinceStartup - lastTickTime);
                 SceneView.RepaintAll();
             }
             lastTickTime = (float)EditorApplication.timeSinceStartup;
@@ -211,7 +212,7 @@ namespace AnimFlex.Editor
 
             if (StartPreviewMode()) {
                 // because update time doens't matter in editor preview
-                sequence.sequenceController = AnimFlexCore.Instance.SequenceController;
+                sequence.sequenceController = AnimflexCoreProxy.MainDefault.core.SequenceController;
                 
                 sequence.Play();
                 sequence.onComplete += StopPreviewMode;

@@ -35,7 +35,7 @@ namespace AnimFlex.Sequencer.UserEnd {
 
 		public Sequence sequence = new Sequence();
 
-		private void OnEnable() {
+		private void Start() {
 			if (playOnEnable) {
 				PlaySequence();
 			}
@@ -51,12 +51,15 @@ namespace AnimFlex.Sequencer.UserEnd {
 		}
 
 		public void PlaySequence() {
-			var core = useProxyAsCore
+			var proxy = useProxyAsCore
 				? useDefaultCoreProxy
-					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy ).core
-					: coreProxy.core
-				: AnimFlexCore.Instance;
-			sequence.sequenceController = core.SequenceController;
+					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy )
+					: coreProxy
+				: null;
+			foreach (var node in sequence.nodes) node.clip.proxy = proxy;
+			// ReSharper disable once Unity.NoNullPropagation
+			Debug.Log( proxy );
+			sequence.sequenceController = proxy?.core.SequenceController ?? AnimflexCoreProxy.MainDefault.core.SequenceController;
 			sequence.PlayOrRestart();
 		}
 	}

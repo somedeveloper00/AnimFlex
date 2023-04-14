@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using AnimFlex.Core;
+using UnityEngine;
 using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 namespace AnimFlex.Tweening {
-    public class TweenerController {
-
+    public sealed class TweenerController {
+        
+        int id;
         internal TweenerController() {
+            id = new System.Random().Next();
             _tweeners = new PreservedArray<Tweener>( AnimFlexSettings.Instance.maxTweenCount );
         }
 
@@ -58,8 +62,6 @@ namespace AnimFlex.Tweening {
 
                     tweener._t = t; // save for next Ticks
 
-
-
                     _completed = t >= totalTime; // completion check
                     t = _completed ? 1 :
                         t <= tweener.delay ? 0 : ( t - tweener.delay ) / tweener.duration; // advanced clamp
@@ -67,8 +69,7 @@ namespace AnimFlex.Tweening {
 
                     // apply ping pong
                     if (tweener.pingPong && t != 0) {
-                        t *= 2;
-                        if (t > 1) t = 2 - t;
+                        t = -2 * Mathf.Abs( t - 0.5f ) + 1;
                     }
 
                     tweener.Set( EaseEvaluator.Instance.EvaluateEase( tweener.ease, t,

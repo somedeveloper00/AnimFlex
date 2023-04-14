@@ -15,7 +15,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerFloat
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -34,7 +34,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerInt
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -53,7 +53,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerVector2
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -72,7 +72,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerVector3
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -91,7 +91,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerQuaternion
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -110,7 +110,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerRect
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -129,7 +129,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerColor
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
@@ -148,7 +148,7 @@ namespace AnimFlex.Tweening
         {
             var tweener = new TweenerString
             {
-                tweenerController = proxy?.core.TweenerController ?? AnimFlexCore.Instance.TweenerController,
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
                 getter = getter,
                 setter = setter,
                 isValid = isValid,
