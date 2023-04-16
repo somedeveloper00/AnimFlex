@@ -31,7 +31,7 @@ namespace AnimFlex.Editor.Sequencer {
         bool _showAdvanced = false;
         
         GUIContent _addCoreProxyGuiContent = new GUIContent( "Add", "Add a new Core Proxy Component to this Game Object" );
-        
+    
 
         private void OnEnable() {
             _sequenceAnim = target as SequenceAnim;
@@ -40,7 +40,7 @@ namespace AnimFlex.Editor.Sequencer {
 
             const int START_LEN = 17; // "AnimFlexCoreProxy";
             _coreProxyTypeOptions = AnimFlexCoreProxyHelper.AllCoreProxyTypes
-                .Select( t => new GUIContent( t.Name.Substring( 17 ), _defaultCoreProxyProp.tooltip ) ).ToArray();
+                .Select( t => new GUIContent( t.Name.Substring( START_LEN ), _defaultCoreProxyProp.tooltip ) ).ToArray();
 
             SetupNodeListDrawer();
         }
