@@ -23,7 +23,7 @@ namespace AnimFlex.Sequencer {
 
             // init phase
             for (int i = 0; i < _sequences.Length; i++) {
-                if (_sequences[i].flags.HasFlag( SequenceFlags.Active ) == false) {
+                if (_sequences[i].flags.HasFlagFast( SequenceFlags.Active ) == false) {
                     _sequences[i].flags |= SequenceFlags.Active;
                     _sequences[i].OnActivate();
                 }
@@ -31,14 +31,14 @@ namespace AnimFlex.Sequencer {
 
             // tick phase
             for (int i = 0; i < _sequences.Length; i++) {
-                if (!_sequences[i].flags.HasFlag( SequenceFlags.Paused )) {
+                if (!_sequences[i].flags.HasFlagFast( SequenceFlags.Paused )) {
                     _sequences[i].Tick( deltaTime );
                 }
             }
 
             // remove phase
             for (int i = 0; i < _sequences.Length; i++) {
-                if (_sequences[i].flags.HasFlag( SequenceFlags.Stopping )) {
+                if (_sequences[i].flags.HasFlagFast( SequenceFlags.Stopping )) {
                     _sequences[i].OnStop();
                     _sequences.RemoveAt( i-- );
                 }
@@ -56,7 +56,7 @@ namespace AnimFlex.Sequencer {
             if (sequence == null)
                 throw new NullReferenceException( "sequence" );
 
-            if (sequence.flags.HasFlag( SequenceFlags.Active )) {
+            if (sequence.flags.HasFlagFast( SequenceFlags.Active )) {
                 Debug.LogError( $"Sequence was already active. You should stop it before playing it again." );
                 return;
             }

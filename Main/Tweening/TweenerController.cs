@@ -58,7 +58,7 @@ namespace AnimFlex.Tweening {
                     }
 
                     // to avoid repeated evaluations
-                    if (tweener._t == t) continue;
+                    // if (tweener._t == t) continue;
 
                     tweener._t = t; // save for next Ticks
 

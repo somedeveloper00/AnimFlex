@@ -6,7 +6,12 @@ namespace AnimFlex.Sequencer {
     public enum ClipNodeFlags {
         PendingActive = 1 << 1,
         Active = 1 << 2,
-        PendingDeactive = 1 << 3
+        PendingDeactive = 1 << 3,
+        Ticked = 1 << 4
+    }
+
+    public static class ClipNodeFlagsExtensions {
+        public static bool HasFlagFast(this ClipNodeFlags value, ClipNodeFlags flag) => ( value & flag ) != 0;
     }
 
     [Serializable]

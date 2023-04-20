@@ -33,6 +33,10 @@ namespace AnimFlex.Sequencer.UserEnd {
 		[SerializeField]
 		internal bool resetOnPlay = true;
 
+		[Tooltip( "when true, it won't wait for the next Tick (frame) to activate the next clip." )] 
+		[SerializeField] internal bool activateNextClipsASAP = true;
+
+
 		public Sequence sequence = new Sequence();
 
 		private void Start() {
@@ -59,6 +63,7 @@ namespace AnimFlex.Sequencer.UserEnd {
 			foreach (var node in sequence.nodes) node.clip.proxy = proxy;
 			// ReSharper disable once Unity.NoNullPropagation
 			sequence.sequenceController = proxy?.core.SequenceController ?? AnimflexCoreProxy.MainDefault.core.SequenceController;
+			sequence.activateNextClipsASAP = activateNextClipsASAP;
 			sequence.PlayOrRestart();
 		}
 	}

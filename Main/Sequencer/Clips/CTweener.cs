@@ -18,12 +18,12 @@ namespace AnimFlex.Sequencer.Clips {
 
 
         protected override void OnStart() {
-            if (playNextOnStart)
-                PlayNext();
 
             if (tweenerGenerator.TryGenerateTween( proxy, out var tweener )) {
                 this.tweener = tweener;
-                if (!playNextOnStart)
+                if (playNextOnStart)
+                    PlayNext();
+                else
                     tweener.onComplete += PlayNext;
             }
             else {

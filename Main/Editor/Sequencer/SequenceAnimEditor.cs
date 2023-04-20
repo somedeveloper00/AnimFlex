@@ -20,6 +20,7 @@ namespace AnimFlex.Editor.Sequencer {
         private SerializedProperty _coreProxyProp;
         private SerializedProperty _useDefaultCoreProxyProp;
         private SerializedProperty _defaultCoreProxyProp;
+        private SerializedProperty _activateNextClipAsapProp;
 
         private ReorderableList _nodeClipList;
 
@@ -70,7 +71,9 @@ namespace AnimFlex.Editor.Sequencer {
                 using (new AFStyles.EditorLabelWidth( 110 ))
                     EditorGUILayout.PropertyField( _playOnStartProp, GUILayout.Width( 130 ) );
                 using (new AFStyles.EditorLabelWidth( 90 ))
-                    EditorGUILayout.PropertyField( _resetOnPlayProp );
+                    EditorGUILayout.PropertyField( _resetOnPlayProp, GUILayout.Width( 110 ) );
+                using (new AFStyles.EditorLabelWidth( 155 ))
+                    EditorGUILayout.PropertyField( _activateNextClipAsapProp );
             }
 
             using (new GUILayout.HorizontalScope()) {
@@ -206,6 +209,7 @@ namespace AnimFlex.Editor.Sequencer {
             _useProxyAsCoreProp = serializedObject.FindProperty( nameof(SequenceAnim.useProxyAsCore) );
             _resetOnPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.resetOnPlay) );
             _coreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.coreProxy) );
+            _activateNextClipAsapProp = serializedObject.FindProperty( nameof(SequenceAnim.activateNextClipsASAP) );
             
             _clipNodesProp = _sequenceProp.FindPropertyRelative( nameof(Sequence.nodes) );
         }

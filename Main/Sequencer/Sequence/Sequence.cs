@@ -10,9 +10,20 @@ namespace AnimFlex.Sequencer {
 		Stopping = 1 << 3
 	}
 
+	internal static class SequenceFlagsExtensions {
+		public static bool HasFlagFast(this SequenceFlags value, SequenceFlags flag) {
+			return ( value & flag ) != 0;
+		}
+	}
+
 	[Serializable]
 	public sealed class Sequence {
 
+		/// <summary>
+		/// when true, it won't wait for the next Tick (frame) to activate the next clip.
+		/// </summary>
+		public bool activateNextClipsASAP = true;
+		
 		/// <summary>
 		/// executes when the sequence is played.
 		/// </summary>
@@ -33,6 +44,10 @@ namespace AnimFlex.Sequencer {
 		internal SequenceController sequenceController { get; set;  }
 
 		internal SequenceFlags flags;
+
+		int _pendingActiveCount = 0;
+
+		const int MAX_ITER_COUNT = 64;
 
 
 #region Public playback tools
@@ -112,19 +127,31 @@ namespace AnimFlex.Sequencer {
 
 		internal void Tick(float deltaTime) {
 
-			// init phase
-			for (int i = 0; i < nodes.Length; i++) {
-				if (nodes[i].flags.HasFlag( ClipNodeFlags.PendingActive )) {
-					nodes[i].Reset();
-					nodes[i].flags = ClipNodeFlags.Active;
-				}
-			}
+			int iters = 0;
+			do {
+				if (iters++ == MAX_ITER_COUNT) break;
+				
+				for (int i = 0; i < nodes.Length; i++) {
+					
+					// init phase
+					if (nodes[i].flags.HasFlagFast( ClipNodeFlags.PendingActive )) {
+						_pendingActiveCount --;
+						nodes[i].Reset();
+						nodes[i].flags = ClipNodeFlags.Active;
+					}
+					
+					// tick phase
+					if ( nodes[i].flags.HasFlagFast( ClipNodeFlags.Active ) && !nodes[i].flags.HasFlagFast( ClipNodeFlags.Ticked )) {
+						nodes[i].Tick( deltaTime );
+						nodes[i].flags |= ClipNodeFlags.Ticked;
+					}
 
-			// tick phase
-			for (int i = 0; i < nodes.Length; i++) {
-				if (nodes[i].flags.HasFlag( ClipNodeFlags.Active )) {
-					nodes[i].Tick( deltaTime );
 				}
+			} while (activateNextClipsASAP && _pendingActiveCount > 0);
+			
+			// flush
+			for (int i = 0; i < nodes.Length; i++) {
+				nodes[i].flags &= ~ClipNodeFlags.Ticked; // remove Tick
 			}
 		}
 
@@ -134,13 +161,14 @@ namespace AnimFlex.Sequencer {
 
 		internal void ActivateClip(int index) {
 			nodes[index].flags = ClipNodeFlags.PendingActive;
+			_pendingActiveCount++;
 		}
 
 		internal void DeactivateClipNode(ClipNode clipNode) {
 			clipNode.flags = ClipNodeFlags.PendingDeactive;
 		}
 
-		internal bool IsActive() => flags.HasFlag( SequenceFlags.Active );
+		internal bool IsActive() => flags.HasFlagFast( SequenceFlags.Active );
 
 #endregion
 
