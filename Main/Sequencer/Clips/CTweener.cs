@@ -8,8 +8,10 @@ namespace AnimFlex.Sequencer.Clips {
 
         protected Tweener tweener;
 
+        protected bool _dontKill = false;
+
         public override void OnEnd() {
-            if (tweener.IsActive()) tweener.tweenerController.KillTweener( tweener, true, false );
+            if (!_dontKill && tweener.IsActive()) tweener.tweenerController.KillTweener( tweener, true, false );
         }
     }
 
@@ -21,10 +23,16 @@ namespace AnimFlex.Sequencer.Clips {
 
             if (tweenerGenerator.TryGenerateTween( proxy, out var tweener )) {
                 this.tweener = tweener;
-                if (playNextOnStart)
-                    PlayNext();
-                else
+                if (playNextOnStart) {
+                    _dontKill = true; // so on OnEnd the tweeners won't be killed right away.
+                                      // but we still need the Clip to end, so we set endSelf to true to not recceive
+                                      // further Ticks (for micro optimization)
+                    PlayNext( endSelf: true );
+                    _dontKill = false;  
+                }
+                else {
                     tweener.onComplete += () => PlayNext();
+                }
             }
             else {
                 Debug.LogWarning( $"Could not generate tweener! playing the next clip..." );
