@@ -10,7 +10,11 @@ namespace AnimFlex.Sequencer
         
         [NonSerialized] public ClipNode Node;
 
-        protected void PlayNext() => Node.PlayNextClipNode();
+        protected void PlayNext(bool endSelf = true) {
+            Node.PlayNextClipNode();
+            if (endSelf) Node.End();
+        }
+
         protected void PlayIndex(int index) => Node.PlayClipNode(index);
 
         internal void Init(ClipNode node) {

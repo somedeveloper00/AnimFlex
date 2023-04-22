@@ -9,7 +9,7 @@ namespace AnimFlex.Sequencer.Clips {
         protected Tweener tweener;
 
         public override void OnEnd() {
-            tweener.tweenerController.KillTweener( tweener, true, false );
+            if (tweener.IsActive()) tweener.tweenerController.KillTweener( tweener, true, false );
         }
     }
 
@@ -24,7 +24,7 @@ namespace AnimFlex.Sequencer.Clips {
                 if (playNextOnStart)
                     PlayNext();
                 else
-                    tweener.onComplete += PlayNext;
+                    tweener.onComplete += () => PlayNext();
             }
             else {
                 Debug.LogWarning( $"Could not generate tweener! playing the next clip..." );

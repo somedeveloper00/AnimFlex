@@ -6,8 +6,7 @@ namespace AnimFlex.Sequencer {
     public enum ClipNodeFlags {
         PendingActive = 1 << 1,
         Active = 1 << 2,
-        PendingDeactive = 1 << 3,
-        Ticked = 1 << 4
+        Ticked = 1 << 3
     }
 
     public static class ClipNodeFlagsExtensions {
@@ -32,8 +31,6 @@ namespace AnimFlex.Sequencer {
         internal ClipNodeFlags flags = 0; // no flags on start
         private bool started = false;
 
-        public void Deactivate() => sequence.DeactivateClipNode( this );
-
         public void PlayNextClipNode() {
             if (!sequence.IsActive()) return;
 
@@ -53,6 +50,7 @@ namespace AnimFlex.Sequencer {
         /// </summary>
         internal void End() {
             clip.OnEnd();
+            sequence.DeactivateClipNode( this );
         }
 
         /// <summary>

@@ -145,7 +145,7 @@ namespace AnimFlex.Sequencer {
 						nodes[i].Tick( deltaTime );
 						nodes[i].flags |= ClipNodeFlags.Ticked;
 					}
-
+					
 				}
 			} while (activateNextClipsASAP && _pendingActiveCount > 0);
 			
@@ -165,7 +165,7 @@ namespace AnimFlex.Sequencer {
 		}
 
 		internal void DeactivateClipNode(ClipNode clipNode) {
-			clipNode.flags = ClipNodeFlags.PendingDeactive;
+			clipNode.flags = 0;
 		}
 
 		internal bool IsActive() => flags.HasFlagFast( SequenceFlags.Active );
