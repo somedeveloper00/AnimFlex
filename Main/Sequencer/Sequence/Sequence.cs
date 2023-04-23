@@ -66,10 +66,7 @@ namespace AnimFlex.Sequencer {
 		/// stops the sequencer. note that the stopping process will not happen right away.
 		/// </summary>
 		public void Stop() {
-			if (!IsActive()) {
-				Debug.LogWarning( "Sequencer is not active, so there's nothing to stop." );
-				return;
-			}
+			if (!IsActive()) return;
 
 			flags |= SequenceFlags.Stopping;
 		}
