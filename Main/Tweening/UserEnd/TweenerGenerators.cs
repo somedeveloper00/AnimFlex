@@ -150,7 +150,13 @@ namespace AnimFlex.Tweening {
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy) {
             var toVal = target;
             if (relative) toVal += fromObject.material.color;
-            return fromObject.AnimColorTo( toVal, duration, delay, ease, customCurve, proxy );
+            return Tweener.Generate(
+                () => fromObject.material.color,
+                (val) => {
+                    for (int i = 0; i < fromObject.materials.Length; i++) {
+                        fromObject.materials[i].color = val;
+                    }
+                }, toVal, duration, delay, ease, customCurve, () => fromObject );
         }
     }
 
