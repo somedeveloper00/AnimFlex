@@ -11,6 +11,7 @@ namespace AnimFlex.Core.Proxy {
         void OnEnable() {
             if (setDefault) Default = this;
         }
+        
         protected override float GetDeltaTime() {
             return Time.unscaledDeltaTime;
         }

@@ -72,8 +72,11 @@ namespace AnimFlex.Tweening {
                         t = -2 * Mathf.Abs( t - 0.5f ) + 1;
                     }
 
-                    tweener.Set( EaseEvaluator.Instance.EvaluateEase( tweener.ease, t,
-                        tweener.useCurve ? tweener.customCurve : null ) );
+                    try {
+                        tweener.Set( EaseEvaluator.Instance.EvaluateEase( tweener.ease, t, tweener.useCurve ? tweener.customCurve : null ) );
+                    } catch (Exception e) { 
+                        Debug.LogException( e );
+                    }
                     tweener.OnUpdate();
                 }
 

@@ -3,7 +3,7 @@ using AnimFlex.Sequencer.Clips;
 
 namespace AnimFlex
 {
-	[DisplayName( "Tweener Light Color" )]
-	[Category( "Tweener/Light/Color" )]
+	[DisplayName( "Tweener Image Fill" )]
+	[Category( "Tweener/Image/Fill" )]
 	public class CTweenerImageFill : CTweener<TweenerGeneratorImageFill> { }
 }

@@ -19,7 +19,7 @@ namespace AnimFlex
 				() => image.fillAmount,
 				(value) => image.fillAmount = value,
 				fill, duration, delay, ease,
-				curve, () => image != null );
+				curve, () => image != null, proxy );
 		}
 	
 	}
