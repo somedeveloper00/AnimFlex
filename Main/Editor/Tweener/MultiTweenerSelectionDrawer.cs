@@ -51,8 +51,8 @@ namespace AnimFlex.Editor.Tweener
                 if (objectRefProp.objectReferenceValue == null) {
                     AFStyles.DrawHelpBox( pos, "Reference field is empty", MessageType.Warning );
                 }
-                else if (type == AFSelection.SelectionType.Direct &&
-                         objectRefProp.objectReferenceValue.GetType() != targetType) {
+                else if (type == AFSelection.SelectionType.Direct && 
+                         target.transform && !target.transform.GetComponent( targetType )) {
                     AFStyles.DrawHelpBox( pos, "Reference type is not correct!", MessageType.Error );
                 }
             }
@@ -77,7 +77,7 @@ namespace AnimFlex.Editor.Tweener
                     height += AFStyles.Height + AFStyles.VerticalSpace;
                 }
                 else if (type == AFSelection.SelectionType.Direct &&
-                         objectRefProp.objectReferenceValue.GetType() != targetType)
+                         target.transform && !target.transform.GetComponent( targetType ))
                 {
                     height += AFStyles.Height + AFStyles.VerticalSpace;
                 }
