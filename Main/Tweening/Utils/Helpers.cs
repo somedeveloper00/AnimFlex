@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace AnimFlex.Tweening {
     public static class Helpers {
@@ -9,37 +10,65 @@ namespace AnimFlex.Tweening {
             tweener.tweenerController.KillTweener( tweener, complete, onCompleteCallback );
         }
 
-        public static Tweener<T> SetDuration<T>(this Tweener<T> tweener, float duration) {
+        /// <summary>
+        /// Sets the duration of the Tweener
+        /// </summary>
+        public static Tweener SetDuration(this Tweener tweener, float duration) {
             tweener.duration = duration;
             return tweener;
         }
 
-        public static Tweener<T> SetDelay<T>(this Tweener<T> tweener, float delay) {
+        /// <summary>
+        /// Awaits the completion of the tweener
+        /// </summary>
+        public static async Task AwaitComplete(this Tweener tweener) {
+            while(tweener.IsActive()) await Task.Yield();
+        }
+
+        /// <summary>
+        /// Sets the delay of the tweener
+        /// </summary>
+        public static Tweener SetDelay(this Tweener tweener, float delay) {
             tweener.delay = delay;
             return tweener;
         }
 
-        public static Tweener<T> SetEase<T>(this Tweener<T> tweener, Ease ease) {
+        /// <summary>
+        /// Sets this Tweeenr as PingPong
+        /// </summary>
+        public static Tweener SetPingPong(this Tweener tweener) {
+            tweener.pingPong = true;
+            return tweener;
+        }
+        
+        /// <summary>
+        /// Sets the Ease of this Tweener
+        /// </summary>
+        public static Tweener SetEase(this Tweener tweener, Ease ease) {
             tweener.ease = ease;
             return tweener;
         }
 
-        public static Tweener<T> SetEndValue<T>(this Tweener<T> tweener, T endValue) {
-            tweener.endValue = endValue;
-            return tweener;
-        }
-
-        public static Tweener<T> AddOnComplete<T>(this Tweener<T> tweener, Action onComplete) {
+        /// <summary>
+        /// Adds a callback to execute when the tweener is complete
+        /// </summary>
+        public static Tweener AddOnComplete(this Tweener tweener, Action onComplete) {
             tweener.onComplete += onComplete;
             return tweener;
         }
 
-        public static Tweener<T> AddOnKill<T>(this Tweener<T> tweener, Action onKill) {
+        /// <summary>
+        /// Adds a callback to execute when the tweener is killed
+        /// </summary>
+        public static Tweener AddOnKill(this Tweener tweener, Action onKill) {
             tweener.onKill += onKill;
             return tweener;
         }
 
-        public static Tweener<T> AddOnUpdate<T>(this Tweener<T> tweener, Action onUpdate) {
+        /// <summary>
+        /// Adds a callback to execute when the tweener is complete
+        /// </summary>
+        public static Tweener AddOnUpdate(this Tweener tweener, Action onUpdate) {
             tweener.onUpdate += onUpdate;
             return tweener;
         }

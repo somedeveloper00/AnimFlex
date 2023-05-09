@@ -1,4 +1,5 @@
-﻿using AnimFlex.Core;
+﻿using System.Threading.Tasks;
+using AnimFlex.Core;
 using AnimFlex.Core.Proxy;
 using UnityEngine;
 
@@ -54,6 +55,8 @@ namespace AnimFlex.Sequencer.UserEnd {
 			sequence.EditorValidate();
 		}
 
+		public Task AwaitComplete() => sequence.AwaitComplete();
+
 		public void PlaySequence() {
 			var proxy = useProxyAsCore
 				? useDefaultCoreProxy
@@ -65,6 +68,10 @@ namespace AnimFlex.Sequencer.UserEnd {
 			sequence.sequenceController = proxy?.core.SequenceController ?? AnimflexCoreProxy.MainDefault.core.SequenceController;
 			sequence.activateNextClipsASAP = activateNextClipsASAP;
 			sequence.PlayOrRestart();
+		}
+
+		public void StopSequence() {
+			sequence.Stop();
 		}
 	}
 }
