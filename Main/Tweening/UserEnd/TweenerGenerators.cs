@@ -58,7 +58,12 @@ namespace AnimFlex.Tweening {
 
     [Serializable]
     public class TweenerGeneratorTransform : TweenerGenerator<Transform, Transform> {
-        public bool position, rotation;
+        [Tooltip( "Match position with the given Transform's")]
+        public bool position;
+        [Tooltip( "Match rotation with the given Transform's")]
+        public bool rotation;
+        [Tooltip( "Match scale with the given Transform's")]
+        public bool scale;
 
 
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy) {
@@ -75,6 +80,11 @@ namespace AnimFlex.Tweening {
                 onSet += (val) =>
                     fromObject.rotation =
                         Quaternion.Euler( Vector3.LerpUnclamped( startRot, target.rotation.eulerAngles, val ) );
+            }
+            
+            if (scale) {
+                Vector3 startScl = fromObject.localScale;
+                onSet += (val) => fromObject.localScale = Vector3.LerpUnclamped( startScl, target.localScale, val );
             }
 
             return Tweener.Generate(

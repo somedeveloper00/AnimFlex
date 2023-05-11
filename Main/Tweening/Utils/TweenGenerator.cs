@@ -48,6 +48,63 @@ namespace AnimFlex.Tweening
             return tweener;
         }
 
+        public static Tweener<uint> Generate(Func<uint> getter, Action<uint> setter, uint endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
+        {
+            var tweener = new TweenerUInt
+            {
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
+                getter = getter,
+                setter = setter,
+                isValid = isValid,
+                endValue = endValue,
+                ease = ease,
+                duration = duration,
+                delay = delay,
+                customCurve = customCurve,
+                useCurve = customCurve != null
+            };
+            tweener.Construct();
+            return tweener;
+        }
+        
+        public static Tweener<long> Generate(Func<long> getter, Action<long> setter, long endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
+        {
+            var tweener = new TweenerLong
+            {
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
+                getter = getter,
+                setter = setter,
+                isValid = isValid,
+                endValue = endValue,
+                ease = ease,
+                duration = duration,
+                delay = delay,
+                customCurve = customCurve,
+                useCurve = customCurve != null
+            };
+            tweener.Construct();
+            return tweener;
+        }
+        
+        public static Tweener<ulong> Generate(Func<ulong> getter, Action<ulong> setter, ulong endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
+        {
+            var tweener = new TweenerULong
+            {
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
+                getter = getter,
+                setter = setter,
+                isValid = isValid,
+                endValue = endValue,
+                ease = ease,
+                duration = duration,
+                delay = delay,
+                customCurve = customCurve,
+                useCurve = customCurve != null
+            };
+            tweener.Construct();
+            return tweener;
+        }
+
         public static Tweener<Vector2> Generate(Func<Vector2> getter, Action<Vector2> setter, Vector2 endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
         {
             var tweener = new TweenerVector2

@@ -72,9 +72,17 @@ namespace AnimFlex.Editor.Sequencer
                 _nameProp.stringValue = EditorGUI.TextField(linePos, _nameProp.stringValue, AFStyles.BigTextField);
 
             // display clip type
-            var type = AFEditorUtils.FindType(_clipProp.GetValue().GetType().FullName);
             linePos.x += linePos.width;
             linePos.width = width * 0.7f;
+            
+            // check if type is available
+            var value = _clipProp.GetValue();
+            if (value is null) {
+                AFStyles.DrawHelpBox( linePos, "Type Not Found!", MessageType.Error );
+                return;
+            }
+            
+            var type = AFEditorUtils.FindType(value.GetType().FullName);
             if (GUI.Button(linePos, AFEditorUtils.GetTypeName(type, false), AFStyles.Popup))
             {
                 SerializedProperty prop = property; // to hold on to the property for the callback

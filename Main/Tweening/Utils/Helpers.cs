@@ -19,6 +19,14 @@ namespace AnimFlex.Tweening {
         }
 
         /// <summary>
+        /// Marks the tweener as from, meaning it will start from the end value and go to the start value
+        /// </summary>
+        public static Tweener From(this Tweener tweener) {
+            tweener.from = true;
+            return tweener;
+        }
+        
+        /// <summary>
         /// Awaits the completion of the tweener
         /// </summary>
         public static async Task AwaitComplete(this Tweener tweener) {
@@ -49,6 +57,14 @@ namespace AnimFlex.Tweening {
             return tweener;
         }
 
+        /// <summary>
+        /// Adds a callback to execute when the tweener starts
+        /// </summary>
+        public static Tweener AddOnStart(this Tweener tweener, Action onStart) {
+            tweener.onStart += onStart;
+            return tweener;
+        }
+        
         /// <summary>
         /// Adds a callback to execute when the tweener is complete
         /// </summary>

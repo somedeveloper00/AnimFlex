@@ -18,12 +18,11 @@ namespace AnimFlex.Sequencer {
 
 	[Serializable]
 	public sealed class Sequence {
-
 		/// <summary>
 		/// when true, it won't wait for the next Tick (frame) to activate the next clip.
 		/// </summary>
 		public bool activateNextClipsASAP = true;
-		
+
 		/// <summary>
 		/// executes when the sequence is played.
 		/// </summary>
@@ -34,6 +33,12 @@ namespace AnimFlex.Sequencer {
 		/// </summary>
 		public event Action onComplete = delegate { };
 
+
+		/// <summary>
+		/// when not zero, will not <see cref="Stop"/> sequence. instead it'll decrease by one
+		/// on every <see cref="Stop"/> call
+		/// </summary>
+		internal int sequenceStopLock = 0;
 
 
 		[SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
@@ -66,6 +71,11 @@ namespace AnimFlex.Sequencer {
 		/// stops the sequencer. note that the stopping process will not happen right away.
 		/// </summary>
 		public void Stop() {
+			if (sequenceStopLock > 0) {
+				sequenceStopLock--;
+				return; // locked
+			}
+
 			if (!IsActive()) return;
 
 			flags |= SequenceFlags.Stopping;
@@ -171,6 +181,15 @@ namespace AnimFlex.Sequencer {
 
 #region Clip manipulations
 
+		public ClipNode GetClipNode(string name) {
+			for (int i = 0; i < nodes.Length; i++) {
+				if (nodes[i].name == name) return nodes[i];
+			}
+			throw new Exception( $"ClipNode with name {name} not found" );
+		}
+		
+		public ClipNode GetClipNode(int index) => nodes[index];
+		
 		public void RemoveClipNodeAtIndex(int index) {
 			var nodesList = nodes.ToList();
 			nodesList.RemoveAt( index );

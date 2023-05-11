@@ -15,6 +15,8 @@ namespace AnimFlex.Sequencer
             if (endSelf) Node.End();
         }
 
+        protected void EndSelf() => Node.End();
+
         protected void PlayIndex(int index) => Node.PlayClipNode(index);
 
         internal void Init(ClipNode node) {

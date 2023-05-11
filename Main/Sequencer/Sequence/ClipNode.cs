@@ -15,6 +15,7 @@ namespace AnimFlex.Sequencer {
 
     [Serializable]
     public class ClipNode {
+        
         [SerializeField] internal string name;
         [SerializeField] internal float delay;
         [SerializeReference] internal Clip clip;
