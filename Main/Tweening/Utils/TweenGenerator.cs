@@ -105,6 +105,25 @@ namespace AnimFlex.Tweening
             return tweener;
         }
 
+        public static Tweener<decimal> Generate(Func<decimal> getter, Action<decimal> setter, decimal endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
+        {
+            var tweener = new TweenerDecimal
+            {
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
+                getter = getter,
+                setter = setter,
+                isValid = isValid,
+                endValue = endValue,
+                ease = ease,
+                duration = duration,
+                delay = delay,
+                customCurve = customCurve,
+                useCurve = customCurve != null
+            };
+            tweener.Construct();
+            return tweener;
+        }
+
         public static Tweener<Vector2> Generate(Func<Vector2> getter, Action<Vector2> setter, Vector2 endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
         {
             var tweener = new TweenerVector2
