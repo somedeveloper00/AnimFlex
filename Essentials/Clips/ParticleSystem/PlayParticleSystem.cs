@@ -19,31 +19,34 @@ namespace AnimFlex.Essentials.Clips.ParticleSystem {
         [Tooltip("If Enabled, the clip will wait until the particle system finishes playing before moving to the next clip")]
         public bool waitTillFinish = true;
 
-#if UNITY_EDITOR
-        float t = 0;
-        float longestDuration = 0;
-#endif
+        float t;
+        float longestDuration;
         
         protected override void OnStart() {
+            t = 0;
+            longestDuration = 0;
+            if (playWithChildren) {
+                foreach (var ps in particleSystem.GetComponentsInChildren<UnityEngine.ParticleSystem>()) {
+                    if (ps.main.duration > longestDuration)
+                        longestDuration = ps.main.duration;
 #if UNITY_EDITOR
-            if (!Application.isPlaying) {
-                t = 0;
-                longestDuration = 0;
-                if (playWithChildren) {
-                    foreach (var ps in particleSystem.GetComponentsInChildren<UnityEngine.ParticleSystem>()) {
+                    if (!Application.isPlaying) {
                         ps.useAutoRandomSeed = false;
                         ps.randomSeed = (uint)Random.Range( 0, 100 );
-                        if (ps.main.duration > longestDuration)
-                            longestDuration = ps.main.duration;
                     }
-                }
-                else {
-                    particleSystem.useAutoRandomSeed = false;
-                    particleSystem.randomSeed = (uint)Random.Range( 0, 100 );
-                    longestDuration = particleSystem.main.duration;
+#endif
                 }
             }
+            else {
+                longestDuration = particleSystem.main.duration;
+#if UNITY_EDITOR
+                if (!Application.isPlaying) {
+                    particleSystem.useAutoRandomSeed = false;
+                    particleSystem.randomSeed = (uint)Random.Range( 0, 100 );
+                }
 #endif
+            }
+      
             particleSystem.Play( playWithChildren );
             if (!waitTillFinish) PlayNext( false );
         }
@@ -51,25 +54,21 @@ namespace AnimFlex.Essentials.Clips.ParticleSystem {
         public override bool hasTick() => true;
 
         public override void Tick(float deltaTime) {
+            t += deltaTime;
 #if UNITY_EDITOR
             // in-editor preview
             if (!Application.isPlaying) {
-                t += deltaTime;
                 particleSystem.Simulate( t, playWithChildren, true );
-                if (t > longestDuration) {
-                    if (waitTillFinish) PlayNext();
-                    else EndSelf();
-                }
-
-                return;
             }
 #endif
-            if (waitTillFinish && !particleSystem.IsAlive( playWithChildren )) PlayNext();
-
+            if (t > longestDuration) {
+                if (waitTillFinish) PlayNext();
+                else EndSelf();
+            }
         }
 
         public override void OnEnd() {
-            if (particleSystem.isPlaying) particleSystem.Stop();
+            if (particleSystem) particleSystem.Stop();
         }
     }
 }
