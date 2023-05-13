@@ -40,4 +40,4 @@ MonoBehaviour:
   popupCol:
     darkColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 1}
     lightColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
-  repaintEveryFrame: 1
+  repaintEveryFrame: 0

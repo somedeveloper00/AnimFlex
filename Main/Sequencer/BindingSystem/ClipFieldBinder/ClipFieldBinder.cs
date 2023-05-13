@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using AnimFlex.Sequencer.BindingSystem;
 using AnimFlex.Sequencer.Clips;
 using UnityEngine;
 
@@ -23,6 +24,8 @@ namespace AnimFlex.Sequencer.Binding {
         /// Binds the value to all the selections. retruns the success state
         /// </summary>
         internal abstract bool Bind(Sequence sequence);
+
+        internal abstract Type GetselectionValueType();
         
         [Serializable]
         internal sealed class FieldSelection {
@@ -44,31 +47,14 @@ namespace AnimFlex.Sequencer.Binding {
         [Tooltip("value to bind")]
         [SerializeField] internal T value;
 
+        internal override Type GetselectionValueType() => typeof(T);
+
         internal override bool Bind(Sequence sequence) {
             for (int i = 0; i < selections.Length; i++) {
                 var selection = selections[i];
                 if (selection.clipIndex < 0 || selection.clipIndex > sequence.nodes.Length)
                     return false;
-                
-                var clip = sequence.nodes[selection.clipIndex].clip;
-                if (clip is CTweener ctweener) {
-                    var tweenerGenerator = ctweener.GetTweenerGenerator();
-                    var fieldInfo = tweenerGenerator.GetType()
-                        .GetField( selection.fieldName,
-                            BindingFlags.Instance | BindingFlags.Default | BindingFlags.NonPublic | BindingFlags.Public);
-                    if (fieldInfo is null || !(fieldInfo.FieldType == typeof(T) || fieldInfo.FieldType.IsAssignableFrom( typeof(T) )))
-                        return false;
-                    fieldInfo.SetValue( tweenerGenerator, value );
-                }
-                else {
-                    var fieldInfo = clip.GetType().GetField( selection.fieldName, 
-                        BindingFlags.Instance | BindingFlags.Default | BindingFlags.NonPublic | BindingFlags.Public );
-                    if (fieldInfo is null || !(fieldInfo.FieldType == typeof(T) || fieldInfo.FieldType.IsAssignableFrom( typeof(T) )))
-                        return false;
-                    fieldInfo.SetValue( clip, value );
-                }
-                    
-
+                return BindingUtils.SetFieldValueForClip( sequence.nodes[selection.clipIndex].clip, selection.fieldName, value );
             }
 
             return true;
