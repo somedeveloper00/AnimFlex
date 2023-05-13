@@ -1,10 +1,9 @@
 ﻿using System;
-using AnimFlex.Editor;
 using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Sequencer.Editor
+namespace AnimFlex.Editor
 {
     public class CWaitUntilEditorUtils {
         public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, Type type) {

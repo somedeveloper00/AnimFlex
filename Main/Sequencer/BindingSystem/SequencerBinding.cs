@@ -1,9 +1,12 @@
-﻿using AnimFlex.Sequencer.Binding;
+﻿using System.Linq;
+using AnimFlex.Sequencer.Binding;
 using UnityEngine;
 
 namespace AnimFlex.Sequencer.BindingSystem {
     [RequireComponent(typeof(SequenceAnim))]
-    internal class SequencerBinding : MonoBehaviour {
+    [AddComponentMenu("AnimFlex/Sequencer Binding")]
+    [ExecuteAlways]
+    public class SequencerBinding : MonoBehaviour {
 
         [Tooltip("Binds to SequenceAnim on play")]
         [SerializeField] internal bool bindOnPlay = true;
@@ -29,7 +32,7 @@ namespace AnimFlex.Sequencer.BindingSystem {
         [CallMethodOnSequencePreview]
 #endif
         void OnSequencerOnbeforePlay() {
-            if (bindOnPlay && ( !binded || rebindOnEveryPlay )) { Bind(); }
+            if (bindOnPlay && ( !binded || rebindOnEveryPlay )) Bind();
         }
 
         /// <summary>
@@ -39,7 +42,24 @@ namespace AnimFlex.Sequencer.BindingSystem {
             resolveSequencer();
             for (int i = 0; i < clipFieldBinders.Length; i++) {
                 if (clipFieldBinders[i].Bind( _sequencer.sequence ) == false) {
-                    Debug.LogError( $"Failed to bind {clipFieldBinders[i].name} (at index {i})" );
+                    Debug.LogError( $"Failed to bind \'{clipFieldBinders[i].name}\' (at index {i})" );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the value for the binding with the given name. If multiple binding with the same name exists, only
+        /// the first one will take the value
+        /// </summary>
+        public void Assign<T>(string bindingName, T value) {
+            for (int i = 0; i < clipFieldBinders.Length; i++) {
+                if (clipFieldBinders[i].name == bindingName) {
+                    var type = clipFieldBinders[i].GetselectionValueType();
+                    if (type != typeof(T) && !type.IsAssignableFrom( typeof(T) )) {
+                        throw new System.Exception( $"Value type mismatch for binding {bindingName}. Type is {type}" );
+                    }
+                    clipFieldBinders[i].AssignValue( value );
+                    return;
                 }
             }
         }

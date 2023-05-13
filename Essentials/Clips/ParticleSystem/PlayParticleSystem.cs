@@ -4,14 +4,14 @@ using AnimFlex.Sequencer;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace AnimFlex.Essentials.Clips.ParticleSystem {
+namespace AnimFlex {
     [Category("FX/Play Particle System")]
     [DisplayName("Play Particle System")]
     [Serializable]
-    public class PlayParticleSystem : Clip {
+    public sealed class PlayParticleSystem : Clip {
         
         [Tooltip("The Particle System to play")]
-        public UnityEngine.ParticleSystem particleSystem;
+        public ParticleSystem particleSystem;
         
         [Tooltip("If Enabled, all children with Particle System will be played as well")]
         public bool playWithChildren = true;

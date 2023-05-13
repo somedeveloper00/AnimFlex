@@ -2,136 +2,86 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Editor.Sequencer
-{
-    [CustomPropertyDrawer(typeof(ClipNode))]
-    public class ClipNodeEditor : PropertyDrawer
-    {
-        private SerializedProperty property;
-        private SerializedProperty _nameProp;
-        private SerializedProperty _delayProp;
-        private SerializedProperty _clipProp;
+namespace AnimFlex.Editor {
+    [CustomPropertyDrawer( typeof(ClipNode) )]
+    public class ClipNodeEditor : PropertyDrawer {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 
+            var nameProp = property.FindPropertyRelative( nameof(ClipNode.name) );
+            var delayProp = property.FindPropertyRelative( nameof(ClipNode.delay) );
+            var clipProp = property.FindPropertyRelative( nameof(ClipNode.clip) );
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            position.width = Mathf.Max(position.width, 350);
-
-            using (new AFStyles.AlignedEditorStyles())
-            {
-                using (new AFStyles.GuiColor(Color.white))
-                {
-                    using (new AFStyles.GuiBackgroundColor(Color.white))
-                    {
-                        GetProperties(property);
-                        EditorGUI.BeginProperty(position, label, property);
-
-                        DrawHeader(position);
-
-                        if (property.isExpanded)
-                        {
-                            position.y += AFStyles.BigHeight + AFStyles.VerticalSpace * 2;
-                            var height = DrawClip(position);
-                        }
-
-                        EditorGUI.EndProperty();
-                    }
+            using (new EditorGUI.PropertyScope( position, label, property )) {
+                position.height = AFStyles.Height;
+                DrawHeader();
+                if (property.isExpanded) {
+                    position.y += AFStyles.BigHeight + AFStyles.VerticalSpace;
+                    DrawClip();
                 }
             }
-        }
 
-        private float DrawClip(Rect position)
-        {
-            var linePos = new Rect(position);
-
-            linePos.height = EditorGUI.GetPropertyHeight(_clipProp, GUIContent.none, true);
-            EditorGUI.PropertyField(linePos, _clipProp, GUIContent.none, true);
-
-            return linePos.height;
-        }
-
-        private void DrawHeader(Rect position)
-        {
-            var linePos = new Rect(position);
-            linePos.y += AFStyles.VerticalSpace;
-            linePos.x += 10;
-            linePos.width = 10;
-            linePos.height = AFStyles.BigHeight;
-
-            property.isExpanded = EditorGUI.Foldout(linePos, property.isExpanded, "");
-
-            linePos.x += linePos.width;
-            float width = position.width - (linePos.x - position.x)
-                                         - 45  // delay label
-                                         - 40  // delay field
-                                         - 5   // space
-                                         - 15; // X button at end
-
-            linePos.width = width * 0.3f;
-            using (new AFStyles.GuiBackgroundColor(Color.clear))
-                _nameProp.stringValue = EditorGUI.TextField(linePos, _nameProp.stringValue, AFStyles.BigTextField);
-
-            // display clip type
-            linePos.x += linePos.width;
-            linePos.width = width * 0.7f;
-            
-            // check if type is available
-            var value = _clipProp.GetValue();
-            if (value is null) {
-                AFStyles.DrawHelpBox( linePos, "Type Not Found!", MessageType.Error );
-                return;
-            }
-            
-            var type = AFEditorUtils.FindType(value.GetType().FullName);
-            if (GUI.Button(linePos, AFEditorUtils.GetTypeName(type, false), AFStyles.Popup))
-            {
-                SerializedProperty prop = property; // to hold on to the property for the callback
-                AFEditorUtils.CreateTypeInstanceFromHierarchy<Clip>((clip) =>
-                {
-                    GetProperties(prop);
-                    Undo.RecordObject(prop.serializedObject.targetObject, "clip type modified");
-                    property.serializedObject.ApplyModifiedProperties();
-                    ((ClipNode)property.GetValue()).clip = clip;
-                    property.serializedObject.Update();
-                });
+            void DrawClip() {
+                EditorGUI.GetPropertyHeight( clipProp, GUIContent.none, true );
+                EditorGUI.PropertyField( position, clipProp, GUIContent.none, true );
             }
 
-            linePos.x += 5 + linePos.width;
-            linePos.width = 45;
-            GUI.Label(linePos, "Delay :", AFStyles.Label);
+            void DrawHeader() {
+                var rect = new Rect( position );
+                rect.height = AFStyles.BigHeight;
+                rect.x += 10;
+                rect.width = 10;
+                property.isExpanded = EditorGUI.Foldout( rect, property.isExpanded, "", true );
 
-            linePos.x += linePos.width;
-            linePos.width = 40;
-            // using (new AFStyles.EditorLabelWidth())
-            {
-                _delayProp.floatValue = EditorGUI.FloatField(linePos, GUIContent.none, _delayProp.floatValue);
+                rect.x += rect.width;
+                rect.width = position.width - 10 - 10 - 85;
+
+                // label
+                rect.width *= 0.5f;
+                using (new AFStyles.GuiBackgroundColor( Color.clear )) {
+                    using (var check = new EditorGUI.ChangeCheckScope()) {
+                        var r = EditorGUI.TextField( rect, nameProp.stringValue, AFStyles.BigTextField );
+                        if (check.changed) nameProp.stringValue = r;
+                    }
+                }
+
+                rect.x += rect.width;
+                // rect.width *= 0.5f / 0.5f;
+
+                // display clip type
+
+                // check if type is available
+                var value = clipProp.GetValue();
+                if (value is null) {
+                    AFStyles.DrawHelpBox( rect, "Type Not Found!", MessageType.Error );
+                    return;
+                }
+
+                var type = AFEditorUtils.FindType( value.GetType().FullName );
+                if (GUI.Button( rect, AFEditorUtils.GetTypeName( type, false ), AFStyles.Popup )) {
+                    AFEditorUtils.CreateTypeInstanceFromHierarchy<Clip>( (clip) => {
+                        Undo.RecordObject( property.serializedObject.targetObject, "clip type modified" );
+                        property.serializedObject.ApplyModifiedProperties();
+                        ( (ClipNode)property.GetValue() ).clip = clip;
+                        property.serializedObject.Update();
+                    } );
+                }
+
+                // delay field
+                rect.x += rect.width + 5;
+                rect.width = 85 - 5;
+                using (new AFStyles.EditorLabelWidth( 40 ))
+                    EditorGUI.PropertyField( rect, delayProp, true );
             }
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            GetProperties(property);
-
-            var singleLine = AFStyles.Height + AFStyles.VerticalSpace;
-            float height = 0;
-
-            height += AFStyles.BigHeight + AFStyles.VerticalSpace * 2;
-            if (property.isExpanded)
-            {
-                height += EditorGUI.GetPropertyHeight(_clipProp, GUIContent.none, true);
-                height += AFStyles.VerticalSpace;
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
+            var clipProp = property.FindPropertyRelative( nameof(ClipNode.clip) );
+            var h = AFStyles.BigHeight + AFStyles.VerticalSpace * 2;
+            if (property.isExpanded) {
+                h += EditorGUI.GetPropertyHeight( clipProp, GUIContent.none, true );
+                h += AFStyles.VerticalSpace;
             }
-
-            return height;
+            return h;
         }
-        private void GetProperties(SerializedProperty property)
-        {
-            this.property = property;
-            _nameProp = property.FindPropertyRelative(nameof(ClipNode.name));
-            _delayProp = property.FindPropertyRelative(nameof(ClipNode.delay));
-            _clipProp = property.FindPropertyRelative(nameof(ClipNode.clip));
-
-        }
-
     }
 }

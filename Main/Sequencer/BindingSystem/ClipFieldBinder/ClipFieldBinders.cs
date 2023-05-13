@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using AnimFlex.Sequencer.BindingSystem;
 
 namespace AnimFlex.Sequencer.Binding {
     [Category("Primitive Types/int")]

@@ -2,10 +2,9 @@
 using System.ComponentModel;
 using AnimFlex.Sequencer;
 using UnityEngine;
-using Component = UnityEngine.Component;
 using Object = UnityEngine.Object;
 
-namespace AnimFlex.Essentials.Clips.GameObject {
+namespace AnimFlex {
     [DisplayName("Destroy Component")]
     [Category("GameObject/Component/Destroy")]
     [Serializable]

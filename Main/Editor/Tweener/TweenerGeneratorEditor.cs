@@ -15,7 +15,6 @@ namespace AnimFlex.Editor.Tweener
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            using var enteredEditorStyles = new AFStyles.AlignedEditorStyles();
             using var styledGuiScope = new AFStyles.StyledGuiScope();
 
             this.property = property;

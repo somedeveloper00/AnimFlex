@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace AnimFlex.Editor.Sequencer {
+namespace AnimFlex.Editor {
     [CustomEditor( typeof(SequenceAnim) )]
     public class SequenceAnimEditor : UnityEditor.Editor {
         private SequenceAnim _sequenceAnim;
@@ -31,8 +31,9 @@ namespace AnimFlex.Editor.Sequencer {
 
         bool _showAdvanced = false;
         
-        GUIContent _addCoreProxyGuiContent = new GUIContent( "Add", "Add a new Core Proxy Component to this Game Object" );
-        GUIContent _addClipButtonGuiContent = new GUIContent( "+ Add Clip", "Adds a new clip node to the list of nodes" );
+        static readonly GUIContent _addCoreProxyGuiContent = new GUIContent( "Add", "Add a new Core Proxy Component to this Game Object" );
+        static readonly GUIContent _addClipButtonGuiContent = new GUIContent( "+ Add Clip", "Adds a new clip node to the list of nodes" );
+        static readonly GUIContent _xButtonGuiContent = new GUIContent( "X", "Remove clip" );
 
 
         private void OnEnable() {
@@ -46,8 +47,7 @@ namespace AnimFlex.Editor.Sequencer {
 
             SetupNodeListDrawer();
         }
-
-
+        
         public override void OnInspectorGUI() {
             serializedObject.Update();
 
@@ -55,17 +55,22 @@ namespace AnimFlex.Editor.Sequencer {
                 drawAdvancedOptions();
             }
 
-            using (new EditorGUI.DisabledScope( Application.isPlaying )) {
-                GUILayout.Space( 10 );
-                DrawPlayback();
-                if (!AFPreviewUtils.isActive) {
-                    DrawClipNodes();
-                    DrawAddButton();
+            using (new AFStyles.StyledGuiScope( this )) {
+                
+                using (new EditorGUI.DisabledScope( Application.isPlaying )) {
+                    GUILayout.Space( 10 );
+                    DrawPlayback();
+                    if (!AFPreviewUtils.isActive) {
+                        DrawClipNodes();
+                        DrawAddButton();
+                    }
                 }
+                
             }
 
             serializedObject.ApplyModifiedProperties();
         }
+
 
         void drawAdvancedOptions() {
             using (new GUILayout.HorizontalScope()) {
@@ -152,26 +157,18 @@ namespace AnimFlex.Editor.Sequencer {
         private void SetupNodeListDrawer() {
             _nodeClipList = new ReorderableList( serializedObject, elements: _clipNodesProp, draggable: true,
                 displayHeader: false, displayAddButton: false, displayRemoveButton: false );
-            _nodeClipList.drawElementCallback = (rect, index, active, focused) => {
-                using (new AFStyles.StyledGuiScope( this )) {
-                    var nodeProp = _clipNodesProp.GetArrayElementAtIndex( index );
-                    EditorGUI.PropertyField( rect, nodeProp, GUIContent.none, true );
+            _nodeClipList.drawElementCallback = (rect, index, _, _) => {
+                    rect.width -= 20;
+                    if (Event.current.type != EventType.Used)
+                        EditorGUI.PropertyField( rect, _clipNodesProp.GetArrayElementAtIndex( index ), GUIContent.none, true );
 
                     // draw X button
-                    using (new AFStyles.GuiBackgroundColor( Color.clear )) {
-                        if (GUI.Button(
-                                new Rect( rect.x + rect.width - 20 + 5, rect.y, 30,
-                                    AFStyles.BigHeight + AFStyles.VerticalSpace * 2 )
-                                , new GUIContent( "X", "Remove clip" ), AFStyles.ClearButton )) {
-                            EditorApplication.delayCall += () => {
-                                serializedObject.Update();
-                                _clipNodesProp.DeleteArrayElementAtIndex( index );
-                                serializedObject.ApplyModifiedProperties();
-                                Repaint();
-                            };
-                        }
+                    rect.x += rect.width; rect.width = 20;
+                    rect.height = AFStyles.Height;
+                    if (GUI.Button( rect, _xButtonGuiContent, AFStyles.ClearButton )) {
+                        _clipNodesProp.DeleteArrayElementAtIndex( index );
+                        serializedObject.ApplyModifiedProperties();
                     }
-                }
             };
             _nodeClipList.elementHeightCallback = index => {
                 var nodeProp = _clipNodesProp.GetArrayElementAtIndex( index );

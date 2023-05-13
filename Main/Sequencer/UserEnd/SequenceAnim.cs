@@ -54,7 +54,7 @@ namespace AnimFlex.Sequencer {
 				sequence.Stop();
 		}
 
-		private void OnValidate() => sequence.EditorValidate();
+		private void OnValidate() => sequence.EditorValidate( this );
 
 		public Task AwaitComplete() => sequence.AwaitComplete();
 

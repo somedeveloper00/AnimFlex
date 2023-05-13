@@ -4,7 +4,7 @@ using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Editor.Sequencer {
+namespace AnimFlex.Editor {
     public class CGotoIfEditorUtil {
         public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, Type type) {
             var componentProp = property.FindPropertyRelative( nameof(CGotoIf.component) );
