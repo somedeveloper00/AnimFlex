@@ -4,7 +4,7 @@ using AnimFlex.Sequencer;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace AnimFlex.Essentials.Clips.Audio {
+namespace AnimFlex {
     [Category("Audio/One Shot")]
     [DisplayName("Play Audio One Shot")]
     [Serializable]

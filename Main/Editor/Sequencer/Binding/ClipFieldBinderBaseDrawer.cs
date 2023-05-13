@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AnimFlex.Sequencer.Binding;
+using AnimFlex.Sequencer.BindingSystem;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Reflection;
-using AnimFlex.Sequencer.BindingSystem;
-using AnimFlex.Sequencer.Clips;
 using UnityEngine;
 
-namespace AnimFlex.Sequencer.Binding {
+namespace AnimFlex.Sequencer.BindingSystem {
 
     /// <summary>
     /// binds clip fields with the given value
@@ -26,6 +23,7 @@ namespace AnimFlex.Sequencer.Binding {
         internal abstract bool Bind(Sequence sequence);
 
         internal abstract Type GetselectionValueType();
+        internal abstract void AssignValue(object value);
         
         [Serializable]
         internal sealed class FieldSelection {
@@ -48,6 +46,8 @@ namespace AnimFlex.Sequencer.Binding {
         [SerializeField] internal T value;
 
         internal override Type GetselectionValueType() => typeof(T);
+
+        internal override void AssignValue(object value) => this.value = (T)value;
 
         internal override bool Bind(Sequence sequence) {
             for (int i = 0; i < selections.Length; i++) {

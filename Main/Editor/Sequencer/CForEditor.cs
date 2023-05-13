@@ -3,7 +3,7 @@ using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Editor.Sequencer {
+namespace AnimFlex.Editor {
     
     [CustomPropertyDrawer(typeof(CFor))]
     public class CForEditor : PropertyDrawer

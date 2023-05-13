@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Editor.Sequencer
+namespace AnimFlex.Editor
 {
     [CustomPropertyDrawer(typeof(Clip), true)]
     public class ClipDefaultEditor : PropertyDrawer

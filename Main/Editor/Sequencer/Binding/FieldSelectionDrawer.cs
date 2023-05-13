@@ -31,7 +31,7 @@ namespace AnimFlex.Editor {
         void drawClipSelection(Rect pos, SerializedProperty indexProp) {
             var sequenceAnim = SequencerBindingEditor.CurrentTargetingSequenceAnim;
             var options = new GUIContent[sequenceAnim.sequence.nodes.Length];
-            for (int i = 0; i < options.Length; i++) options[i] = new GUIContent( sequenceAnim.sequence.nodes[i].name );
+            for (int i = 0; i < options.Length; i++) options[i] = new GUIContent( $"({i}) {sequenceAnim.sequence.nodes[i].name}" );
             
             using (new AFStyles.EditorLabelWidth( 45 ))
             using (var check = new EditorGUI.ChangeCheckScope()) {

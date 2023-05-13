@@ -4,7 +4,7 @@ using AnimFlex.Sequencer;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace AnimFlex.Essentials.Clips.GameObject {
+namespace AnimFlex {
     [DisplayName("Destroy GameObject")]
     [Category("GameObject/Destroy")]
     [Serializable]
@@ -15,7 +15,10 @@ namespace AnimFlex.Essentials.Clips.GameObject {
         protected override void OnStart() {
 #if UNITY_EDITOR
             if (!Application.isPlaying)
-                Object.DestroyImmediate( gameObject );
+                try {
+                    Object.DestroyImmediate( gameObject );
+                    // ReSharper disable once EmptyGeneralCatchClause
+                } catch { } // for complex errors i.e. destroying objects inside prefab
             else
 #endif
                 Object.Destroy( gameObject );

@@ -162,8 +162,11 @@ namespace AnimFlex.Sequencer {
 			}
 		}
 
-		internal void EditorValidate() {
-			foreach (var node in nodes) node.OnValidate();
+		internal void EditorValidate(SequenceAnim sequenceAnim) {
+			foreach (var node in nodes) {
+				try { node.OnValidate(); }
+				catch (Exception e) { Debug.LogException( e, sequenceAnim ); }
+			}
 		}
 
 		internal void ActivateClip(int index) {
