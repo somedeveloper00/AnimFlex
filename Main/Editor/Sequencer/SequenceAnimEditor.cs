@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AnimFlex.Core.Proxy;
+using AnimFlex.Editor.Preview;
 using AnimFlex.Sequencer;
-using AnimFlex.Sequencer.UserEnd;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -134,7 +134,7 @@ namespace AnimFlex.Editor.Sequencer {
                             if (AFPreviewUtils.isActive)
                                 AFPreviewUtils.StopPreviewMode();
                             else
-                                AFPreviewUtils.PreviewSequence( _sequence );
+                                AFPreviewUtils.PreviewSequence( _sequenceAnim );
                         }
                     }
                 }
@@ -204,7 +204,7 @@ namespace AnimFlex.Editor.Sequencer {
 
         private void GetProperties() {
             _sequenceProp = serializedObject.FindProperty( nameof(SequenceAnim.sequence) );
-            _playOnStartProp = serializedObject.FindProperty( nameof(SequenceAnim.playOnEnable) );
+            _playOnStartProp = serializedObject.FindProperty( nameof(SequenceAnim.playOnStart) );
             _defaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.defaultCoreProxy) );
             _useDefaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.useDefaultCoreProxy) );
             _useProxyAsCoreProp = serializedObject.FindProperty( nameof(SequenceAnim.useProxyAsCore) );

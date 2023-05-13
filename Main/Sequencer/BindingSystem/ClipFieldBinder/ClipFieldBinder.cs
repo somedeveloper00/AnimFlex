@@ -54,7 +54,9 @@ namespace AnimFlex.Sequencer.Binding {
                 var selection = selections[i];
                 if (selection.clipIndex < 0 || selection.clipIndex > sequence.nodes.Length)
                     return false;
-                return BindingUtils.SetFieldValueForClip( sequence.nodes[selection.clipIndex].clip, selection.fieldName, value );
+                // bind 
+                if (!BindingUtils.SetFieldValueForClip( sequence.nodes[selection.clipIndex].clip, selection.fieldName, value ))
+                    return false;
             }
 
             return true;

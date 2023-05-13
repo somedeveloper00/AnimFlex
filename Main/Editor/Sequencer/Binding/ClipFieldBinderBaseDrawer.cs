@@ -60,7 +60,7 @@ namespace AnimFlex.Editor {
                     };
                     _selectionList.elementHeightCallback += index => EditorGUI.GetPropertyHeight( selectionsProp.GetArrayElementAtIndex( index ), true );
                     _selectionList.headerHeight = AFStyles.Height + AFStyles.VerticalSpace;
-                    _selectionList.drawHeaderCallback += rect => EditorGUI.DropShadowLabel( rect, _selectionsLabel, AFStyles.SpecialLabel );
+                    _selectionList.drawHeaderCallback += rect => EditorGUI.LabelField( rect, _selectionsLabel, AFStyles.SpecialLabel );
                     _selectionsListDict[property.propertyPath] = _selectionList;
                 }
                 

@@ -1,13 +1,16 @@
-﻿using System.Threading.Tasks;
-using AnimFlex.Core;
+﻿using System;
+using System.Threading.Tasks;
 using AnimFlex.Core.Proxy;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace AnimFlex.Sequencer.UserEnd {
+namespace AnimFlex.Sequencer {
 	[AddComponentMenu( "AnimFlex/Sequencer" )]
 	public class SequenceAnim : MonoBehaviour {
+		
+		[FormerlySerializedAs( "playOnEnable" )]
 		[Tooltip( "Plays the sequence everytime the game object gets enabled or created." )] 
-		[SerializeField] internal bool playOnEnable = true;
+		[SerializeField] internal bool playOnStart = true;
 
 		[Tooltip("Uses a Proxy as the core of this sequence. (Useful when you need custom tick update times, i.e. unscaled time or manual time). \n " +
 		         "You must assign the proxy in order for the sequence to work.\n" +
@@ -40,10 +43,10 @@ namespace AnimFlex.Sequencer.UserEnd {
 
 		public Sequence sequence = new Sequence();
 
+		internal event Action beforePlay;
+
 		private void Start() {
-			if (playOnEnable) {
-				PlaySequence();
-			}
+			if (playOnStart) PlaySequence();
 		}
 
 		private void OnDisable() {
@@ -51,13 +54,12 @@ namespace AnimFlex.Sequencer.UserEnd {
 				sequence.Stop();
 		}
 
-		private void OnValidate() {
-			sequence.EditorValidate();
-		}
+		private void OnValidate() => sequence.EditorValidate();
 
 		public Task AwaitComplete() => sequence.AwaitComplete();
 
 		public void PlaySequence() {
+			beforePlay?.Invoke();
 			var proxy = useProxyAsCore
 				? useDefaultCoreProxy
 					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy )

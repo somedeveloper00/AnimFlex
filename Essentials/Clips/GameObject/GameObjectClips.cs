@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using AnimFlex.Sequencer;
-using AnimFlex.Sequencer.UserEnd;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

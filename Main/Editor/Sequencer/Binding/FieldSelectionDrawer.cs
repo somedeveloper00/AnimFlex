@@ -1,5 +1,4 @@
-﻿using AnimFlex.Editor.Sequencer.Binding;
-using AnimFlex.Sequencer.Binding;
+﻿using AnimFlex.Sequencer.Binding;
 using AnimFlex.Sequencer.BindingSystem;
 using UnityEditor;
 using UnityEngine;
@@ -43,6 +42,17 @@ namespace AnimFlex.Editor {
         
         void drawFieldName(Rect pos, int clipIndex, SerializedProperty property, SerializedProperty fieldNameProp) {
             var sequenceAnim = SequencerBindingEditor.CurrentTargetingSequenceAnim;
+            
+            if (sequenceAnim.sequence.nodes == null || sequenceAnim.sequence.nodes.Length == 0) {
+                AFStyles.DrawHelpBox( pos, "No clips found", MessageType.Warning );
+                return;
+            }
+            
+            if (sequenceAnim.sequence.nodes.Length <= clipIndex) {
+                AFStyles.DrawHelpBox( pos, "Clip index out of range", MessageType.Error );
+                return;
+            }
+            
             var valueType = ( (ClipFieldBinder)ClipFieldBinderBaseDrawer.Current.GetValue() ).GetselectionValueType();
             var fieldNames = BindingUtils.GetAllBindableFieldsOnClipGuiContent( sequenceAnim.sequence.nodes[clipIndex].clip, valueType);
 

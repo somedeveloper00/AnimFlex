@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace AnimFlex.Sequencer.UserEnd {
+namespace AnimFlex.Sequencer {
     public static class Helpers {
         
         /// <summary>

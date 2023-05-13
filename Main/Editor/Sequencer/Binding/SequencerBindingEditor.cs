@@ -1,11 +1,12 @@
 ﻿using System;
+using AnimFlex.Sequencer;
 using AnimFlex.Sequencer.Binding;
-using AnimFlex.Sequencer.UserEnd;
+using AnimFlex.Sequencer.BindingSystem;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace AnimFlex.Editor.Sequencer.Binding {
+namespace AnimFlex.Editor {
     [CustomEditor( typeof(SequencerBinding) )]
     internal class SequencerBindingEditor : UnityEditor.Editor {
         
@@ -13,8 +14,11 @@ namespace AnimFlex.Editor.Sequencer.Binding {
         SequenceAnim _sequenceAnim;
         
         SerializedProperty _clipFieldBindersProp;
+        SerializedProperty _bindOnPlayProp;
+        SerializedProperty _rebindOnEveryPlayProp;
         GUIContent _bindBtnContent = new GUIContent( "Bind", "Bind to SequenceAnim Component" );
         ReorderableList _clipFieldBindersList;
+        bool _advancedOptionsExpanded = false;
 
         public static SequenceAnim CurrentTargetingSequenceAnim;
         
@@ -23,11 +27,26 @@ namespace AnimFlex.Editor.Sequencer.Binding {
             EnsureSetup();
             CurrentTargetingSequenceAnim = _sequenceAnim;
             serializedObject.Update();
+            drawAdvancedOptions();
             using (new AFStyles.StyledGuiScope( this )) {
                 darwBindButton();
                 drawBindersList();
             }
             serializedObject.ApplyModifiedProperties();
+        }
+
+        void drawAdvancedOptions() {
+            _advancedOptionsExpanded = EditorGUILayout.Foldout( _advancedOptionsExpanded, "Advanced Options", true, AFStyles.Foldout );
+            if (_advancedOptionsExpanded) {
+                using (new GUILayout.HorizontalScope()) {
+                    using (new AFStyles.EditorLabelWidth( 80 ))
+                        EditorGUILayout.PropertyField( _bindOnPlayProp, GUILayout.ExpandWidth( false ) );
+                    if (_bindOnPlayProp.boolValue) {
+                        using (new AFStyles.EditorLabelWidth( 130 ))
+                            EditorGUILayout.PropertyField( _rebindOnEveryPlayProp, GUILayout.ExpandWidth( false ) );
+                    }
+                }
+            }
         }
 
         void darwBindButton() {
@@ -62,6 +81,8 @@ namespace AnimFlex.Editor.Sequencer.Binding {
             _sequencerBinding ??= (SequencerBinding)target;
             _sequenceAnim ??= _sequencerBinding.GetComponent<SequenceAnim>();
             _clipFieldBindersProp ??= serializedObject.FindProperty( nameof(SequencerBinding.clipFieldBinders) );
+            _bindOnPlayProp ??= serializedObject.FindProperty( nameof(SequencerBinding.bindOnPlay) );
+            _rebindOnEveryPlayProp ??= serializedObject.FindProperty( nameof(SequencerBinding.rebindOnEveryPlay) );
             
             // setup reorderable list
             if (_clipFieldBindersList == null) {

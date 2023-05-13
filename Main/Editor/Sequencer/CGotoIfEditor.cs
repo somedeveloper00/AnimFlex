@@ -1,6 +1,6 @@
 ﻿using System;
+using AnimFlex.Sequencer;
 using AnimFlex.Sequencer.Clips;
-using AnimFlex.Sequencer.UserEnd;
 using UnityEditor;
 using UnityEngine;
 
