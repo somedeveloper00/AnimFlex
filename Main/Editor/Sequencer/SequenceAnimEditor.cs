@@ -32,7 +32,8 @@ namespace AnimFlex.Editor.Sequencer {
         bool _showAdvanced = false;
         
         GUIContent _addCoreProxyGuiContent = new GUIContent( "Add", "Add a new Core Proxy Component to this Game Object" );
-    
+        GUIContent _addClipButtonGuiContent = new GUIContent( "+ Add Clip", "Adds a new clip node to the list of nodes" );
+
 
         private void OnEnable() {
             _sequenceAnim = target as SequenceAnim;
@@ -184,7 +185,7 @@ namespace AnimFlex.Editor.Sequencer {
             using (new GUILayout.HorizontalScope( GUILayout.ExpandWidth( true ) )) {
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button(
-                        new GUIContent( "+ Add Clip", "Adds a new clip node to the list of nodes" ),
+                        _addClipButtonGuiContent,
                         AFStyles.BigButton, GUILayout.Width( 150 ) )) {
                     AFEditorUtils.CreateTypeInstanceFromHierarchy<Clip>( clip => {
                         RecordUndo();
