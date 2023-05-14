@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace AnimFlex.Editor
 {
     public static class AFEditorUtils {
         private const string EDITOR_RESOURCES_INDEXER_NAME = "AnimFlexEditorResources.ind";
+        
+        static Dictionary<string, Type> _cachedStringToType = new Dictionary<string, Type>();
 
 
         /// <summary>
@@ -71,12 +74,7 @@ namespace AnimFlex.Editor
         /// Gets value from SerializedProperty, even if it's nested
         /// thanks to vedram : https://forum.unity.com/threads/get-a-general-object-value-from-serializedproperty.327098/#post-4098484
         /// </summary>
-        public static object GetValue(this SerializedProperty property, bool syncData = false) {
-            if (syncData == false) {
-                property.serializedObject.ApplyModifiedProperties();
-                property.serializedObject.Update();
-            }
-
+        public static object GetValue(this SerializedProperty property) {
             object obj = property.serializedObject.targetObject;
 
             var split = property.propertyPath.Split( '.' );
@@ -104,18 +102,20 @@ namespace AnimFlex.Editor
         /// finds a Type from the given name
         /// </summary>
         public static Type? FindType(string typeName) {
-            var type = Type.GetType( typeName );
-            if (type != null)
-                return type;
+            if (!_cachedStringToType.TryGetValue( typeName, out var type )) {
+                type = Type.GetType( typeName );
+                if (type == null) {
+                    foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                        type = assembly.GetType( typeName );
+                        if (type != null) break;
+                    }
+                }
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                type = assembly.GetType( typeName );
-                if (type != null)
-                    return type;
+                _cachedStringToType[typeName] = type;
             }
-
-            return null;
+            return type;
         }
+        
 #nullable restore
 
         /// <summary>

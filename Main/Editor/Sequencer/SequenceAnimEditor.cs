@@ -5,7 +5,6 @@ using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 namespace AnimFlex.Editor {
     [CustomEditor( typeof(SequenceAnim) )]
@@ -50,7 +49,6 @@ namespace AnimFlex.Editor {
         }
         
         public override void OnInspectorGUI() {
-            Profiler.BeginSample( "SeqAnim Editor" );
             serializedObject.Update();
 
             _showAdvanced = EditorGUILayout.Foldout( _showAdvanced, "Advanced Options", true );
@@ -62,15 +60,12 @@ namespace AnimFlex.Editor {
                 GUILayout.Space( 10 );
                 DrawPlayback();
                 if (!AFPreviewUtils.isActive) {
-                    Profiler.BeginSample( "clips" );
                     DrawClipNodes();
-                    Profiler.EndSample();
                     DrawAddButton();
                 }
             }
 
             serializedObject.ApplyModifiedProperties();
-            Profiler.EndSample();
         }
 
 

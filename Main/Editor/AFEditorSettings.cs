@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace AnimFlex.Editor
 {
@@ -13,30 +12,27 @@ namespace AnimFlex.Editor
     {
 	    private static string m_path = String.Empty;
         private static AFEditorSettings m_instance;
-        public static AFEditorSettings Instance
-        {
-            get
-            {
-	            if(m_path == String.Empty)
-		            m_path = AFEditorUtils.GetPathRelative("StyleSettings.asset");
 
-                if (!File.Exists(m_path))
-                {
-                    m_instance = CreateInstance<AFEditorSettings>();
-                    m_instance.name = "StyleSettings";
-                    AssetDatabase.CreateAsset(m_instance, m_path);
-                    AssetDatabase.Refresh();
+        public static AFEditorSettings Instance {
+	        get {
+		        if (m_instance) return m_instance;
+		        if (m_path == String.Empty)
+			        m_path = AFEditorUtils.GetPathRelative( "StyleSettings.asset" );
 
-	                Debug.LogWarning($"AnimFlex settings file not found! Created a new one at {m_path}.\n" +
-	                                 $"You should make sure not to delete the .ind file in Editor/Resource subfolder of AnimFlex root.");
-                }
+		        if (!File.Exists( m_path )) {
+			        m_instance = CreateInstance<AFEditorSettings>();
+			        m_instance.name = "StyleSettings";
+			        AssetDatabase.CreateAsset( m_instance, m_path );
+			        AssetDatabase.Refresh();
 
-                if (m_instance == null)
-                {
-                    m_instance = AssetDatabase.LoadAssetAtPath<AFEditorSettings>(m_path);
-                }
-                return m_instance;
-            }
+			        Debug.LogWarning( $"AnimFlex settings file not found! Created a new one at {m_path}.\n" +
+			                          $"You should make sure not to delete the .ind file in Editor/Resource subfolder of AnimFlex root." );
+		        }
+
+		        if (m_instance == null) { m_instance = AssetDatabase.LoadAssetAtPath<AFEditorSettings>( m_path ); }
+
+		        return m_instance;
+	        }
         }
 
 #region Setting props
