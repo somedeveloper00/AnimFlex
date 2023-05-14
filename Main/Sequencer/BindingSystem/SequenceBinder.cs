@@ -46,7 +46,7 @@ namespace AnimFlex.Sequencer.BindingSystem {
     public abstract class SequenceBinder<T> : SequenceBinder {
 
         [Tooltip("Value to bind")]
-        [SerializeField] internal T value;
+        public T value;
 
         internal override Type GetselectionValueType() => typeof(T);
 
