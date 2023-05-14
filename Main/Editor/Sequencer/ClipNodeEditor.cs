@@ -45,7 +45,6 @@ namespace AnimFlex.Editor {
                 }
 
                 rect.x += rect.width;
-                // rect.width *= 0.5f / 0.5f;
 
                 // display clip type
 
