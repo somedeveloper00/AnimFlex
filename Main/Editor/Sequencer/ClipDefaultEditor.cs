@@ -1,37 +1,34 @@
 ﻿using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace AnimFlex.Editor
 {
     [CustomPropertyDrawer(typeof(Clip), true)]
     public class ClipDefaultEditor : PropertyDrawer
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+            Profiler.BeginSample( "clip base" );
             int depth = property.depth;
-            if (property.Next(true))
-            {
-                do
-                {
+            if (property.Next( true )) {
+                do {
                     if (property.depth <= depth) break;
-                    EditorGUI.PropertyField(position, property, new GUIContent(property.displayName), true);
-                    position.y += EditorGUI.GetPropertyHeight(property);
-                } while (property.Next(false));
+                    EditorGUI.PropertyField( position, property, new GUIContent( property.displayName ), true );
+                    position.y += EditorGUI.GetPropertyHeight( property );
+                } while (property.Next( false ));
             }
+            Profiler.EndSample();
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             float height = 0;
             var depth = property.depth;
-            if (property.Next(true))
-            {
-                do
-                {
-                    if(property.depth <= depth) break;
-                    height += EditorGUI.GetPropertyHeight(property);
-                } while (property.Next (false));
+            if (property.Next( true )) {
+                do {
+                    if (property.depth <= depth) break;
+                    height += EditorGUI.GetPropertyHeight( property );
+                } while (property.Next( false ));
             }
 
             return height;

@@ -59,8 +59,9 @@ namespace AnimFlex.Editor
         public ThemeBasedColor buttonDefCol;
         public ThemeBasedColor labelCol;
         public ThemeBasedColor labelCol_Hover;
-        [FormerlySerializedAs("tweeerBoxCol")] public ThemeBasedColor BoxCol;
-        [FormerlySerializedAs("tweeerBoxCol")] public ThemeBasedColor BoxColDarker;
+        public ThemeBasedColor BoxCol;
+        public ThemeBasedColor BoxColOutline;
+        public ThemeBasedColor BoxColDarker;
         public ThemeBasedColor backgroundBoxCol;
         public ThemeBasedColor popupCol;
         public bool repaintEveryFrame = true;

@@ -5,6 +5,7 @@ using AnimFlex.Sequencer;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace AnimFlex.Editor {
     [CustomEditor( typeof(SequenceAnim) )]
@@ -49,26 +50,27 @@ namespace AnimFlex.Editor {
         }
         
         public override void OnInspectorGUI() {
+            Profiler.BeginSample( "SeqAnim Editor" );
             serializedObject.Update();
 
-            if (( _showAdvanced = EditorGUILayout.Foldout( _showAdvanced, "Advanced Options", true ) )) {
+            _showAdvanced = EditorGUILayout.Foldout( _showAdvanced, "Advanced Options", true );
+            if ( _showAdvanced ) {
                 drawAdvancedOptions();
             }
 
-            using (new AFStyles.StyledGuiScope( this )) {
-                
-                using (new EditorGUI.DisabledScope( Application.isPlaying )) {
-                    GUILayout.Space( 10 );
-                    DrawPlayback();
-                    if (!AFPreviewUtils.isActive) {
-                        DrawClipNodes();
-                        DrawAddButton();
-                    }
+            using (new EditorGUI.DisabledScope( Application.isPlaying )) {
+                GUILayout.Space( 10 );
+                DrawPlayback();
+                if (!AFPreviewUtils.isActive) {
+                    Profiler.BeginSample( "clips" );
+                    DrawClipNodes();
+                    Profiler.EndSample();
+                    DrawAddButton();
                 }
-                
             }
 
             serializedObject.ApplyModifiedProperties();
+            Profiler.EndSample();
         }
 
 

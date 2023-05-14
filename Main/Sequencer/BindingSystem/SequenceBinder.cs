@@ -4,26 +4,29 @@ using UnityEngine;
 namespace AnimFlex.Sequencer.BindingSystem {
 
     /// <summary>
-    /// binds clip fields with the given value
+    /// Binds a value to the selected fields of the given <see cref="Sequencer.SequenceAnim"/>
     /// </summary>
     [Serializable]
-    public abstract class ClipFieldBinder {
+    public abstract class SequenceBinder {
 
         /// <summary>
-        /// name to be reffered to by
+        /// Sequence to bind the value to
         /// </summary>
-        public string name;
+        [Tooltip("Sequence to bind the value to")]
+        public SequenceAnim sequenceAnim;
         
-        [SerializeField]
-        internal FieldSelection[] selections;
+        /// <summary>
+        /// Selections to bind the value to
+        /// </summary>
+        [Tooltip("Selections to bind the value to")]
+        [SerializeField] internal FieldSelection[] selections;
 
         /// <summary>
         /// Binds the value to all the selections. retruns the success state
         /// </summary>
-        internal abstract bool Bind(Sequence sequence);
+        public abstract bool Bind();
 
         internal abstract Type GetselectionValueType();
-        internal abstract void AssignValue(object value);
         
         [Serializable]
         internal sealed class FieldSelection {
@@ -40,22 +43,20 @@ namespace AnimFlex.Sequencer.BindingSystem {
     }
     
     [Serializable]
-    public abstract class ClipFieldBinder<T> : ClipFieldBinder {
+    public abstract class SequenceBinder<T> : SequenceBinder {
 
-        [Tooltip("value to bind")]
+        [Tooltip("Value to bind")]
         [SerializeField] internal T value;
 
         internal override Type GetselectionValueType() => typeof(T);
 
-        internal override void AssignValue(object value) => this.value = (T)value;
-
-        internal override bool Bind(Sequence sequence) {
+        public override bool Bind() {
             for (int i = 0; i < selections.Length; i++) {
                 var selection = selections[i];
-                if (selection.clipIndex < 0 || selection.clipIndex > sequence.nodes.Length)
+                if (selection.clipIndex < 0 || selection.clipIndex > sequenceAnim.sequence.nodes.Length)
                     return false;
                 // bind 
-                if (!BindingUtils.SetFieldValueForClip( sequence.nodes[selection.clipIndex].clip, selection.fieldName, value ))
+                if (!BindingUtils.SetFieldValueForClip( sequenceAnim.sequence.nodes[selection.clipIndex].clip, selection.fieldName, value ))
                     return false;
             }
 

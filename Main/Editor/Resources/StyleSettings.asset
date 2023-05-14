@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: StyleSettings
   m_EditorClassIdentifier: AnimFlexEditor:AnimFlex.Editor:Styles/StyleSettings
   font: {fileID: 0}
-  labelAlignment: 0
-  fontSize: 11
+  labelAlignment: 3
+  fontSize: 12
   bigFontSize: 12
   bigHeight: 20
   height: 20
@@ -26,18 +26,21 @@ MonoBehaviour:
     darkColor: {r: 0.76862746, g: 0.76862746, b: 0.76862746, a: 1}
     lightColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
   labelCol_Hover:
-    darkColor: {r: 0.8962264, g: 0.8962264, b: 0.8962264, a: 1}
+    darkColor: {r: 0.76862746, g: 0.76862746, b: 0.76862746, a: 1}
     lightColor: {r: 0.18, g: 0.18, b: 0.18, a: 1}
   BoxCol:
     darkColor: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
+  BoxColOutline:
+    darkColor: {r: 0.335, g: 0.335, b: 0.335, a: 1}
+    lightColor: {r: 0.45490196, g: 0.45490196, b: 0.45490196, a: 1}
   BoxColDarker:
-    darkColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 1}
+    darkColor: {r: 0.191, g: 0.191, b: 0.191, a: 1}
     lightColor: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
   backgroundBoxCol:
-    darkColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
+    darkColor: {r: 0.76862746, g: 0.76862746, b: 0.76862746, a: 1}
     lightColor: {r: 0.95199996, g: 0.95199996, b: 0.95199996, a: 1}
   popupCol:
     darkColor: {r: 0.76862746, g: 0.76862746, b: 0.76862746, a: 1}
     lightColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
-  repaintEveryFrame: 1
+  repaintEveryFrame: 0

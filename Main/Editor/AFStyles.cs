@@ -255,24 +255,6 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private static GUIStyle _foldout;
-
-        public static GUIStyle Foldout {
-            get {
-                if (_foldout != null) return _foldout;
-                var settings = AFEditorSettings.Instance;
-                _foldout = new GUIStyle( EditorStyles.foldout );
-                _foldout.font = settings.font;
-                _foldout.fontSize = settings.fontSize;
-                _foldout.fixedHeight = 0;
-                _foldout.normal.textColor = _foldout.hover.textColor = _foldout.active.textColor =
-                    _foldout.focused.textColor = settings.labelCol;
-                return _foldout;
-            }
-        }
-
-
-
         public static bool DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, bool value,
             string tooltip, out bool result) {
             var options = new GUIContent[] {
@@ -291,8 +273,7 @@ namespace AnimFlex.Editor {
             };
 
             using (new EditorLabelWidth( 0 )) {
-                property.boolValue = EditorGUI.Popup( position, property.boolValue ? 0 : 1, options, Popup ) ==
-                                     0;
+                property.boolValue = EditorGUI.Popup( position, property.boolValue ? 0 : 1, options, Popup ) == 0;
             }
 
         }
