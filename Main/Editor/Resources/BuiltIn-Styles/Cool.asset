@@ -31,9 +31,12 @@ MonoBehaviour:
   BoxCol:
     darkColor: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
+  BoxColOutline:
+    darkColor: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
+    lightColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 1}
   BoxColDarker:
-    darkColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 1}
-    lightColor: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
+    darkColor: {r: 0.19215687, g: 0.19215687, b: 0.19215687, a: 1}
+    lightColor: {r: 0.7254902, g: 0.7254902, b: 0.7254902, a: 1}
   backgroundBoxCol:
     darkColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
     lightColor: {r: 0.95199996, g: 0.95199996, b: 0.95199996, a: 1}

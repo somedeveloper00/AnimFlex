@@ -61,11 +61,13 @@ namespace AnimFlex.Sequencer {
                 return;
             }
 
-            _sequences.AddToQueue( sequence );
             if (dontWaitInQueuToPlay) {
                 sequence.flags |= SequenceFlags.Active;
                 sequence.OnActivate();
+                sequence.Tick( 0 );
             }
+            
+            _sequences.AddToQueue( sequence );
         }
 
         public void RemoveSequence(Sequence sequence) {

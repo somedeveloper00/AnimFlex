@@ -81,7 +81,7 @@ namespace AnimFlex.Sequencer {
         /// <param name="deltaTime">The time interval from the last Tick to now</param>
         internal void Tick(float deltaTime) {
             t += deltaTime;
-            if (t > delay) {
+            if (t >= delay) {
                 // start of the clip
                 if (!started) {
                     started = true; // first set this to true, so if clip.Play() threw errors,
