@@ -35,7 +35,7 @@ namespace AnimFlex {
         public bool active;
         
         protected override void OnStart() {
-            component.enabled = false;
+            component.enabled = active;
             PlayNext();
         }
 

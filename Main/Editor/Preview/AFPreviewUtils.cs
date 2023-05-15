@@ -192,7 +192,7 @@ namespace AnimFlex.Editor.Preview {
                 // because update time doens't matter in editor preview
                 sequenceAnim.sequence.sequenceController = AnimflexCoreProxy.MainDefault.core.SequenceController;
                 handleBeforePlayAttributes(sequenceAnim);
-                sequenceAnim.sequence.Play();
+                sequenceAnim.sequence.Play( false );
                 sequenceAnim.sequence.onComplete += StopPreviewMode;
             }
         }

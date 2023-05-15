@@ -18,9 +18,7 @@ namespace AnimFlex.Core.Proxy {
             if (m_core) Destroy( m_core );
         }
 
-        void LateUpdate() {
-            core.Tick( GetDeltaTime() );
-        }
+        void LateUpdate() => core.Tick( GetDeltaTime() );
 
         protected abstract float GetDeltaTime();
         
