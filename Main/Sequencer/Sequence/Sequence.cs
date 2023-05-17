@@ -85,14 +85,14 @@ namespace AnimFlex.Sequencer {
 		/// plays the sequence. if you're unsure if the sequencer is already active or not,
 		/// call <see cref="PlayOrRestart"/> instead.
 		/// </summary>
-		public void Play(bool dontWaitInQueuToPlay) {
+		public void Play(bool dontWaitInQueueToPlay) {
 			if (IsActive()) {
 				Debug.LogError(
 					$"The sequence is already active. You cannot play an active sequencer. You can call {nameof(PlayOrRestart)} instead." );
 			}
 
 			if (nodes.Length <= 0) return;
-			sequenceController.AddNewSequence( this, dontWaitInQueuToPlay );
+			sequenceController.AddNewSequence( this, dontWaitInQueueToPlay );
 		}
 
 		/// <summary>
@@ -100,10 +100,10 @@ namespace AnimFlex.Sequencer {
 		/// automatically. <para/>
 		/// Note that this will act a little bit slower than <see cref="Play"/> would
 		/// </summary>
-		public void PlayOrRestart(bool dontWaitInQueuToPlay) {
+		public void PlayOrRestart(bool dontWaitInQueueToPlay) {
 			if (IsActive() == false) // play
 			{
-				Play( dontWaitInQueuToPlay );
+				Play( dontWaitInQueueToPlay );
 			}
 			else // restart
 			{

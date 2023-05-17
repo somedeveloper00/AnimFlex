@@ -14,7 +14,7 @@ namespace AnimFlex.Editor {
 
         private SerializedProperty _sequenceProp;
         private SerializedProperty _playOnStartProp;
-        private SerializedProperty _dontWaitInQueuToPlayProp;
+        private SerializedProperty _dontWaitInQueueToPlayProp;
         private SerializedProperty _resetOnPlayProp;
         private SerializedProperty _clipNodesProp;
         private SerializedProperty _useProxyAsCoreProp;
@@ -75,7 +75,7 @@ namespace AnimFlex.Editor {
                 using (new AFStyles.EditorLabelWidth( 90 ))
                     EditorGUILayout.PropertyField( _playOnStartProp, GUILayout.Width( 110 ) );
                 using (new AFStyles.EditorLabelWidth( 155 ))
-                    EditorGUILayout.PropertyField( _dontWaitInQueuToPlayProp );
+                    EditorGUILayout.PropertyField( _dontWaitInQueueToPlayProp );
             }
             using (new GUILayout.HorizontalScope()) {
                 using (new AFStyles.EditorLabelWidth( 90 ))
@@ -204,7 +204,7 @@ namespace AnimFlex.Editor {
         private void GetProperties() {
             _sequenceProp = serializedObject.FindProperty( nameof(SequenceAnim.sequence) );
             _playOnStartProp = serializedObject.FindProperty( nameof(SequenceAnim.playOnStart) );
-            _dontWaitInQueuToPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.dontWaitInQueuToPlay) );
+            _dontWaitInQueueToPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.dontWaitInQueueToPlay) );
             _defaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.defaultCoreProxy) );
             _useDefaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.useDefaultCoreProxy) );
             _useProxyAsCoreProp = serializedObject.FindProperty( nameof(SequenceAnim.useProxyAsCore) );

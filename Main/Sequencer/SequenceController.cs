@@ -52,7 +52,7 @@ namespace AnimFlex.Sequencer {
 #endif
         }
 
-        public void AddNewSequence(Sequence sequence, bool dontWaitInQueuToPlay) {
+        public void AddNewSequence(Sequence sequence, bool dontWaitInQueueToPlay) {
             if (sequence == null)
                 throw new NullReferenceException( "sequence" );
 
@@ -61,7 +61,7 @@ namespace AnimFlex.Sequencer {
                 return;
             }
 
-            if (dontWaitInQueuToPlay) {
+            if (dontWaitInQueueToPlay) {
                 sequence.flags |= SequenceFlags.Active;
                 sequence.OnActivate();
                 sequence.Tick( 0 );

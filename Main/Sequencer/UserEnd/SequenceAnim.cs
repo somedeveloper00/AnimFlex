@@ -15,7 +15,7 @@ namespace AnimFlex.Sequencer {
 		[Tooltip("If enabled, the sequencer will start playing without waiting for the queue first.\n" +
 		         "this ensures that the sequencer plays in the same frame as it's called. Since it'll not wait for the phase," +
 		         "you need to be careful to play the sequence from main thread and preferably from a Unity's phase")]
-		[SerializeField] internal bool dontWaitInQueuToPlay = true;
+		[SerializeField] internal bool dontWaitInQueueToPlay = true;
 			
 		[Tooltip("Uses a Proxy as the core of this sequence. (Useful when you need custom tick update times, i.e. unscaled time or manual time). \n " +
 		         "You must assign the proxy in order for the sequence to work.\n" +
@@ -75,7 +75,7 @@ namespace AnimFlex.Sequencer {
 			// ReSharper disable once Unity.NoNullPropagation
 			sequence.sequenceController = proxy?.core.SequenceController ?? AnimflexCoreProxy.MainDefault.core.SequenceController;
 			sequence.activateNextClipsASAP = activateNextClipsASAP;
-			sequence.PlayOrRestart( dontWaitInQueuToPlay );
+			sequence.PlayOrRestart( dontWaitInQueueToPlay );
 		}
 
 		public void StopSequence() {
