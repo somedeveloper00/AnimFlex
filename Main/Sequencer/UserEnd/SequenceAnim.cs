@@ -66,14 +66,22 @@ namespace AnimFlex.Sequencer {
 
 		public void PlaySequence() {
 			beforePlay?.Invoke();
+#if UNITY_EDITOR
+			var proxy = Application.isPlaying && useProxyAsCore
+				? useDefaultCoreProxy
+					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy )
+					: coreProxy
+				: null;
+#else
 			var proxy = useProxyAsCore
 				? useDefaultCoreProxy
 					? AnimFlexCoreProxyHelper.GetDefaultCoreProxy( defaultCoreProxy )
 					: coreProxy
 				: null;
+#endif
 			foreach (var node in sequence.nodes) node.clip.proxy = proxy;
 			// ReSharper disable once Unity.NoNullPropagation
-			sequence.sequenceController = proxy?.core.SequenceController ?? AnimflexCoreProxy.MainDefault.core.SequenceController;
+			sequence.sequenceController = (proxy ? proxy : AnimflexCoreProxy.MainDefault).core.SequenceController;
 			sequence.activateNextClipsASAP = activateNextClipsASAP;
 			sequence.PlayOrRestart( dontWaitInQueueToPlay );
 		}

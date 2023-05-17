@@ -8,7 +8,7 @@ namespace AnimFlex {
     [DisplayName("Destroy GameObject")]
     [Category("GameObject/Destroy")]
     [Serializable]
-    public class GameObjectDestroy : Clip {
+    sealed class GameObjectDestroy : Clip {
         
         public UnityEngine.GameObject gameObject;
         
@@ -31,7 +31,7 @@ namespace AnimFlex {
     [DisplayName("Change Parent")]
     [Category("GameObject/Change Parent")]
     [Serializable]
-    public class GameObjectReParent : Clip {
+    sealed class GameObjectReParent : Clip {
         
         public UnityEngine.GameObject gameObject;
         public Transform newParent;
@@ -47,7 +47,7 @@ namespace AnimFlex {
     [DisplayName("Set Active")]
     [Category("GameObject/Set Active")]
     [Serializable]
-    public class GameObjectSetActive : Clip {
+    sealed class GameObjectSetActive : Clip {
         
         public UnityEngine.GameObject gameObject;
         
@@ -85,7 +85,7 @@ namespace AnimFlex {
     [DisplayName( "Instanciate ()" )]
     [Category( "GameObject/Instantiate/()" )]
     [Serializable]
-    public class GameObjectInstantiate_Simple : GameObjectInstantiate {
+    sealed class GameObjectInstantiate_Simple : GameObjectInstantiate {
         
         protected override UnityEngine.GameObject instantiate() => Object.Instantiate( gameObject );
     }
@@ -93,7 +93,7 @@ namespace AnimFlex {
     [DisplayName( "Instanciate (parent)" )]
     [Category( "GameObject/Instantiate/(Parent)" )]
     [Serializable]
-    public class GameObjectInstantiate_Par : GameObjectInstantiate {
+    sealed class GameObjectInstantiate_Par : GameObjectInstantiate {
         
         public Transform parent;
         public bool worldPositionStays = true;
@@ -105,7 +105,7 @@ namespace AnimFlex {
     [DisplayName( "Instanciate (position, rotation, parent)" )]
     [Category( "GameObject/Instantiate/(position, rotation, Parent)" )]
     [Serializable]
-    public class GameObjectInstantiate_PosRotPar : GameObjectInstantiate {
+    sealed class GameObjectInstantiate_PosRotPar : GameObjectInstantiate {
         
         public Vector3 position;
         public Quaternion rotation;

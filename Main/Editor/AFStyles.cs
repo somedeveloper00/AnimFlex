@@ -14,10 +14,7 @@ namespace AnimFlex.Editor {
                 this.width = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = width;
             }
-
-            public void Dispose() {
-                EditorGUIUtility.labelWidth = width;
-            }
+            public void Dispose() => EditorGUIUtility.labelWidth = width;
         }
 
         public class EditorFieldMinWidth : IDisposable {
