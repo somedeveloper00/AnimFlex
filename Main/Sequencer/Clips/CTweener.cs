@@ -12,7 +12,7 @@ namespace AnimFlex.Sequencer.Clips {
         internal abstract TweenerGenerator GetTweenerGenerator();
 
         public override void OnEnd() {
-            if (!_dontKill && tweener.IsActive()) tweener.tweenerController.KillTweener( tweener, true, false );
+            if (!_dontKill && tweener is not null && tweener.IsActive()) tweener.tweenerController.KillTweener( tweener, true, false );
         }
     }
 
