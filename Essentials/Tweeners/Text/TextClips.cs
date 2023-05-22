@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using AnimFlex.Essentials.TMP;
+using AnimFlex;
 using AnimFlex.Sequencer.Clips;
 
 namespace AnimFlex

@@ -1,7 +1,7 @@
 ﻿using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex.Essentials {
+namespace AnimFlex {
     [AddComponentMenu("AnimFlex/Tweener/Projector/Field Of View")]
     public class TweenerProjectorFieldOfView : TweenerComponent<TweenerGeneratorProjectorFieldOfView> { }
 }

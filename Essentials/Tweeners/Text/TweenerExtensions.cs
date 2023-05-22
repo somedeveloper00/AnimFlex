@@ -1,10 +1,13 @@
 ﻿using AnimFlex.Core.Proxy;
 using AnimFlex.Tweening;
-using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AnimFlex.Essentials.TMP
+#if RTLTMP // support for rtl tmp
+using RTLTMPro;
+#endif
+
+namespace AnimFlex
 {
 	public static class TMP_TweenerExtensions
 	{

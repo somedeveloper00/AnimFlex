@@ -1,4 +1,4 @@
-﻿using AnimFlex.Essentials.TMP;
+﻿using AnimFlex;
 using AnimFlex.Tweening;
 using UnityEngine;
 

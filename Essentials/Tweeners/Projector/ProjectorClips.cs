@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using AnimFlex.Sequencer.Clips;
 
-namespace AnimFlex.Essentials {
+namespace AnimFlex {
     [DisplayName("Tweener Projector Size")]
     [Category("Tweener/Projector/ Size")]
     public class CTweenerProjectorSize : CTweener<TweenerGeneratorProjectorSize> { }

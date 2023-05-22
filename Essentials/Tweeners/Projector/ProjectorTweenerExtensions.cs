@@ -2,7 +2,7 @@
 using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex.Essentials {
+namespace AnimFlex {
     public static class ProjectorTweenerExtensions {
         public static Tweener<float> AnimProjectorSizeTo(this Projector projector, float size, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
             AnimProjectorSizeTo(projector, size, duration, delay, Ease.Linear, curve, proxy);

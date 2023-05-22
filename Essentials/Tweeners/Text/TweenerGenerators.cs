@@ -1,8 +1,6 @@
 ﻿using System;
 using AnimFlex.Core.Proxy;
-using AnimFlex.Essentials.TMP;
 using AnimFlex.Tweening;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace AnimFlex {

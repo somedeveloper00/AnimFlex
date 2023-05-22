@@ -3,7 +3,7 @@ using AnimFlex.Core.Proxy;
 using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex.Essentials {
+namespace AnimFlex {
     [Serializable]
     public class TweenerGeneratorProjectorSize : TweenerGenerator<Projector, float> {
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy) {
