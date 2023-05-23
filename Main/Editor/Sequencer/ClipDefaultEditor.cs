@@ -9,7 +9,6 @@ namespace AnimFlex.Editor
     public class ClipDefaultEditor : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-            Profiler.BeginSample( "clip base" );
             int depth = property.depth;
             if (property.Next( true )) {
                 do {
@@ -18,7 +17,6 @@ namespace AnimFlex.Editor
                     position.y += EditorGUI.GetPropertyHeight( property );
                 } while (property.Next( false ));
             }
-            Profiler.EndSample();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {

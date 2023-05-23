@@ -89,8 +89,14 @@ namespace AnimFlex.Editor
                 obj = field.GetValue( obj );
                 if (field.FieldType.IsArray) {
                     i += 2;
-                    path = split[i].Replace( "data[", "" ).Replace( "]", "" );
-                    obj = ( field.GetValue( parent_obj ) as Array ).GetValue( int.Parse( path ) );
+                    var si = split[i].IndexOf( '[' );
+                    var ei = split[i].IndexOf( ']' );
+                    var index = int.Parse( split[i].Substring( si + 1, ei - si - 1 ) );
+                    var arr = field.GetValue( parent_obj ) as Array;
+                    if (arr?.Length <= index) {
+                        return null;
+                    }
+                    obj = arr?.GetValue( index );
                 }
             }
 
