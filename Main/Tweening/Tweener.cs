@@ -25,6 +25,10 @@ namespace AnimFlex.Tweening {
         ForceNoOnComplete = 1 << 3,
     }
 
+    internal static class TweenerFlagExtensions {
+        public static bool HasFlagFast(this TweenerFlag value, TweenerFlag flag) => (value & flag) != 0;
+    }
+
     public abstract partial class Tweener {
 
         /// <summary>
@@ -148,10 +152,11 @@ namespace AnimFlex.Tweening {
         /// This is called before <see cref="Init"/>
         /// </summary>
         internal void Construct() {
-            this.tweenerController.AddTweener( this );
+            tweenerController.AddTweener( this );
         }
 
         internal override void Init() {
+            if (!isValid()) return;
             startValue = getter();
             if (@from) {
                 ( startValue, endValue ) = ( endValue, startValue );

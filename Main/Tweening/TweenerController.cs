@@ -30,7 +30,7 @@ namespace AnimFlex.Tweening {
             // init phase
             for (var i = 0; i < _tweeners.Length; i++) {
                 var tweener = _tweeners[i];
-                if (tweener.flag.HasFlag( TweenerFlag.Initialized ) == false) {
+                if (tweener.flag.HasFlagFast( TweenerFlag.Initialized ) == false) {
                     tweener.flag |= TweenerFlag.Initialized;
                     tweener.Init();
                     tweener.OnStart();
@@ -83,7 +83,7 @@ namespace AnimFlex.Tweening {
                 // check for completion
                 if (_completed) {
                     tweener.flag |= TweenerFlag.Deleting; // add deletion flag
-                    if (tweener.flag.HasFlag( TweenerFlag.ForceNoOnComplete ) == false)
+                    if (tweener.flag.HasFlagFast( TweenerFlag.ForceNoOnComplete ) == false)
                         tweener.OnComplete();
                 }
             }
@@ -91,7 +91,7 @@ namespace AnimFlex.Tweening {
             // deletion phase
             for (var i = 0; i < _tweeners.Length; i++) {
                 // check if contains a delete flag
-                if (_tweeners[i].flag.HasFlag( TweenerFlag.Deleting )) {
+                if (_tweeners[i].flag.HasFlagFast( TweenerFlag.Deleting )) {
                     _tweeners[i].OnKill();
                     _tweeners.RemoveAt( i-- );
                 }
@@ -103,7 +103,7 @@ namespace AnimFlex.Tweening {
         }
 
         internal void AddTweener(Tweener tweener) {
-            if (tweener.flag.HasFlag( TweenerFlag.Created )) {
+            if (tweener.flag.HasFlagFast( TweenerFlag.Created )) {
                 Debug.LogWarning( "Tweener already created! we'll remove it." );
                 tweener.flag |= TweenerFlag.Deleting;
                 return;
@@ -117,7 +117,7 @@ namespace AnimFlex.Tweening {
         internal void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true) {
             if (tweener == null)
                 throw new NullReferenceException( "tweener" );
-            if (tweener.flag.HasFlag( TweenerFlag.Deleting ))
+            if (tweener.flag.HasFlagFast( TweenerFlag.Deleting ))
                 throw new Exception( "Tweener has already been destroyed!" );
 
             tweener.flag |= TweenerFlag.Deleting;

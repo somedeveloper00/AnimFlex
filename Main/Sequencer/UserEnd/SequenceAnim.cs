@@ -51,16 +51,16 @@ namespace AnimFlex.Sequencer {
 
 		internal event Action beforePlay;
 
-		private void Start() {
+		void Start() {
 			if (playOnStart) PlaySequence();
 		}
 
-		private void OnDisable() {
+		void OnDisable() {
 			if (sequence.IsActive())
 				sequence.Stop();
 		}
 
-		private void OnValidate() => sequence.EditorValidate( this );
+		void OnValidate() => sequence.EditorValidate( this );
 
 		public Task AwaitComplete() => sequence.AwaitComplete();
 
@@ -86,9 +86,7 @@ namespace AnimFlex.Sequencer {
 			sequence.PlayOrRestart( dontWaitInQueueToPlay );
 		}
 
-		public void StopSequence() {
-			sequence.Stop();
-		}
+		public void StopSequence() => sequence.Stop();
 	}
 }
 
