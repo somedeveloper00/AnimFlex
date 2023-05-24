@@ -145,7 +145,16 @@ namespace AnimFlex.Editor {
         }
 
         void DrawClipNodes() {
-            using var _ = new AFStyles.GuiColor( AFStyles.BoxColor );
+            using var scope = new EditorGUILayout.VerticalScope();
+            
+            // outline
+            var rect = new Rect(scope.rect);
+            rect.x -= AFStyles.VerticalSpace / 2;
+            rect.y -= AFStyles.VerticalSpace / 2;
+            rect.width += AFStyles.VerticalSpace;
+            rect.height += AFStyles.VerticalSpace;
+                
+            EditorGUI.DrawRect( rect, AFEditorSettings.Instance.BoxColOutline );
             using (new AFStyles.GuiBackgroundColor( AFEditorSettings.Instance.backgroundBoxCol ))
                 _nodeClipList.DoLayoutList();
         }
