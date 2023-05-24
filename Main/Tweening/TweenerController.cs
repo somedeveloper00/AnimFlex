@@ -44,7 +44,7 @@ namespace AnimFlex.Tweening {
                 var totalTime = tweener.duration + tweener.delay;
 
                 // is not valid, set it as completed
-                if (!tweener.IsValid()) {
+                if (!tweener.IsActive()) {
                     _completed = true;
                 }
                 else {

@@ -9,24 +9,21 @@ using UnityEngine;
 namespace AnimFlex.Editor {
     [CustomEditor( typeof(SequenceAnim) )]
     public class SequenceAnimEditor : UnityEditor.Editor {
-        private SequenceAnim _sequenceAnim;
-        private Sequence _sequence;
+        SequenceAnim _sequenceAnim;
+        Sequence _sequence;
 
-        private SerializedProperty _sequenceProp;
-        private SerializedProperty _playOnStartProp;
-        private SerializedProperty _dontWaitInQueueToPlayProp;
-        private SerializedProperty _resetOnPlayProp;
-        private SerializedProperty _clipNodesProp;
-        private SerializedProperty _useProxyAsCoreProp;
-        private SerializedProperty _coreProxyProp;
-        private SerializedProperty _useDefaultCoreProxyProp;
-        private SerializedProperty _defaultCoreProxyProp;
-        private SerializedProperty _activateNextClipAsapProp;
+        SerializedProperty _sequenceProp;
+        SerializedProperty _playOnStartProp;
+        SerializedProperty _dontWaitInQueueToPlayProp;
+        SerializedProperty _resetOnPlayProp;
+        SerializedProperty _clipNodesProp;
+        SerializedProperty _useProxyAsCoreProp;
+        SerializedProperty _coreProxyProp;
+        SerializedProperty _useDefaultCoreProxyProp;
+        SerializedProperty _defaultCoreProxyProp;
+        SerializedProperty _activateNextClipAsapProp;
 
-        private ReorderableList _nodeClipList;
-
-        private Vector2 _lastMousePos = Vector2.zero;
-
+        ReorderableList _nodeClipList;
 
         GUIContent[] _coreProxyTypeOptions = null;
 
@@ -37,14 +34,13 @@ namespace AnimFlex.Editor {
         static readonly GUIContent _xButtonGuiContent = new GUIContent( "X", "Remove clip" );
 
 
-        private void OnEnable() {
+        void OnEnable() {
             _sequenceAnim = target as SequenceAnim;
             _sequence = _sequenceAnim.sequence;
             GetProperties();
 
-            const int START_LEN = 17; // "AnimFlexCoreProxy";
-            _coreProxyTypeOptions = AnimFlexCoreProxyHelper.AllCoreProxyTypes
-                .Select( t => new GUIContent( t.Name.Substring( START_LEN ), _defaultCoreProxyProp.tooltip ) ).ToArray();
+            _coreProxyTypeOptions = AnimFlexCoreProxyHelper.AllCoreProxyTypeNiceNames
+                .Select( n => new GUIContent( n, _defaultCoreProxyProp.tooltip ) ).ToArray();
 
             SetupNodeListDrawer();
         }
@@ -93,7 +89,7 @@ namespace AnimFlex.Editor {
                         EditorGUILayout.PropertyField( _useDefaultCoreProxyProp, GUILayout.Width( 160 ) );
                     
                     if (_useDefaultCoreProxyProp.boolValue) {
-                        var result = EditorGUILayout.Popup( AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
+                        var result = EditorGUILayout.Popup( AnimFlexCoreProxyHelper.AllCoreProxyTypeNiceNames.IndexOf(
                             _defaultCoreProxyProp.stringValue ), _coreProxyTypeOptions );
                         if (result != -1) {
                             _defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];
@@ -129,7 +125,7 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private void DrawPlayback() {
+        void DrawPlayback() {
             using (new GUILayout.HorizontalScope()) {
                 GUILayout.FlexibleSpace();
 
@@ -150,13 +146,13 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private void DrawClipNodes() {
+        void DrawClipNodes() {
             using var _ = new AFStyles.GuiColor( AFStyles.BoxColor );
             using (new AFStyles.GuiBackgroundColor( AFEditorSettings.Instance.backgroundBoxCol ))
                 _nodeClipList.DoLayoutList();
         }
 
-        private void SetupNodeListDrawer() {
+        void SetupNodeListDrawer() {
             _nodeClipList = new ReorderableList( serializedObject, elements: _clipNodesProp, draggable: true,
                 displayHeader: false, displayAddButton: false, displayRemoveButton: false );
             _nodeClipList.drawElementCallback = (rect, index, _, _) => {
@@ -180,7 +176,7 @@ namespace AnimFlex.Editor {
             _nodeClipList.headerHeight = 0;
         }
 
-        private void DrawAddButton() {
+        void DrawAddButton() {
             using (new GUILayout.HorizontalScope( GUILayout.ExpandWidth( true ) )) {
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button(
@@ -197,11 +193,11 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private void RecordUndo() {
+        void RecordUndo() {
             Undo.RecordObject( _sequenceAnim, "Sequence component modified" );
         }
 
-        private void GetProperties() {
+        void GetProperties() {
             _sequenceProp = serializedObject.FindProperty( nameof(SequenceAnim.sequence) );
             _playOnStartProp = serializedObject.FindProperty( nameof(SequenceAnim.playOnStart) );
             _dontWaitInQueueToPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.dontWaitInQueueToPlay) );

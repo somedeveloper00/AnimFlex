@@ -129,6 +129,9 @@ namespace AnimFlex.Sequencer {
 		}
 
 		internal void OnStop() {
+			foreach (var node in nodes)
+				if (node.flags.HasFlagFast( ClipNodeFlags.Active ))
+					node.End();
 			flags = 0; // empty flags
 			onComplete();
 		}

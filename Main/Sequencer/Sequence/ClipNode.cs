@@ -30,9 +30,9 @@ namespace AnimFlex.Sequencer {
         [field: NonSerialized]
         public Sequence sequence { get; private set; }
 
-        private float t = 0;
+        float t = 0;
         internal ClipNodeFlags flags = 0; // no flags on start
-        private bool started = false;
+        bool started = false;
 
         public void PlayNextClipNode() {
             if (!sequence.IsActive()) return;

@@ -15,10 +15,17 @@ namespace AnimFlex.Core.Proxy {
         /// <summary>
         /// the <see cref="Type.FullName"/> of all <see cref="AnimflexCoreProxy"/> types available in domain/app
         /// </summary>
-        public static readonly List<string> AllCoreProxyTypeNames = ( from assemblyDomain in AppDomain.CurrentDomain.GetAssemblies()
-            from type in assemblyDomain.GetTypes()
-            where type.IsSubclassOf( typeof(AnimflexCoreProxy) ) && !type.IsAbstract
-            select type.FullName ).ToList();
+        public static readonly List<string> AllCoreProxyTypeNames =
+            (from assemblyDomain in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assemblyDomain.GetTypes()
+                where type.IsSubclassOf( typeof(AnimflexCoreProxy) ) && !type.IsAbstract
+                select type.FullName).ToList();
+
+        public static readonly List<string> AllCoreProxyTypeNiceNames =
+            (from assemblyDomain in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assemblyDomain.GetTypes()
+                where type.IsSubclassOf( typeof(AnimflexCoreProxy) ) && !type.IsAbstract
+                select UnityEditor.ObjectNames.NicifyVariableName( type.Name.Substring( 17 ) ) ).ToList();
 
         /// <summary>
         /// all <see cref="AnimflexCoreProxy"/> types available in domain/app
