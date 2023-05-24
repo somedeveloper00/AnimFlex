@@ -8,7 +8,7 @@ namespace AnimFlex.Editor {
     public class AFStyles {
         
         public class EditorLabelWidth : IDisposable {
-            private float width;
+            float width;
 
             public EditorLabelWidth(float width = 10) {
                 this.width = EditorGUIUtility.labelWidth;
@@ -18,7 +18,7 @@ namespace AnimFlex.Editor {
         }
 
         public class EditorFieldMinWidth : IDisposable {
-            private float oldWidth;
+            float oldWidth;
 
             public EditorFieldMinWidth(Rect pos, float width = 10) {
                 oldWidth = EditorGUIUtility.labelWidth;
@@ -32,7 +32,7 @@ namespace AnimFlex.Editor {
         }
 
         public class GuiColor : IDisposable {
-            private Color oldCol;
+            Color oldCol;
 
             public GuiColor(Color color) {
                 oldCol = GUI.color;
@@ -43,7 +43,7 @@ namespace AnimFlex.Editor {
         }
 
         public class GuiBackgroundColor : IDisposable {
-            private Color oldCol;
+            Color oldCol;
 
             public GuiBackgroundColor(Color color) {
                 oldCol = GUI.backgroundColor;
@@ -54,7 +54,7 @@ namespace AnimFlex.Editor {
         }
 
         public class GuiForceActive : IDisposable {
-            private bool wasEnabled;
+            bool wasEnabled;
 
             public GuiForceActive(bool disableInPlaymode = true) {
                 wasEnabled = GUI.enabled;
@@ -138,7 +138,7 @@ namespace AnimFlex.Editor {
             foreach (var fieldInfo in styleFIs) { fieldInfo.SetValue( null, null ); }
         }
 
-        private static GUIStyle _button;
+        static GUIStyle _button;
 
         public static GUIStyle Button {
             get {
@@ -152,7 +152,7 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private static GUIStyle _bigButton;
+        static GUIStyle _bigButton;
 
         public static GUIStyle BigButton {
             get {
@@ -165,30 +165,21 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private static GUIStyle _clearButton;
+        static GUIStyle _clearButton;
 
         public static GUIStyle ClearButton {
             get {
                 if (_clearButton != null) return _clearButton;
                 var settings = AFEditorSettings.Instance;
-                _clearButton = new GUIStyle( Button );
+                _clearButton = new GUIStyle( EditorStyles.miniButtonRight );
                 _clearButton.fontSize = settings.bigFontSize;
                 _clearButton.normal.textColor = settings.buttonDefCol;
                 _clearButton.alignment = TextAnchor.MiddleCenter;
-
-                var tex = new Texture2D( 2, 2 );
-                tex.SetPixels( new[] {
-                    Color.clear, Color.clear,
-                    Color.clear, Color.clear
-                } );
-                tex.Apply( false );
-                _clearButton.normal.background = _clearButton.hover.background =
-                    _clearButton.onHover.background = tex;
                 return _clearButton;
             }
         }
 
-        private static GUIStyle _specialLabel;
+        static GUIStyle _specialLabel;
 
         public static GUIStyle SpecialLabel {
             get {
@@ -204,7 +195,7 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private static GUIStyle _label;
+        static GUIStyle _label;
 
         public static GUIStyle Label {
             get {
@@ -218,7 +209,7 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private static GUIStyle _bigTextField;
+        static GUIStyle _bigTextField;
 
         public static GUIStyle BigTextField {
             get {
@@ -233,7 +224,7 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private static GUIStyle _popup;
+        static GUIStyle _popup;
 
         public static GUIStyle Popup {
             get {
