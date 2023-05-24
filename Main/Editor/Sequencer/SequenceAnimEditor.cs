@@ -49,9 +49,7 @@ namespace AnimFlex.Editor {
             serializedObject.Update();
 
             _showAdvanced = EditorGUILayout.Foldout( _showAdvanced, "Advanced Options", true );
-            if ( _showAdvanced ) {
-                drawAdvancedOptions();
-            }
+            if ( _showAdvanced ) drawAdvancedOptions();
 
             using (new EditorGUI.DisabledScope( Application.isPlaying )) {
                 GUILayout.Space( 10 );
