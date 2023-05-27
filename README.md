@@ -11,6 +11,8 @@ Tweener is a tweening system that makes things go from point A to point B. It co
 ### Sequencer
 Sequencer is a system that plays it's *Clips* from start to finish, in order and in predefined time. It's like a timeline, but it's designed to be modular, and store all data inside and as a component for small animations/clips. (it's NOT designed to be a replacement to timeline)
 
+> NOTE: The docs here are __OUTDATED__.
+
 ## Availablility and Usage
 ### Tweeners
 Transform manipulations (Position, Rotation, Scale)
