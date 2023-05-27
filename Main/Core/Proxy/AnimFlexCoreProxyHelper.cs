@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Core.Proxy {
@@ -13,6 +14,19 @@ namespace AnimFlex.Core.Proxy {
         static readonly Dictionary<string, PropertyInfo> _cachedDefaultProps = new();
 
         /// <summary>
+        ///  to avoid lazy load, this is necessary to load it all up on very first frame
+        /// </summary>
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+#endif
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+        static void loadUp() {
+            var _ = AllCoreProxyTypes;
+            var __ = AllCoreProxyTypeNames;
+            var ___ = AllCoreProxyTypeNiceNames;
+        }
+        
+        /// <summary>
         /// the <see cref="Type.FullName"/> of all <see cref="AnimflexCoreProxy"/> types available in domain/app
         /// </summary>
         public static readonly List<string> AllCoreProxyTypeNames =
@@ -21,11 +35,13 @@ namespace AnimFlex.Core.Proxy {
                 where type.IsSubclassOf( typeof(AnimflexCoreProxy) ) && !type.IsAbstract
                 select type.FullName).ToList();
 
-        public static readonly List<string> AllCoreProxyTypeNiceNames =
+#if UNITY_EDITOR
+        internal static readonly List<string> AllCoreProxyTypeNiceNames =
             (from assemblyDomain in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assemblyDomain.GetTypes()
                 where type.IsSubclassOf( typeof(AnimflexCoreProxy) ) && !type.IsAbstract
-                select UnityEditor.ObjectNames.NicifyVariableName( type.Name.Substring( 17 ) ) ).ToList();
+                select type.Name.Substring( 17 ) ).ToList();
+#endif
 
         /// <summary>
         /// all <see cref="AnimflexCoreProxy"/> types available in domain/app
