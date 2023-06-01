@@ -23,7 +23,9 @@ namespace AnimFlex.Core.Proxy {
         static void loadUp() {
             var _ = AllCoreProxyTypes;
             var __ = AllCoreProxyTypeNames;
+#if UNITY_EDITOR
             var ___ = AllCoreProxyTypeNiceNames;
+#endif
         }
         
         /// <summary>
