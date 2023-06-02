@@ -13,4 +13,12 @@ namespace AnimFlex
 			return fromObject.AnimCameraFieldOfViewTo( target, duration, delay, ease, customCurve, proxy );
 		}
 	}
+
+	[Serializable]
+	public class TweenerGeneratorCameraOrthoSize : TweenerGenerator<Camera, float>
+	{
+		protected override Tweener GenerateTween(AnimflexCoreProxy proxy) {
+			return fromObject.AnimCameraOrthoSizeTo( target, duration, delay, ease, customCurve, proxy );
+		}
+	}
 }

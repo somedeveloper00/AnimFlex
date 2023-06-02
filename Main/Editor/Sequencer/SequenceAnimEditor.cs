@@ -87,7 +87,7 @@ namespace AnimFlex.Editor {
                         EditorGUILayout.PropertyField( _useDefaultCoreProxyProp, GUILayout.Width( 160 ) );
                     
                     if (_useDefaultCoreProxyProp.boolValue) {
-                        var result = EditorGUILayout.Popup( AnimFlexCoreProxyHelper.AllCoreProxyTypeNiceNames.IndexOf(
+                        var result = EditorGUILayout.Popup( AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
                             _defaultCoreProxyProp.stringValue ), _coreProxyTypeOptions );
                         if (result != -1) {
                             _defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];

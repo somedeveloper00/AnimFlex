@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using AnimFlex.Sequencer;
+using AnimFlex.Tweening;
 using UnityEngine;
 
 namespace AnimFlex {
@@ -68,7 +70,7 @@ namespace AnimFlex {
     [DisplayName( "Explosion" )]
     [Category( "Physics/Explosion" )]
     public class CRigidbodyExplosion : Clip {
-        public Rigidbody[] rigidbodies;
+        public AFSelection<Rigidbody>[] selections;
         public float explosionForce = 1;
         public Vector3 explosionPosition = Vector3.zero;
         public float explosionRadius = 1;
@@ -76,7 +78,7 @@ namespace AnimFlex {
         public ForceMode mode;
 
         protected override void OnStart() {
-            foreach (var rigidbody in rigidbodies) 
+            foreach (var rigidbody in AFSelection.GetSelectedObjects( selections )) 
                 rigidbody.AddExplosionForce( explosionForce, explosionPosition, explosionRadius, upwardsModifier, mode );
             PlayNext();
         }
