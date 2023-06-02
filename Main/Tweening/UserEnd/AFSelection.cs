@@ -12,8 +12,8 @@ namespace AnimFlex.Tweening {
                   "**Get Children** : 1st row children of the object will be selected.\n\n" +
                   "**Get All Children** : All children of object will be selected.\n\n" +
                   "**Ignore Direct** : The object will be ignored.\n\n" +
-                  "**Ignore Children** : 1st row children of the object will be selected\n" +
-                  "**Ignore All Children** : All children of the object will be selected\n" +
+                  "**Ignore Children** : 1st row children of the object will be selected\n\n" +
+                  "**Ignore All Children** : All children of the object will be selected\n\n" +
                   "\n" +
                   "*(advanced: Selections will be executed from top to bottom. and no repeated object will be selected.)*\n"
                   )]
