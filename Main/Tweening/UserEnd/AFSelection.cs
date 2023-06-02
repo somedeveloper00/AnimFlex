@@ -22,48 +22,39 @@ namespace AnimFlex.Tweening {
         public abstract Type GetValueType();
 
         public static TFrom[] GetSelectedObjects<TFrom>(AFSelection<TFrom>[] selections) where TFrom : Component {
-            var r = new HashSet<TFrom>();
+            var r = new HashSet<TFrom>( 32 );
             
             for (var i = 0; i < selections.Length; i++) {
                 switch (selections[i].type) {
                     case SelectionType.Direct:
                         r.Add( selections[i].transform.GetComponent<TFrom>() );
                         break;
-                    case SelectionType.GetChildren: {
+                    case SelectionType.GetChildren:
                         for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++) {
                             var child = selections[i].transform.GetChild( childIndex );
-                            if (!child.gameObject.activeInHierarchy)
-                                continue;
                             if (child.TryGetComponent<TFrom>( out var comp ))
                                 r.Add( comp );
                         }
-
                         break;
-                    }
-                    case SelectionType.GetAllChildren: {
+                    case SelectionType.GetAllChildren:
                         foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
-                            if (obj.gameObject.activeInHierarchy)
-                                r.Add( obj );
+                            r.Add( obj );
                         break;
-                    }
                     case SelectionType.IgnoreDirect:
                         r.Remove( selections[i].transform.GetComponent<TFrom>() );
                         break;
                     case SelectionType.IgnoreChildren: {
                         for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++) {
                             var child = selections[i].transform.GetChild( childIndex );
-                            if (!child.gameObject.activeInHierarchy)
-                                continue;
                             if (child.TryGetComponent<TFrom>( out var comp ))
-                                r.Add( comp );
+                                r.Remove( comp );
                         }
 
                         break;
                     }
                     case SelectionType.IgnoreAllChildren: {
                         foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
-                            if (obj.gameObject.activeInHierarchy)
-                                r.Add( obj );
+                            r.Remove( obj );
                         break;
                     }
                 }
