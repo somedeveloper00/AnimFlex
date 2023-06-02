@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using AnimFlex.Sequencer;
+using AnimFlex.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -26,13 +27,13 @@ namespace AnimFlex {
     [Serializable]
     sealed class CTransformsLocalReset : Clip {
 
-        public Transform[] transforms;
+        public AFSelection<Transform>[] transforms;
         public bool localPosition = true;
         public bool localRotation = true;
         public bool localScale = true;
 
         protected override void OnStart() {
-            foreach (var transform in transforms) {
+            foreach (var transform in AFSelection.GetSelectedObjects( transforms )) {
                 if (!transform) continue;
                 if (localPosition) transform.localPosition = Vector3.zero;
                 if (localRotation) transform.localRotation = Quaternion.identity;
