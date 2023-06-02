@@ -19,7 +19,7 @@ namespace AnimFlex.Editor.Tweener
                 var typeProp = property.FindPropertyRelative( nameof(AFSelection.type) );
                 
                 _displayedOptions ??= Enum.GetNames( typeof(AFSelection.SelectionType) )
-                    .Select( n => new GUIContent( n, typeProp.tooltip ) ).ToArray();
+                    .Select( n => new GUIContent( ObjectNames.NicifyVariableName( n ), typeProp.tooltip ) ).ToArray();
 
                 var pos = new Rect( position );
 
