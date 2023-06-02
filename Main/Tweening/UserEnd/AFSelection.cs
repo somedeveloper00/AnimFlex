@@ -8,43 +8,66 @@ namespace AnimFlex.Tweening {
         public Transform transform;
 
         [Tooltip( "The type of selection.\n" +
-                  "**Direct** : The object is directly added to the list of objects to tween.\n\n" +
-                  "**Get Children** : The 1st row children of this object will be added to the list of objects to tween.\n\n" +
-                  "**Get All Children** : All the children of this object will be added to the list of objects to tween.\n\n" +
-                  "**Ignore** : These objects will be ignored.\n\n" +
-                  "+ advanced: The phase they'll be respected is Direct, GetChildren and lastly Ignore. And there'll be no repeated " +
-                  "objects in the final list." )]
+                  "**Direct** : The object is selected.\n\n" +
+                  "**Get Children** : 1st row children of the object will be selected.\n\n" +
+                  "**Get All Children** : All children of object will be selected.\n\n" +
+                  "**Ignore Direct** : The object will be ignored.\n\n" +
+                  "objects in the final list.\n" +
+                  "**Ignore Children** : 1st row children of the object will be selected\n" +
+                  "**Ignore All Children** : All children of the object will be selected\n" +
+                  "\n" +
+                  "*(advanced: Selections will be executed from top to bottom. and no repeated object will be selected.)*\n"
+                  )]
         public SelectionType type = SelectionType.GetChildren;
 
         public abstract Type GetValueType();
 
         public static TFrom[] GetSelectedObjects<TFrom>(AFSelection<TFrom>[] selections) where TFrom : Component {
             var r = new HashSet<TFrom>();
+            
             for (var i = 0; i < selections.Length; i++) {
-                if (selections[i].type == SelectionType.Direct)
-                    r.Add( selections[i].transform.GetComponent<TFrom>() );
-            }
+                switch (selections[i].type) {
+                    case SelectionType.Direct:
+                        r.Add( selections[i].transform.GetComponent<TFrom>() );
+                        break;
+                    case SelectionType.GetChildren: {
+                        for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++) {
+                            var child = selections[i].transform.GetChild( childIndex );
+                            if (!child.gameObject.activeInHierarchy)
+                                continue;
+                            if (child.TryGetComponent<TFrom>( out var comp ))
+                                r.Add( comp );
+                        }
 
-            for (var i = 0; i < selections.Length; i++) {
-                if (selections[i].type == SelectionType.GetChildren) {
-                    for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++) {
-                        var child = selections[i].transform.GetChild( childIndex );
-                        if (!child.gameObject.activeInHierarchy)
-                            continue;
-                        if (child.TryGetComponent<TFrom>( out var comp ))
-                            r.Add( comp );
+                        break;
+                    }
+                    case SelectionType.GetAllChildren: {
+                        foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
+                            if (obj.gameObject.activeInHierarchy)
+                                r.Add( obj );
+                        break;
+                    }
+                    case SelectionType.IgnoreDirect:
+                        r.Remove( selections[i].transform.GetComponent<TFrom>() );
+                        break;
+                    case SelectionType.IgnoreChildren: {
+                        for (int childIndex = 0; childIndex < selections[i].transform.childCount; childIndex++) {
+                            var child = selections[i].transform.GetChild( childIndex );
+                            if (!child.gameObject.activeInHierarchy)
+                                continue;
+                            if (child.TryGetComponent<TFrom>( out var comp ))
+                                r.Add( comp );
+                        }
+
+                        break;
+                    }
+                    case SelectionType.IgnoreAllChildren: {
+                        foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
+                            if (obj.gameObject.activeInHierarchy)
+                                r.Add( obj );
+                        break;
                     }
                 }
-                else if (selections[i].type == SelectionType.GetAllChildren) {
-                    foreach (var obj in selections[i].transform.GetComponentsInChildren<TFrom>())
-                        if (obj.gameObject.activeInHierarchy)
-                            r.Add( obj );
-                }
-            }
-
-            for (var i = 0; i < selections.Length; i++) {
-                if (selections[i].type == SelectionType.Ignore)
-                    r.Remove( selections[i].transform.GetComponent<TFrom>() );
             }
 
             return r.ToArray();
@@ -54,7 +77,9 @@ namespace AnimFlex.Tweening {
             Direct,
             GetChildren,
             GetAllChildren,
-            Ignore
+            IgnoreDirect,
+            IgnoreChildren,
+            IgnoreAllChildren
         }
     }
 
