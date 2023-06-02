@@ -72,14 +72,36 @@ namespace AnimFlex {
     public class CRigidbodyExplosion : Clip {
         public AFSelection<Rigidbody>[] selections;
         public float explosionForce = 1;
+        [Tooltip("The position of the explosion will be relative to this Transform. If it's empty, the position will " +
+                 "be considered in World Space.")]
+        public Transform explosionPositionPivot;
         public Vector3 explosionPosition = Vector3.zero;
         public float explosionRadius = 1;
         public float upwardsModifier = 1;
         public ForceMode mode;
 
         protected override void OnStart() {
+            var pos = explosionPositionPivot
+                ? explosionPositionPivot.TransformPoint( explosionPosition )
+                : explosionPosition;
             foreach (var rigidbody in AFSelection.GetSelectedObjects( selections )) 
-                rigidbody.AddExplosionForce( explosionForce, explosionPosition, explosionRadius, upwardsModifier, mode );
+                rigidbody.AddExplosionForce( explosionForce, pos, explosionRadius, upwardsModifier, mode );
+            PlayNext();
+        }
+
+        public override void OnEnd() { }
+    }
+
+    [Serializable]
+    [DisplayName( "Set Velocity" )]
+    [Category( "Physics/Set Velocity" )]
+    public class CRigidbodySetVelocity : Clip {
+        public AFSelection<Rigidbody>[] selections;
+        public Vector3 velocity;
+
+        protected override void OnStart() {
+            foreach (var rigidbody in AFSelection.GetSelectedObjects( selections )) 
+                rigidbody.velocity = velocity;
             PlayNext();
         }
 

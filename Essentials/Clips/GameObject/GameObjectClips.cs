@@ -10,7 +10,7 @@ namespace AnimFlex {
     [Serializable]
     sealed class GameObjectDestroy : Clip {
         
-        public UnityEngine.GameObject gameObject;
+        public GameObject gameObject;
         
         protected override void OnStart() {
 #if UNITY_EDITOR
@@ -33,7 +33,7 @@ namespace AnimFlex {
     [Serializable]
     sealed class GameObjectReParent : Clip {
         
-        public UnityEngine.GameObject gameObject;
+        public GameObject gameObject;
         public Transform newParent;
         public bool worldPositionStays = true;
         
@@ -49,7 +49,7 @@ namespace AnimFlex {
     [Serializable]
     sealed class GameObjectSetActive : Clip {
         
-        public UnityEngine.GameObject gameObject;
+        public GameObject gameObject;
         
         [Tooltip("Active state to set to")]
         public bool active = false;
@@ -63,7 +63,7 @@ namespace AnimFlex {
 
     public abstract class GameObjectInstantiate : Clip {
         
-        public UnityEngine.GameObject gameObject;
+        public GameObject gameObject;
         
         [Tooltip("If true, it'll set the instantiated object to active")]
         public bool andSetActive = true;
@@ -78,7 +78,7 @@ namespace AnimFlex {
             PlayNext();
         }
 
-        protected abstract UnityEngine.GameObject instantiate();
+        protected abstract GameObject instantiate();
         public override void OnEnd() { }
     }
 
@@ -87,7 +87,7 @@ namespace AnimFlex {
     [Serializable]
     sealed class GameObjectInstantiate_Simple : GameObjectInstantiate {
         
-        protected override UnityEngine.GameObject instantiate() => Object.Instantiate( gameObject );
+        protected override GameObject instantiate() => Object.Instantiate( gameObject );
     }
 
     [DisplayName( "Instanciate (parent)" )]
@@ -98,7 +98,7 @@ namespace AnimFlex {
         public Transform parent;
         public bool worldPositionStays = true;
 
-        protected override UnityEngine.GameObject instantiate() =>
+        protected override GameObject instantiate() =>
             Object.Instantiate( gameObject, parent, worldPositionStays );
     }
 
@@ -111,7 +111,7 @@ namespace AnimFlex {
         public Quaternion rotation;
         public Transform parent;
 
-        protected override UnityEngine.GameObject instantiate() =>
+        protected override GameObject instantiate() =>
             Object.Instantiate( gameObject, position, rotation, parent );
     }
 }
