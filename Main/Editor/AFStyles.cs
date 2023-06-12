@@ -223,6 +223,21 @@ namespace AnimFlex.Editor {
                 return _bigTextField;
             }
         }
+        
+        static GUIStyle _centeredTextField;
+
+        public static GUIStyle CenteredTextField {
+            get {
+                if (_centeredTextField != null) return _centeredTextField;
+                var settings = AFEditorSettings.Instance;
+                _centeredTextField = new GUIStyle( EditorStyles.textField );
+                _centeredTextField.font = settings.font;
+                _centeredTextField.alignment = TextAnchor.UpperCenter;
+                _centeredTextField.fontStyle = FontStyle.Bold;
+                _centeredTextField.fontSize = settings.bigFontSize;
+                return _centeredTextField;
+            }
+        }
 
         static GUIStyle _popup;
 
