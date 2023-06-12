@@ -1,4 +1,5 @@
 ﻿using AnimFlex.Sequencer;
+using AnimFlex.Sequencer.Clips;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,7 +31,14 @@ namespace AnimFlex.Editor {
                 rect.height = AFStyles.BigHeight;
                 rect.x += 10;
                 rect.width = 10;
-                property.isExpanded = EditorGUI.Foldout( rect, property.isExpanded, "", true );
+                
+                // special case 
+                if (clipProp.managedReferenceValue is CComment) {
+                    if (!property.isExpanded) property.isExpanded = true;
+                }
+                else { // normal case
+                    property.isExpanded = EditorGUI.Foldout( rect, property.isExpanded, "", true );
+                }
 
                 rect.x += rect.width;
                 rect.width = position.width - 10 - 10 - 85;
