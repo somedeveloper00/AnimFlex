@@ -8,7 +8,7 @@ namespace AnimFlex
     ///  
     /// it also supports queued elements, which will be useful for scheduling your pipelines
     /// </summary>
-    public class PreservedArray<T>
+    public sealed class PreservedArray<T>
     {
         private T[] values;
 

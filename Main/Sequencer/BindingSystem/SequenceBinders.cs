@@ -38,4 +38,6 @@ namespace AnimFlex.Sequencer.BindingSystem {
     [Serializable] public sealed class SequenceBinder_Material : SequenceBinder<UnityEngine.Material> { }
     [Category("Reference/Scriptable Object")]
     [Serializable] public sealed class SequenceBinder_ScriptableObject : SequenceBinder<UnityEngine.ScriptableObject> { }
+    [Category("Reference/Sprite")]
+    [Serializable] public sealed class SequenceBinder_Sprite : SequenceBinder<UnityEngine.Sprite> { }
 }

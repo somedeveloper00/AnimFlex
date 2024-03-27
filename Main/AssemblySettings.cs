@@ -1,4 +1,4 @@
 ﻿#define ANIMFLEX
 
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("AnimFlexEditor", AllInternalsVisible = true)]
+[assembly: InternalsVisibleTo("AnimFlex.Editor", AllInternalsVisible = true)]

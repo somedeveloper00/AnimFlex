@@ -50,6 +50,10 @@ namespace AnimFlex.Sequencer.Clips {
     [DisplayName( "Set Property Value Transform" )]
     [Category( "Set Property Value/Transform" )]
     public class CSetPropertyValueTransform : CSetPropertyValue<Transform> { }
+    
+    [DisplayName( "Set Property Value Sprite" )]
+    [Category( "Set Property Value/Sprite" )]
+    public class CSetPropertyValueSprite : CSetPropertyValue<Sprite> { }
 
     [DisplayName( "Set Property Value List<Int>" )]
     [Category( "Set Property Value/List/Int" )]
@@ -98,4 +102,8 @@ namespace AnimFlex.Sequencer.Clips {
     [DisplayName( "Set Property Value List<Transform>" )]
     [Category( "Set Property Value/List/Transform" )]
     public class CSetPropertyValueTransformList : CSetPropertyValue<List<Transform>> { }
+    
+    [DisplayName( "Set Property Value List<Sprite>" )]
+    [Category( "Set Property Value/List/Sprite" )]
+    public class CSetPropertyValueSpriteList : CSetPropertyValue<List<Sprite>> { }
 }
