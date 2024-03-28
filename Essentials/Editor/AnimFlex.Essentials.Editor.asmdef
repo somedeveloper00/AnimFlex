@@ -1,0 +1,19 @@
+{
+    "name": "AnimFlex.Essentials.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3721af5cba324035be6bbe15ddb693f7",
+        "GUID:df0bdeb6afa85d341ab5d6518332439b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
