@@ -1,9 +1,11 @@
-﻿namespace AnimFlex.Core.Proxy {
-    public class AnimFlexCoreProxyManual : AnimflexCoreProxy {
+﻿namespace AnimFlex.Core.Proxy
+{
+    public class AnimFlexCoreProxyManual : AnimflexCoreProxy
+    {
+        private float nextDeltaTime = 0;
 
-        float nextDeltaTime = 0;
-
-        protected override float GetDeltaTime() {
+        protected override float GetDeltaTime()
+        {
             var t = nextDeltaTime;
             nextDeltaTime = 0;
             return t;
