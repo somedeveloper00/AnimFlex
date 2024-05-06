@@ -130,7 +130,7 @@ namespace AnimFlex.Tweening {
 
 #region helpers
         
-        public void Kill(bool complete, bool onKillCallback) =>
+        public void Kill(bool complete = false, bool onKillCallback = false) =>
             tweenerController.KillTweener( this, complete, onKillCallback );
 
         public bool IsActive() => IsValid() && !flag.HasFlag( TweenerFlag.Deleting );
