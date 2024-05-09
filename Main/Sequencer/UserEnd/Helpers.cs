@@ -8,7 +8,10 @@ namespace AnimFlex.Sequencer {
         /// </summary>
         public static async Task AwaitComplete(this Sequence sequence) {
             await Task.Yield(); // first frame it won't be playing
-            while(sequence.IsPlaying()) await Task.Yield();
+            while(sequence.IsPlaying())
+            {
+                await Task.Yield();
+            }
         }
     }
 }

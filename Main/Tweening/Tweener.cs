@@ -1,9 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-namespace AnimFlex.Tweening {
+namespace AnimFlex.Tweening
+{
     [Flags]
-    internal enum TweenerFlag {
+    internal enum TweenerFlag
+    {
         /// <summary>
         /// marked for deletion
         /// </summary>
@@ -25,17 +27,19 @@ namespace AnimFlex.Tweening {
         ForceNoOnComplete = 1 << 3,
     }
 
-    internal static class TweenerFlagExtensions {
+    internal static class TweenerFlagExtensions
+    {
         public static bool HasFlagFast(this TweenerFlag value, TweenerFlag flag) => (value & flag) != 0;
     }
 
-    public abstract partial class Tweener {
+    public abstract partial class Tweener
+    {
 
         /// <summary>
         /// The <see cref="tweenerController"/> that this Tweener is using. It's assigned during it's construction
         /// </summary>
         internal TweenerController tweenerController;
-            
+
         /// <summary>
         /// Checks whether or not the <see cref="Tweener"/> is valid. (e.g. could check if <see cref="GameObject"/> is <c>enabled</c>
         /// </summary>
@@ -106,11 +110,6 @@ namespace AnimFlex.Tweening {
         public event Action onStart = delegate { };
 
         /// <summary>
-        /// called on each AnimFlex's Tick
-        /// </summary>
-        public event Action onUpdate = delegate { };
-
-        /// <summary>
         /// called on the final setter call when it reaches the endValue. will be called after onUpdate
         /// </summary>
         public event Action onComplete = delegate { };
@@ -121,27 +120,27 @@ namespace AnimFlex.Tweening {
         public event Action onKill = delegate { };
 
         internal void OnStart() => onStart();
-        internal void OnUpdate() => onUpdate();
         internal void OnComplete() => onComplete();
         internal void OnKill() => onKill();
-        
-#endregion
-        
 
-#region helpers
-        
+        #endregion
+
+
+        #region helpers
+
         public void Kill(bool complete = false, bool onKillCallback = false) =>
-            tweenerController.KillTweener( this, complete, onKillCallback );
+            tweenerController.KillTweener(this, complete, onKillCallback);
 
-        public bool IsActive() => IsValid() && !flag.HasFlag( TweenerFlag.Deleting );
-        
-#endregion
-        
+        public bool IsActive() => IsValid() && !flag.HasFlag(TweenerFlag.Deleting);
+
+        #endregion
+
         internal bool IsValid() => isValid is null || isValid();
 
     }
 
-    public abstract class Tweener<T> : Tweener {
+    public abstract class Tweener<T> : Tweener
+    {
         internal T startValue, endValue;
         internal Action<T> setter;
         internal Func<T> getter;
@@ -151,15 +150,22 @@ namespace AnimFlex.Tweening {
         /// the generators should call this after initialization of variables. 
         /// This is called before <see cref="Init"/>
         /// </summary>
-        internal void Construct() {
-            tweenerController.AddTweener( this );
+        internal void Construct()
+        {
+            tweenerController.AddTweener(this);
         }
 
-        internal override void Init() {
-            if (!isValid()) return;
+        internal override void Init()
+        {
+            if (!isValid())
+            {
+                return;
+            }
+
             startValue = getter();
-            if (@from) {
-                ( startValue, endValue ) = ( endValue, startValue );
+            if (@from)
+            {
+                (startValue, endValue) = (endValue, startValue);
             }
         }
     }

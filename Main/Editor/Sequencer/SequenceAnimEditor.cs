@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AnimFlex.Core.Proxy;
 using AnimFlex.Editor.Preview;
 using AnimFlex.Sequencer;
@@ -6,142 +7,172 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace AnimFlex.Editor {
-    [CustomEditor( typeof(SequenceAnim) )]
-    public class SequenceAnimEditor : UnityEditor.Editor {
-        private SequenceAnim _sequenceAnim;
-        private Sequence _sequence;
+namespace AnimFlex.Editor
+{
+    [CustomEditor(typeof(SequenceAnim))]
+    public class SequenceAnimEditor : UnityEditor.Editor
+    {
+        internal static SequenceAnimEditor Current;
+        internal SequenceAnim sequenceAnim;
+        internal Sequence sequence;
 
-        private SerializedProperty _sequenceProp;
-        private SerializedProperty _playOnStartProp;
-        private SerializedProperty _dontWaitInQueueToPlayProp;
-        private SerializedProperty _resetOnPlayProp;
-        private SerializedProperty _clipNodesProp;
-        private SerializedProperty _useProxyAsCoreProp;
-        private SerializedProperty _coreProxyProp;
-        private SerializedProperty _useDefaultCoreProxyProp;
-        private SerializedProperty _defaultCoreProxyProp;
-        private SerializedProperty _activateNextClipAsapProp;
+        internal SerializedProperty sequenceProp;
+        internal SerializedProperty playOnStartProp;
+        internal SerializedProperty dontWaitInQueueToPlayProp;
+        internal SerializedProperty resetOnPlayProp;
+        internal SerializedProperty clipNodesProp;
+        internal SerializedProperty variablesProp;
+        internal SerializedProperty useProxyAsCoreProp;
+        internal SerializedProperty coreProxyProp;
+        internal SerializedProperty useDefaultCoreProxyProp;
+        internal SerializedProperty defaultCoreProxyProp;
+        internal SerializedProperty activateNextClipAsapProp;
 
+        internal TypeSelectorMenu<Variable> variableTypeSelectionMenu;
+        internal TypeSelectorMenu<Clip> clipTypeSelectionMenu;
+
+        private ReorderableList _variableList;
         private ReorderableList _nodeClipList;
+        private GUIContent[] _coreProxyTypeOptions = null;
+        private bool _showAdvanced = false;
+        private static readonly GUIContent _addCoreProxyGuiContent = new("Add", "Add a new Core Proxy Component to this Game Object");
+        private static readonly GUIContent _xButtonGuiContent = new("X", "Remove Element");
+        private static readonly GUIContent _variablesListGuiContent = new("Variables", "Values that can be changed at runtime");
+        private static readonly GUIContent _clipNodeListGuiContent = new("Clips", "Clips to play in this Sequencer");
 
-        private Vector2 _lastMousePos = Vector2.zero;
-
-
-        GUIContent[] _coreProxyTypeOptions = null;
-
-        bool _showAdvanced = false;
-        
-        static readonly GUIContent _addCoreProxyGuiContent = new GUIContent( "Add", "Add a new Core Proxy Component to this Game Object" );
-        static readonly GUIContent _addClipButtonGuiContent = new GUIContent( "+ Add Clip", "Adds a new clip node to the list of nodes" );
-        static readonly GUIContent _xButtonGuiContent = new GUIContent( "X", "Remove clip" );
-
-
-        private void OnEnable() {
-            _sequenceAnim = target as SequenceAnim;
-            _sequence = _sequenceAnim.sequence;
+        private void OnEnable()
+        {
+            sequenceAnim = target as SequenceAnim;
+            sequence = sequenceAnim.sequence;
             GetProperties();
 
             const int START_LEN = 17; // "AnimFlexCoreProxy";
             _coreProxyTypeOptions = AnimFlexCoreProxyHelper.AllCoreProxyTypes
-                .Select( t => new GUIContent( t.Name.Substring( START_LEN ), _defaultCoreProxyProp.tooltip ) ).ToArray();
+                .Select(t => new GUIContent(t.Name[START_LEN..], defaultCoreProxyProp.tooltip)).ToArray();
 
             SetupNodeListDrawer();
+            SetupVariableDrawer();
         }
-        
-        public override void OnInspectorGUI() {
+
+        public override void OnInspectorGUI()
+        {
+            Current = this;
             serializedObject.Update();
 
-            _showAdvanced = EditorGUILayout.Foldout( _showAdvanced, "Advanced Options", true );
-            if ( _showAdvanced ) {
-                drawAdvancedOptions();
+            _showAdvanced = EditorGUILayout.Foldout(_showAdvanced, "Advanced Options", true);
+            if (_showAdvanced)
+            {
+                DrawAdvancedOptions();
             }
 
-            using (new EditorGUI.DisabledScope( Application.isPlaying )) {
-                GUILayout.Space( 10 );
+            using (new EditorGUI.DisabledScope(Application.isPlaying))
+            {
+                GUILayout.Space(10);
                 DrawPlayback();
-                if (!AFPreviewUtils.isActive) {
+                if (!AFPreviewUtils.isActive)
+                {
+                    DrawVariables();
+                    GUILayout.Space(AFStyles.VerticalSpace);
                     DrawClipNodes();
-                    DrawAddButton();
                 }
             }
 
             serializedObject.ApplyModifiedProperties();
+            Current = null;
         }
 
-
-        void drawAdvancedOptions() {
-            using (new GUILayout.HorizontalScope()) {
-                using (new AFStyles.EditorLabelWidth( 90 ))
-                    EditorGUILayout.PropertyField( _playOnStartProp, GUILayout.Width( 110 ) );
-                using (new AFStyles.EditorLabelWidth( 155 ))
-                    EditorGUILayout.PropertyField( _dontWaitInQueueToPlayProp );
+        private void DrawAdvancedOptions()
+        {
+            using (new GUILayout.HorizontalScope())
+            {
+                using (new AFStyles.EditorLabelWidth(90))
+                    EditorGUILayout.PropertyField(playOnStartProp, GUILayout.Width(110));
+                using (new AFStyles.EditorLabelWidth(155))
+                    EditorGUILayout.PropertyField(dontWaitInQueueToPlayProp);
             }
-            using (new GUILayout.HorizontalScope()) {
-                using (new AFStyles.EditorLabelWidth( 90 ))
-                    EditorGUILayout.PropertyField( _resetOnPlayProp, GUILayout.Width( 110 ) );
-                using (new AFStyles.EditorLabelWidth( 155 ))
-                    EditorGUILayout.PropertyField( _activateNextClipAsapProp );
+            using (new GUILayout.HorizontalScope())
+            {
+                using (new AFStyles.EditorLabelWidth(90))
+                    EditorGUILayout.PropertyField(resetOnPlayProp, GUILayout.Width(110));
+                using (new AFStyles.EditorLabelWidth(155))
+                    EditorGUILayout.PropertyField(activateNextClipAsapProp);
             }
 
-            using (new GUILayout.HorizontalScope()) {
-                using (new AFStyles.EditorLabelWidth( 110 ))
-                    EditorGUILayout.PropertyField( _useProxyAsCoreProp, GUILayout.Width( 130 ) );
+            using (new GUILayout.HorizontalScope())
+            {
+                using (new AFStyles.EditorLabelWidth(110))
+                    EditorGUILayout.PropertyField(useProxyAsCoreProp, GUILayout.Width(130));
 
-                if (_useProxyAsCoreProp.boolValue) {
-                    using (new AFStyles.EditorLabelWidth( 140 ))
-                        EditorGUILayout.PropertyField( _useDefaultCoreProxyProp, GUILayout.Width( 160 ) );
-                    
-                    if (_useDefaultCoreProxyProp.boolValue) {
-                        var result = EditorGUILayout.Popup( AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
-                            _defaultCoreProxyProp.stringValue ), _coreProxyTypeOptions );
-                        if (result != -1) {
-                            _defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];
+                if (useProxyAsCoreProp.boolValue)
+                {
+                    using (new AFStyles.EditorLabelWidth(140))
+                        EditorGUILayout.PropertyField(useDefaultCoreProxyProp, GUILayout.Width(160));
+
+                    if (useDefaultCoreProxyProp.boolValue)
+                    {
+                        var result = EditorGUILayout.Popup(AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
+                            defaultCoreProxyProp.stringValue), _coreProxyTypeOptions);
+                        if (result != -1)
+                        {
+                            defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];
                         }
                     }
                 }
             }
 
-            using (new GUILayout.HorizontalScope()) {
-                if (_useProxyAsCoreProp.boolValue && !_useDefaultCoreProxyProp.boolValue) {
-                    using (new AFStyles.EditorLabelWidth( 80 )) {
-                        EditorGUILayout.PropertyField( _coreProxyProp );
+            using (new GUILayout.HorizontalScope())
+            {
+                if (useProxyAsCoreProp.boolValue && !useDefaultCoreProxyProp.boolValue)
+                {
+                    using (new AFStyles.EditorLabelWidth(80))
+                    {
+                        EditorGUILayout.PropertyField(coreProxyProp);
                     }
 
-                    if (_coreProxyProp.objectReferenceValue == null) {
-                        if (GUILayout.Button( _addCoreProxyGuiContent, GUILayout.Width( 60 ) )) {
+                    if (coreProxyProp.objectReferenceValue == null)
+                    {
+                        if (GUILayout.Button(_addCoreProxyGuiContent, GUILayout.Width(60)))
+                        {
                             // add core proxy component
-                            AFEditorUtils.GetTypeInstanceFromHierarchy<AnimflexCoreProxy>( type => {
+                            AFEditorUtils.GetTypeInstanceFromHierarchy<AnimflexCoreProxy>(type =>
+                            {
                                 serializedObject.ApplyModifiedProperties();
-                                if (_sequenceAnim.TryGetComponent( type, out var comp )) {
-                                    _sequenceAnim.coreProxy = (AnimflexCoreProxy)comp;
+                                if (sequenceAnim.TryGetComponent(type, out var comp))
+                                {
+                                    sequenceAnim.coreProxy = (AnimflexCoreProxy)comp;
                                 }
-                                else {
-                                    _sequenceAnim.coreProxy =
-                                        (AnimflexCoreProxy)_sequenceAnim.gameObject.AddComponent( type );
+                                else
+                                {
+                                    sequenceAnim.coreProxy =
+                                        (AnimflexCoreProxy)sequenceAnim.gameObject.AddComponent(type);
                                 }
 
                                 serializedObject.Update();
-                            } );
+                            });
                         }
                     }
                 }
             }
         }
 
-        private void DrawPlayback() {
-            using (new GUILayout.HorizontalScope()) {
+        private void DrawPlayback()
+        {
+            using (new GUILayout.HorizontalScope())
+            {
                 GUILayout.FlexibleSpace();
 
-                using (new AFStyles.GuiForceActive()) {
-                    using (new EditorGUI.DisabledScope( Application.isPlaying )) {
+                using (new AFStyles.GuiForceActive(true))
+                {
+                    using (new EditorGUI.DisabledScope(Application.isPlaying))
+                    {
                         var text = AFPreviewUtils.isActive ? "Stop Preview" : "Preview Sequence";
-                        if (GUILayout.Button( text, AFStyles.BigButton,
-                                GUILayout.Height( AFStyles.BigHeight ), GUILayout.Width( 200 ) )) {
+                        if (GUILayout.Button(text, AFStyles.BigButton,
+                                GUILayout.Height(AFStyles.BigHeight), GUILayout.Width(200)))
+                        {
                             if (AFPreviewUtils.isActive)
                                 AFPreviewUtils.StopPreviewMode();
                             else
-                                AFPreviewUtils.PreviewSequence( _sequenceAnim );
+                                AFPreviewUtils.PreviewSequence(sequenceAnim);
                         }
                     }
                 }
@@ -150,69 +181,133 @@ namespace AnimFlex.Editor {
             }
         }
 
-        private void DrawClipNodes() {
-            using var _ = new AFStyles.GuiColor( AFStyles.BoxColor );
-            using (new AFStyles.GuiBackgroundColor( AFEditorSettings.Instance.backgroundBoxCol ))
+        private void DrawClipNodes()
+        {
+            using var _ = new AFStyles.GuiColor(AFStyles.BoxColor);
+            using var __ = new AFStyles.GuiBackgroundColor(AFEditorSettings.Instance.backgroundBoxCol);
+            clipNodesProp.isExpanded = EditorGUILayout.BeginFoldoutHeaderGroup(clipNodesProp.isExpanded, _clipNodeListGuiContent);
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (clipNodesProp.isExpanded)
+            {
                 _nodeClipList.DoLayoutList();
+            }
         }
 
-        private void SetupNodeListDrawer() {
-            _nodeClipList = new ReorderableList( serializedObject, elements: _clipNodesProp, draggable: true,
-                displayHeader: false, displayAddButton: false, displayRemoveButton: false );
-            _nodeClipList.drawElementCallback = (rect, index, _, _) => {
+        private void DrawVariables()
+        {
+            using var _ = new AFStyles.GuiColor(AFStyles.BoxColor);
+            using var __ = new AFStyles.GuiBackgroundColor(AFEditorSettings.Instance.backgroundBoxCol);
+            variablesProp.isExpanded = EditorGUILayout.BeginFoldoutHeaderGroup(variablesProp.isExpanded, _variablesListGuiContent);
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (variablesProp.isExpanded)
+            {
+                _variableList.DoLayoutList();
+            }
+        }
+
+        private void SetupNodeListDrawer()
+        {
+            _nodeClipList = new ReorderableList(serializedObject, clipNodesProp, draggable: true,
+                displayHeader: true, displayAddButton: true, displayRemoveButton: true)
+            {
+                drawElementCallback = (rect, index, _, _) =>
+                {
+                    if (clipNodesProp == null)
+                        return;
                     rect.width -= 20;
                     if (Event.current.type != EventType.Used)
-                        EditorGUI.PropertyField( rect, _clipNodesProp.GetArrayElementAtIndex( index ), GUIContent.none, true );
+                        EditorGUI.PropertyField(rect, clipNodesProp.GetArrayElementAtIndex(index), GUIContent.none, true);
 
                     // draw X button
                     rect.x += rect.width; rect.width = 20;
                     rect.height = AFStyles.Height;
-                    if (GUI.Button( rect, _xButtonGuiContent, AFStyles.ClearButton )) {
-                        _clipNodesProp.DeleteArrayElementAtIndex( index );
+                    if (GUI.Button(rect, _xButtonGuiContent, AFStyles.ClearButton))
+                    {
+                        clipNodesProp.DeleteArrayElementAtIndex(index);
                         serializedObject.ApplyModifiedProperties();
                     }
-            };
-            _nodeClipList.elementHeightCallback = index => {
-                var nodeProp = _clipNodesProp.GetArrayElementAtIndex( index );
-                return EditorGUI.GetPropertyHeight( nodeProp, true );
-            };
-            _nodeClipList.footerHeight = 0;
-            _nodeClipList.headerHeight = 0;
-        }
-
-        private void DrawAddButton() {
-            using (new GUILayout.HorizontalScope( GUILayout.ExpandWidth( true ) )) {
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button(
-                        _addClipButtonGuiContent,
-                        AFStyles.BigButton, GUILayout.Width( 150 ) )) {
-                    AFEditorUtils.CreateTypeInstanceFromHierarchy<Clip>( clip => {
-                        RecordUndo();
-                        _sequence.AddNewClipNode( clip );
-                        serializedObject.Update();
-                    } );
+                },
+                elementHeightCallback = index =>
+                {
+                    var nodeProp = clipNodesProp.GetArrayElementAtIndex(index);
+                    return EditorGUI.GetPropertyHeight(nodeProp, true);
+                },
+                headerHeight = 0,
+                footerHeight = AFStyles.Height,
+                onAddDropdownCallback = (rect, List) =>
+                {
+                    clipTypeSelectionMenu.Show(rect);
                 }
+            };
 
-                GUILayout.FlexibleSpace();
-            }
+            clipTypeSelectionMenu = new(clip =>
+            {
+                RecordUndo();
+                sequence.AddNewClipNode(clip);
+                serializedObject.Update();
+            });
         }
 
-        private void RecordUndo() {
-            Undo.RecordObject( _sequenceAnim, "Sequence component modified" );
+        private void SetupVariableDrawer()
+        {
+            _variableList = new ReorderableList(serializedObject, elements: variablesProp, draggable: true,
+                displayHeader: false, displayAddButton: true, displayRemoveButton: true)
+            {
+                drawElementCallback = (rect, index, _, _) =>
+                {
+                    rect.width -= 20;
+                    if (Event.current.type != EventType.Used)
+                        EditorGUI.PropertyField(rect, variablesProp.GetArrayElementAtIndex(index), new($"{index}    {sequence.variables[index].Type.Name}"), true);
+
+                    // draw X button
+                    rect.x += rect.width; rect.width = 20;
+                    rect.height = AFStyles.Height;
+                    if (GUI.Button(rect, _xButtonGuiContent, AFStyles.ClearButton))
+                    {
+                        variablesProp.DeleteArrayElementAtIndex(index);
+                        serializedObject.ApplyModifiedProperties();
+                    }
+                },
+                elementHeightCallback = index =>
+                {
+                    return EditorGUI.GetPropertyHeight(variablesProp.GetArrayElementAtIndex(index), true);
+                },
+                headerHeight = 0,
+                footerHeight = AFStyles.Height,
+                onAddDropdownCallback = (rect, List) =>
+                {
+                    variableTypeSelectionMenu.Show(rect);
+                }
+            };
+
+            variableTypeSelectionMenu = new(variable =>
+            {
+                RecordUndo();
+                Array.Resize(ref sequence.variables, sequence.variables.Length + 1);
+                sequence.variables[^1] = variable;
+                serializedObject.Update();
+            });
         }
 
-        private void GetProperties() {
-            _sequenceProp = serializedObject.FindProperty( nameof(SequenceAnim.sequence) );
-            _playOnStartProp = serializedObject.FindProperty( nameof(SequenceAnim.playOnStart) );
-            _dontWaitInQueueToPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.dontWaitInQueueToPlay) );
-            _defaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.defaultCoreProxy) );
-            _useDefaultCoreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.useDefaultCoreProxy) );
-            _useProxyAsCoreProp = serializedObject.FindProperty( nameof(SequenceAnim.useProxyAsCore) );
-            _resetOnPlayProp = serializedObject.FindProperty( nameof(SequenceAnim.resetOnPlay) );
-            _coreProxyProp = serializedObject.FindProperty( nameof(SequenceAnim.coreProxy) );
-            _activateNextClipAsapProp = serializedObject.FindProperty( nameof(SequenceAnim.activateNextClipsASAP) );
-            
-            _clipNodesProp = _sequenceProp.FindPropertyRelative( nameof(Sequence.nodes) );
+        private void RecordUndo()
+        {
+            Undo.RecordObject(sequenceAnim, "Sequence component modified");
+        }
+
+        private void GetProperties()
+        {
+            sequenceProp = serializedObject.FindProperty(nameof(SequenceAnim.sequence));
+            playOnStartProp = serializedObject.FindProperty(nameof(SequenceAnim.playOnStart));
+            dontWaitInQueueToPlayProp = serializedObject.FindProperty(nameof(SequenceAnim.dontWaitInQueueToPlay));
+            defaultCoreProxyProp = serializedObject.FindProperty(nameof(SequenceAnim.defaultCoreProxy));
+            useDefaultCoreProxyProp = serializedObject.FindProperty(nameof(SequenceAnim.useDefaultCoreProxy));
+            useProxyAsCoreProp = serializedObject.FindProperty(nameof(SequenceAnim.useProxyAsCore));
+            resetOnPlayProp = serializedObject.FindProperty(nameof(SequenceAnim.resetOnPlay));
+            coreProxyProp = serializedObject.FindProperty(nameof(SequenceAnim.coreProxy));
+            activateNextClipAsapProp = serializedObject.FindProperty(nameof(SequenceAnim.activateNextClipsASAP));
+
+            clipNodesProp = sequenceProp.FindPropertyRelative(nameof(Sequence.nodes));
+            variablesProp = sequenceProp.FindPropertyRelative(nameof(Sequence.variables));
         }
     }
 }

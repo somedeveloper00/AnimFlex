@@ -51,20 +51,7 @@ namespace AnimFlex.Sequencer.BindingSystem
 
             return values;
         }
-
-        /// <summary>
-        /// sets the field info of the given field name on the clip. returns success state
-        /// </summary>
-        public static bool SetFieldValueForClip<T>(Clip clip, string fieldName, T value)
-        {
-            var bindableTypeValue = getBindableTypeValue(clip);
-            var fieldInfo = bindableTypeValue.GetType().GetField(fieldName, SelectableBindingFlags);
-            if (fieldInfo is null || !(fieldInfo.FieldType == typeof(T) || fieldInfo.FieldType.IsAssignableFrom(typeof(T))))
-                return false;
-            fieldInfo.SetValue(bindableTypeValue, value);
-            return true;
-        }
-
+        
         private static object getBindableTypeValue(Clip clip) => clip is CTweener ctweener ? ctweener.GetTweenerGenerator() : clip;
     }
 }

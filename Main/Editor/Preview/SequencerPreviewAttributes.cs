@@ -1,4 +1,3 @@
-﻿using System;
-
-namespace AnimFlex.Editor.Preview {
+﻿namespace AnimFlex.Editor.Preview
+{
 }

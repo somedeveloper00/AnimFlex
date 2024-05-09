@@ -7,39 +7,41 @@ namespace AnimFlex.Sequencer.Clips
     [Category("Branch/For")]
     [DisplayName("For")]
     [Serializable]
-    public class CFor : Clip
+    public sealed class CFor : Clip
     {
-
         [Tooltip("The node index to play after this node")]
-        public int index;
+        public VariableFetch<int> index;
 
         [Tooltip("The amount of times to play the node")]
-        [Min(0)] public int count;
+        [Min(0)] public VariableFetch<int> count;
 
         [Tooltip("The delay between each iteration")]
-        public float inbetweenDelay;
+        public VariableFetch<float> inbetweenDelay;
         private int lastIterationIndex = -1;
         private float t;
 
         protected override void OnStart()
         {
+            InjectVariable(ref index);
+            InjectVariable(ref count);
+            InjectVariable(ref inbetweenDelay);
             t = 0;
             lastIterationIndex = -1;
         }
 
-        public override bool hasTick() => true;
+        public override bool HasTick() => true;
 
         public override void Tick(float deltaTime)
         {
             t += deltaTime;
-            for (int i = lastIterationIndex + 1; i < count; i++)
+            for (int i = lastIterationIndex + 1; i < count.value; i++)
             {
-                if (t >= i * inbetweenDelay)
+                if (t >= i * inbetweenDelay.value)
                 {
                     // locking finishing of the whole sequence from that branch 
                     Node.sequence.sequenceStopLock++;
-                    PlayIndex(index);
-                    if (i == count - 1)
+                    PlayIndex(index.value);
+                    if (i == count.value - 1)
                     {
                         PlayNext();
                         return;

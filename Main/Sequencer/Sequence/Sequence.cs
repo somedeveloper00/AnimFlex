@@ -14,10 +14,22 @@ namespace AnimFlex.Sequencer
 
 	internal static class SequenceFlagsExtensions
 	{
-		public static bool HasFlagFast(this SequenceFlags value, SequenceFlags flag)
-		{
-			return (value & flag) != 0;
-		}
+		public static bool HasFlagFast(this SequenceFlags value, SequenceFlags flag) => (value & flag) != 0;
+	}
+
+
+	/// <summary>
+	/// Used for a <see cref="Clip"/> to indicate that this variable can be changed by the injection system, 
+	/// and can be modified at runtime.
+	/// </summary>
+	[Serializable]
+	public struct VariableFetch<T>
+	{
+		[SerializeField] internal int _index;
+		public T value;
+
+		public readonly int Index => _index - 1;
+		public readonly bool IsConstant => _index == 0;
 	}
 
 	[Serializable]
@@ -45,7 +57,7 @@ namespace AnimFlex.Sequencer
 		/// </summary>
 		internal int sequenceStopLock = 0;
 
-
+		[SerializeReference] internal Variable[] variables = Array.Empty<Variable>();
 		[SerializeField] internal ClipNode[] nodes = Array.Empty<ClipNode>();
 
 		/// <summary>
@@ -81,7 +93,10 @@ namespace AnimFlex.Sequencer
 				return; // locked
 			}
 
-			if (!IsActive()) return;
+			if (!IsActive())
+			{
+				return;
+			}
 
 			flags |= SequenceFlags.Stopping;
 		}
@@ -98,7 +113,11 @@ namespace AnimFlex.Sequencer
 					$"The sequence is already active. You cannot play an active sequencer. You can call {nameof(PlayOrRestart)} instead.");
 			}
 
-			if (nodes.Length <= 0) return;
+			if (nodes.Length <= 0)
+			{
+				return;
+			}
+
 			sequenceController.AddNewSequence(this, dontWaitInQueueToPlay);
 		}
 
@@ -132,7 +151,11 @@ namespace AnimFlex.Sequencer
 
 		internal void OnActivate()
 		{
-			for (int i = 0; i < nodes.Length; i++) nodes[i].Init(this, i);
+			for (int i = 0; i < nodes.Length; i++)
+			{
+				nodes[i].Init(this, i);
+			}
+
 			ActivateClip(0);
 			onPlay();
 		}
@@ -145,11 +168,13 @@ namespace AnimFlex.Sequencer
 
 		internal void Tick(float deltaTime)
 		{
-
 			int iters = 0;
 			do
 			{
-				if (iters++ == MAX_ITER_COUNT) break;
+				if (iters++ == MAX_ITER_COUNT)
+				{
+					break;
+				}
 
 				for (int i = 0; i < nodes.Length; i++)
 				{
@@ -209,7 +234,10 @@ namespace AnimFlex.Sequencer
 		{
 			for (int i = 0; i < nodes.Length; i++)
 			{
-				if (nodes[i].name == name) return nodes[i];
+				if (nodes[i].name == name)
+				{
+					return nodes[i];
+				}
 			}
 			throw new Exception($"ClipNode with name {name} not found");
 		}
@@ -235,13 +263,12 @@ namespace AnimFlex.Sequencer
 
 		public void AddNewClipNode(Clip clip)
 		{
-			var tmp = nodes.ToList();
-			tmp.Add(new ClipNode
+			Array.Resize(ref nodes, nodes.Length + 1);
+			nodes[^1] = new()
 			{
 				clip = clip,
-				name = $"Node {nodes.Length}"
-			});
-			nodes = tmp.ToArray();
+				name = $"Node {nodes.Length - 1}"
+			};
 		}
 
 		public void InsertNewClipAt(Clip clip, int index)

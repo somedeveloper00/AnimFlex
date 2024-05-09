@@ -213,7 +213,7 @@ namespace AnimFlex.Editor.Preview {
             };
         }
 
-        static void handleBeforePlayAttributes(SequenceAnim sequenceAnim) {
+        private static void handleBeforePlayAttributes(SequenceAnim sequenceAnim) {
             foreach (var components in sequenceAnim.gameObject.GetComponents<Component>()) {
                 var type = components.GetType();
                 var methods = type.GetMethods( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );

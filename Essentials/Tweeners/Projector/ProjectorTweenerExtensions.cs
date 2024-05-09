@@ -2,8 +2,10 @@
 using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex {
-    public static class ProjectorTweenerExtensions {
+namespace AnimFlex
+{
+    public static class ProjectorTweenerExtensions
+    {
         public static Tweener<float> AnimProjectorSizeTo(this Projector projector, float size, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
             AnimProjectorSizeTo(projector, size, duration, delay, Ease.Linear, curve, proxy);
 
@@ -16,10 +18,10 @@ namespace AnimFlex {
                 () => projector.orthographicSize,
                 (value) => projector.orthographicSize = value,
                 size, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => projector != null, proxy );
+                customCurve: curve, isValid: () => projector != null, proxy);
         }
 
-        
+
         public static Tweener<float> AnimProjectorAspectRatioTo(this Projector projector, float aspectRatio, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
             AnimProjectorAspectRatioTo(projector, aspectRatio, duration, delay, Ease.Linear, curve, proxy);
 
@@ -32,7 +34,7 @@ namespace AnimFlex {
                 () => projector.aspectRatio,
                 (value) => projector.aspectRatio = value,
                 aspectRatio, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => projector != null, proxy );
+                customCurve: curve, isValid: () => projector != null, proxy);
         }
 
         public static Tweener<float> AnimProjectorFieldOfViewTo(this Projector projector, float fieldOfView, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
@@ -47,7 +49,7 @@ namespace AnimFlex {
                 () => projector.fieldOfView,
                 (value) => projector.fieldOfView = value,
                 fieldOfView, duration: duration, delay: delay, ease: ease,
-                customCurve: curve, isValid: () => projector != null, proxy );
+                customCurve: curve, isValid: () => projector != null, proxy);
         }
     }
 }

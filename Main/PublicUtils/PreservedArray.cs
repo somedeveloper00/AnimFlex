@@ -85,7 +85,10 @@ namespace AnimFlex
 
         private void RangeCheck(int i)
         {
-            if (i >= Length) throw new IndexOutOfRangeException(this.ToString());
+            if (i >= Length)
+            {
+                throw new IndexOutOfRangeException(this.ToString());
+            }
         }
 
         private void LengthExceedCheck()
@@ -96,7 +99,11 @@ namespace AnimFlex
                     $"Preserved array exceeded it's limit: automatically doubled from {values.Length} to {values.Length * 2}");
                 // doubling the preserved length
                 var tmp = new T[values.Length * 2];
-                for (int i = 0; i < values.Length; i++) tmp[i] = values[i];
+                for (int i = 0; i < values.Length; i++)
+                {
+                    tmp[i] = values[i];
+                }
+
                 values = tmp;
             }
         }

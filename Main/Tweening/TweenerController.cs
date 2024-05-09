@@ -68,7 +68,7 @@ namespace AnimFlex.Tweening
 
                     _completed = t >= totalTime; // completion check
                     t = _completed ? 1
-                        : t <= tweener.delay 
+                        : t <= tweener.delay
                         ? 0 : (t - tweener.delay) / tweener.duration; // advanced clamp
 
 
@@ -86,7 +86,6 @@ namespace AnimFlex.Tweening
                     {
                         Debug.LogException(e);
                     }
-                    tweener.OnUpdate();
                 }
 
                 // check for completion
@@ -94,7 +93,9 @@ namespace AnimFlex.Tweening
                 {
                     tweener.flag |= TweenerFlag.Deleting; // add deletion flag
                     if (tweener.flag.HasFlagFast(TweenerFlag.ForceNoOnComplete) == false)
+                    {
                         tweener.OnComplete();
+                    }
                 }
             }
 
@@ -131,9 +132,14 @@ namespace AnimFlex.Tweening
         internal void KillTweener(Tweener tweener, bool complete = true, bool onCompleteCallback = true)
         {
             if (tweener == null)
+            {
                 throw new NullReferenceException("tweener");
+            }
+
             if (tweener.flag.HasFlagFast(TweenerFlag.Deleting))
+            {
                 throw new Exception("Tweener has already been destroyed!");
+            }
 
             tweener.flag |= TweenerFlag.Deleting;
 

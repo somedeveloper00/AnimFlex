@@ -49,9 +49,6 @@ namespace AnimFlex.Editor
         public TextAnchor labelAlignment;
         public int fontSize;
         public int bigFontSize;
-        public float bigHeight;
-        public float height;
-        public float verticalSpace;
         public ThemeBasedColor buttonDefCol;
         public ThemeBasedColor labelCol;
         public ThemeBasedColor labelCol_Hover;
@@ -60,7 +57,6 @@ namespace AnimFlex.Editor
         public ThemeBasedColor BoxColDarker;
         public ThemeBasedColor backgroundBoxCol;
         public ThemeBasedColor popupCol;
-        public bool repaintEveryFrame = true;
 #endregion
 
         // refresh

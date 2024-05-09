@@ -1,62 +1,75 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace AnimFlex.Editor {
-    public class AFStyles {
-        
-        public class EditorLabelWidth : IDisposable {
-            private float width;
+namespace AnimFlex.Editor
+{
+    public class AFStyles
+    {
+        public readonly struct EditorLabelWidth : IDisposable
+        {
+            private readonly float width;
 
-            public EditorLabelWidth(float width = 10) {
+            public EditorLabelWidth(float width)
+            {
                 this.width = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = width;
             }
-            public void Dispose() => EditorGUIUtility.labelWidth = width;
+            public readonly void Dispose() => EditorGUIUtility.labelWidth = width;
         }
 
-        public class EditorFieldMinWidth : IDisposable {
-            private float oldWidth;
+        public readonly struct EditorFieldMinWidth : IDisposable
+        {
+            private readonly float oldWidth;
 
-            public EditorFieldMinWidth(Rect pos, float width = 10) {
+            public EditorFieldMinWidth(Rect pos, float width = 10)
+            {
                 oldWidth = EditorGUIUtility.labelWidth;
                 if (pos.width - EditorGUIUtility.labelWidth < width)
                     EditorGUIUtility.labelWidth = pos.width - width;
             }
 
-            public void Dispose() {
+            public readonly void Dispose()
+            {
                 EditorGUIUtility.labelWidth = oldWidth;
             }
         }
 
-        public class GuiColor : IDisposable {
-            private Color oldCol;
+        public readonly struct GuiColor : IDisposable
+        {
+            private readonly Color oldCol;
 
-            public GuiColor(Color color) {
+            public GuiColor(Color color)
+            {
                 oldCol = GUI.color;
                 GUI.color = color;
             }
 
-            public void Dispose() => GUI.color = oldCol;
+            public readonly void Dispose() => GUI.color = oldCol;
         }
 
-        public class GuiBackgroundColor : IDisposable {
-            private Color oldCol;
+        public readonly struct GuiBackgroundColor : IDisposable
+        {
+            private readonly Color oldCol;
 
-            public GuiBackgroundColor(Color color) {
+            public GuiBackgroundColor(Color color)
+            {
                 oldCol = GUI.backgroundColor;
                 GUI.backgroundColor = color;
             }
 
-            public void Dispose() => GUI.backgroundColor = oldCol;
+            public readonly void Dispose() => GUI.backgroundColor = oldCol;
         }
 
-        public class GuiForceActive : IDisposable {
-            private bool wasEnabled;
+        public readonly struct GuiForceActive : IDisposable
+        {
+            private readonly bool wasEnabled;
 
-            public GuiForceActive(bool disableInPlaymode = true) {
+            public GuiForceActive(bool disableInPlaymode)
+            {
                 wasEnabled = GUI.enabled;
                 GUI.enabled = !disableInPlaymode || !Application.isPlaying;
             }
@@ -64,22 +77,22 @@ namespace AnimFlex.Editor {
             public void Dispose() => GUI.enabled = wasEnabled;
         }
 
-        public class StyledGuiScope : IDisposable {
-            GUIStyle labelStyle;
-            GUIStyle largeLabelStyle;
-            GUIStyle popupStyle;
-            UnityEditor.Editor _editor;
-            TextAnchor textFieldAnchor;
-            TextAnchor numberFieldAnchor;
+        public readonly struct StyledGuiScope : IDisposable
+        {
+            private readonly GUIStyle labelStyle;
+            private readonly GUIStyle largeLabelStyle;
+            private readonly GUIStyle popupStyle;
+            private readonly TextAnchor textFieldAnchor;
+            private readonly TextAnchor numberFieldAnchor;
 
             /// <summary>
             /// if editor is null, it won't automatically repaint
             /// </summary>
-            public StyledGuiScope(UnityEditor.Editor editor = null) {
-                _editor = editor;
-                labelStyle = new GUIStyle( EditorStyles.label );
-                largeLabelStyle = new GUIStyle( EditorStyles.largeLabel );
-                popupStyle = new GUIStyle( EditorStyles.popup );
+            public StyledGuiScope(bool dontRuinEverything) // to be forced call constructor
+            {
+                labelStyle = new GUIStyle(EditorStyles.label);
+                largeLabelStyle = new GUIStyle(EditorStyles.largeLabel);
+                popupStyle = new GUIStyle(EditorStyles.popup);
                 textFieldAnchor = EditorStyles.textField.alignment;
                 numberFieldAnchor = EditorStyles.numberField.alignment;
 
@@ -104,7 +117,8 @@ namespace AnimFlex.Editor {
                 EditorStyles.popup.normal.textColor = AFEditorSettings.Instance.popupCol;
             }
 
-            public void Dispose() {
+            public readonly void Dispose()
+            {
                 EditorStyles.label.font = labelStyle.font;
                 EditorStyles.label.fontSize = labelStyle.fontSize;
                 EditorStyles.label.alignment = labelStyle.alignment;
@@ -124,27 +138,28 @@ namespace AnimFlex.Editor {
                 EditorStyles.popup.fontSize = popupStyle.fontSize;
                 EditorStyles.popup.alignment = popupStyle.alignment;
                 EditorStyles.popup.normal.textColor = popupStyle.normal.textColor;
-
-                if (_editor != null && AFEditorSettings.Instance.repaintEveryFrame) { _editor.Repaint(); }
             }
 
         }
 
-        public static void Refresh() {
+        public static void Refresh()
+        {
             // set all styles to null for refresh
             var styleFIs = typeof(AFStyles)
-                .GetFields( BindingFlags.NonPublic | BindingFlags.Static )
-                .Where( t => t.Name.StartsWith( "_" ) && t.FieldType == typeof(GUIStyle) );
-            foreach (var fieldInfo in styleFIs) { fieldInfo.SetValue( null, null ); }
+                .GetFields(BindingFlags.NonPublic | BindingFlags.Static)
+                .Where(t => t.Name.StartsWith("_") && t.FieldType == typeof(GUIStyle));
+            foreach (var fieldInfo in styleFIs) { fieldInfo.SetValue(null, null); }
         }
 
         private static GUIStyle _button;
 
-        public static GUIStyle Button {
-            get {
+        public static GUIStyle Button
+        {
+            get
+            {
                 if (_button != null) return _button;
                 var settings = AFEditorSettings.Instance;
-                _button = new GUIStyle( GUI.skin.button );
+                _button = new GUIStyle(GUI.skin.button);
                 _button.normal.textColor = settings.buttonDefCol;
                 _button.font = settings.font;
                 _button.fontSize = settings.fontSize;
@@ -154,34 +169,42 @@ namespace AnimFlex.Editor {
 
         private static GUIStyle _bigButton;
 
-        public static GUIStyle BigButton {
-            get {
+        public static GUIStyle BigButton
+        {
+            get
+            {
                 if (_bigButton != null) return _bigButton;
                 var settings = AFEditorSettings.Instance;
-                _bigButton = new GUIStyle( Button );
-                _bigButton.fontSize = settings.bigFontSize;
-                _bigButton.richText = true;
+                _bigButton = new GUIStyle(Button)
+                {
+                    fontSize = settings.bigFontSize,
+                    richText = true
+                };
                 return _bigButton;
             }
         }
 
         private static GUIStyle _clearButton;
 
-        public static GUIStyle ClearButton {
-            get {
+        public static GUIStyle ClearButton
+        {
+            get
+            {
                 if (_clearButton != null) return _clearButton;
                 var settings = AFEditorSettings.Instance;
-                _clearButton = new GUIStyle( Button );
-                _clearButton.fontSize = settings.bigFontSize;
+                _clearButton = new GUIStyle(Button)
+                {
+                    fontSize = settings.bigFontSize
+                };
                 _clearButton.normal.textColor = settings.buttonDefCol;
                 _clearButton.alignment = TextAnchor.MiddleCenter;
 
-                var tex = new Texture2D( 2, 2 );
-                tex.SetPixels( new[] {
+                var tex = new Texture2D(2, 2);
+                tex.SetPixels(new[] {
                     Color.clear, Color.clear,
                     Color.clear, Color.clear
-                } );
-                tex.Apply( false );
+                });
+                tex.Apply(false);
                 _clearButton.normal.background = _clearButton.hover.background =
                     _clearButton.onHover.background = tex;
                 return _clearButton;
@@ -190,14 +213,18 @@ namespace AnimFlex.Editor {
 
         private static GUIStyle _specialLabel;
 
-        public static GUIStyle SpecialLabel {
-            get {
+        public static GUIStyle SpecialLabel
+        {
+            get
+            {
                 if (_specialLabel != null) return _specialLabel;
                 var settings = AFEditorSettings.Instance;
-                _specialLabel = new GUIStyle( GUI.skin.label );
-                _specialLabel.font = settings.font;
-                _specialLabel.alignment = settings.labelAlignment;
-                _specialLabel.fontSize = settings.fontSize;
+                _specialLabel = new GUIStyle(GUI.skin.label)
+                {
+                    font = settings.font,
+                    alignment = settings.labelAlignment,
+                    fontSize = settings.fontSize
+                };
                 _specialLabel.normal.textColor = settings.labelCol;
                 _specialLabel.hover.textColor = _specialLabel.onHover.textColor = settings.labelCol_Hover;
                 return _specialLabel;
@@ -206,10 +233,12 @@ namespace AnimFlex.Editor {
 
         private static GUIStyle _label;
 
-        public static GUIStyle Label {
-            get {
+        public static GUIStyle Label
+        {
+            get
+            {
                 if (_label != null) return _label;
-                _label = new GUIStyle( GUI.skin.label );
+                _label = new GUIStyle(GUI.skin.label);
                 var settings = AFEditorSettings.Instance;
                 _label.font = settings.font;
                 _label.alignment = settings.labelAlignment;
@@ -220,84 +249,109 @@ namespace AnimFlex.Editor {
 
         private static GUIStyle _bigTextField;
 
-        public static GUIStyle BigTextField {
-            get {
+        public static GUIStyle BigTextField
+        {
+            get
+            {
                 if (_bigTextField != null) return _bigTextField;
                 var settings = AFEditorSettings.Instance;
-                _bigTextField = new GUIStyle( EditorStyles.textField );
-                _bigTextField.font = settings.font;
-                _bigTextField.alignment = settings.labelAlignment;
-                _bigTextField.fontSize = settings.bigFontSize;
-                _bigTextField.fixedHeight = 0;
+                _bigTextField = new GUIStyle(EditorStyles.textField)
+                {
+                    font = settings.font,
+                    alignment = settings.labelAlignment,
+                    fontSize = settings.bigFontSize,
+                    fixedHeight = 0
+                };
                 return _bigTextField;
             }
         }
 
         private static GUIStyle _popup;
 
-        public static GUIStyle Popup {
-            get {
+        public static GUIStyle Popup
+        {
+            get
+            {
                 if (_popup != null) return _popup;
                 var settings = AFEditorSettings.Instance;
-                _popup = new GUIStyle( EditorStyles.popup );
-                _popup.font = settings.font;
-                _popup.fontSize = settings.fontSize;
-                _popup.stretchHeight = true;
-                _popup.stretchWidth = true;
-                _popup.alignment = TextAnchor.MiddleCenter;
-                _popup.fixedHeight = 0;
+                _popup = new GUIStyle(EditorStyles.popup)
+                {
+                    font = settings.font,
+                    fontSize = settings.fontSize,
+                    stretchHeight = true,
+                    stretchWidth = true,
+                    alignment = TextAnchor.MiddleCenter,
+                    fixedHeight = 0
+                };
                 _popup.normal.textColor = _popup.hover.textColor = _popup.active.textColor =
                     _popup.focused.textColor = settings.popupCol;
                 return _popup;
             }
         }
 
+        private static readonly Dictionary<string, GUIContent[]> _cachePropertyPathToBoleanEnumContents = new();
+
         public static bool DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, bool value,
-            string tooltip, out bool result) {
-            var options = new GUIContent[] {
-                new GUIContent( optionTrue, tooltip ), new GUIContent( optionFalse, tooltip )
-            };
+            string tooltip, out bool result)
+        {
+            if (!_cachePropertyPathToBoleanEnumContents.TryGetValue(optionTrue, out var options))
+            {
+                options = new GUIContent[] {
+                    new(optionTrue, tooltip), new(optionFalse, tooltip)
+                };
+                _cachePropertyPathToBoleanEnumContents[optionTrue] = options;
+            }
+
             using var check = new EditorGUI.ChangeCheckScope();
-            using (new EditorLabelWidth( 0 ))
-                result = EditorGUI.Popup( position, GUIContent.none, value ? 0 : 1, options, Popup ) == 0;
+            using (new EditorLabelWidth(0))
+                result = EditorGUI.Popup(position, GUIContent.none, value ? 0 : 1, options, Popup) == 0;
             return check.changed;
         }
 
-        public static void DrawBooleanEnum(Rect position, string optionTrue, string optionFalse,
-            SerializedProperty property) {
-            var options = new GUIContent[] {
-                new GUIContent( optionTrue, property.tooltip ), new GUIContent( optionFalse, property.tooltip )
-            };
+        public static void DrawBooleanEnum(Rect position, string optionTrue, string optionFalse, SerializedProperty property)
+        {
+            if (!_cachePropertyPathToBoleanEnumContents.TryGetValue(property.propertyPath, out var options))
+            {
+                options = new GUIContent[] {
+                    new(optionTrue, property.tooltip), new(optionFalse, property.tooltip)
+                };
+                _cachePropertyPathToBoleanEnumContents[optionTrue] = options;
+            }
 
-            using (new EditorLabelWidth( 0 )) {
-                property.boolValue = EditorGUI.Popup( position, property.boolValue ? 0 : 1, options, Popup ) == 0;
+            using (new EditorLabelWidth(0))
+            {
+                property.boolValue = EditorGUI.Popup(position, property.boolValue ? 0 : 1, options, Popup) == 0;
             }
 
         }
 
 
-        public static void DrawHelpBox(Rect position, string message, MessageType messageType) {
+        public static void DrawHelpBox(Rect position, string message, MessageType messageType)
+        {
             var GetHelpIcon =
-                typeof(EditorGUIUtility).GetMethod( "GetHelpIcon",
-                    BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Default );
-            if (GetHelpIcon != null) {
-                var texture = (Texture)GetHelpIcon.Invoke( null, new object[] { messageType } );
-                var guiContent = new GUIContent( message, texture );
+                typeof(EditorGUIUtility).GetMethod("GetHelpIcon",
+                    BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Default);
+            if (GetHelpIcon != null)
+            {
+                var texture = (Texture)GetHelpIcon.Invoke(null, new object[] { messageType });
+                var guiContent = new GUIContent(message, texture);
 
-                var style = new GUIStyle( EditorStyles.helpBox );
-                style.font = AFEditorSettings.Instance.font;
-                style.fontSize = AFEditorSettings.Instance.fontSize;
-                style.alignment = AFEditorSettings.Instance.labelAlignment;
-                style.wordWrap = false;
+                var style = new GUIStyle(EditorStyles.helpBox)
+                {
+                    font = AFEditorSettings.Instance.font,
+                    fontSize = AFEditorSettings.Instance.fontSize,
+                    alignment = AFEditorSettings.Instance.labelAlignment,
+                    wordWrap = false
+                };
 
-                using (new GuiColor( Color.yellow ))
-                    GUI.Label( position, guiContent, style );
+                using (new GuiColor(Color.yellow))
+                    GUI.Label(position, guiContent, style);
             }
         }
 
-        public static float Height => AFEditorSettings.Instance.height;
-        public static float BigHeight => AFEditorSettings.Instance.bigHeight;
-        public static float VerticalSpace => AFEditorSettings.Instance.verticalSpace;
+        public static float Height => EditorGUIUtility.singleLineHeight;
+        public static float BigHeight => EditorGUIUtility.singleLineHeight * 1.25f;
+        public static float VerticalSpace => EditorGUIUtility.standardVerticalSpacing;
         public static Color BoxColor => AFEditorSettings.Instance.BoxCol;
         public static Color BoxColorDarker => AFEditorSettings.Instance.BoxColDarker;
     }

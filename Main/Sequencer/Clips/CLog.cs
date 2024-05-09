@@ -5,11 +5,13 @@ namespace AnimFlex.Sequencer.Clips
 {
     [DisplayName("Log")]
     [Category("Misc/Log")]
-    public class CLog : Clip
+    public sealed class CLog : Clip
     {
-        public string message;
+        public VariableFetch<string> message;
 
-        protected override void OnStart() {
+        protected override void OnStart()
+        {
+            InjectVariable(ref message);
             Debug.Log(message);
             PlayNext();
         }

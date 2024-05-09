@@ -9,17 +9,24 @@ namespace AnimFlex.Sequencer.Clips
     [Serializable]
     public class CWaitFrame : Clip
     {
-
         [Tooltip("The number of frames to wait before playing the next clip")]
-        public int frames = 1;
+        public VariableFetch<int> frames = new() { value = 1 };
         private int _f = 0;
 
-        protected override void OnStart() => _f = frames;
+        protected override void OnStart()
+        {
+            InjectVariable(ref frames);
+            _f = frames.value;
+        }
+
         public override void OnEnd() { }
-        public override bool hasTick() => true;
+        public override bool HasTick() => true;
         public override void Tick(float deltaTime)
         {
-            if (_f-- <= 0) PlayNext();
+            if (_f-- <= 0)
+            {
+                PlayNext();
+            }
         }
     }
 }

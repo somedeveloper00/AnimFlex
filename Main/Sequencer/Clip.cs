@@ -4,23 +4,37 @@ using AnimFlex.Core.Proxy;
 namespace AnimFlex.Sequencer
 {
     [Serializable]
-    public abstract class Clip {
-
-        internal AnimflexCoreProxy proxy { get; set; }
-        
+    public abstract class Clip
+    {
+        [NonSerialized] internal AnimflexCoreProxy proxy;
         [NonSerialized] public ClipNode Node;
 
-        protected void PlayNext() => PlayNext( true );
-        protected void PlayNext(bool endSelf) {
+        protected void PlayNext() => PlayNext(true);
+
+        protected void PlayNext(bool endSelf)
+        {
             Node.PlayNextClipNode();
-            if (endSelf) Node.End();
+            if (endSelf)
+            {
+                Node.End();
+            }
         }
 
         protected void EndSelf() => Node.End();
 
         protected void PlayIndex(int index) => Node.PlayClipNode(index);
 
-        internal void Init(ClipNode node) {
+        protected void InjectVariable<T>(ref VariableFetch<T> variable)
+        {
+            if (variable.IsConstant)
+            {
+                return;
+            }
+            Node.InjectVariable(ref variable);
+        }
+
+        internal void Init(ClipNode node)
+        {
             Node = node;
         }
 
@@ -41,7 +55,7 @@ namespace AnimFlex.Sequencer
         /// <summary>
         /// if true, it'll receive <c>Tick()</c> callback every Update
         /// </summary>
-        public virtual bool hasTick() => false;
+        public virtual bool HasTick() => false;
 
         /// <summary>
         /// executes every Update time if <c>hasTick()</c> is true

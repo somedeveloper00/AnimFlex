@@ -37,7 +37,10 @@ namespace AnimFlex.Core.Proxy
         {
             if (_cachedDefaultProps.TryGetValue(typeName, out var prop))
             {
-                if (prop != null) return (AnimflexCoreProxy)prop.GetValue(null);
+                if (prop != null)
+                {
+                    return (AnimflexCoreProxy)prop.GetValue(null);
+                }
             }
             return GetDefaultCoreProxy(FindProxyType(typeName));
         }

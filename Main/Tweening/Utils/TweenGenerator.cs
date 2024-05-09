@@ -1,7 +1,6 @@
 ﻿using System;
 using AnimFlex.Core.Proxy;
 using UnityEngine;
-// ReSharper disable Unity.NoNullPropagation
 
 namespace AnimFlex.Tweening
 {
@@ -66,7 +65,7 @@ namespace AnimFlex.Tweening
             tweener.Construct();
             return tweener;
         }
-        
+
         public static Tweener<long> Generate(Func<long> getter, Action<long> setter, long endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
         {
             var tweener = new TweenerLong
@@ -85,7 +84,7 @@ namespace AnimFlex.Tweening
             tweener.Construct();
             return tweener;
         }
-        
+
         public static Tweener<ulong> Generate(Func<ulong> getter, Action<ulong> setter, ulong endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
         {
             var tweener = new TweenerULong

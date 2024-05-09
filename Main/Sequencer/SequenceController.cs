@@ -54,7 +54,9 @@ namespace AnimFlex.Sequencer {
 
         public void AddNewSequence(Sequence sequence, bool dontWaitInQueueToPlay) {
             if (sequence == null)
+            {
                 throw new NullReferenceException( "sequence" );
+            }
 
             if (sequence.flags.HasFlagFast( SequenceFlags.Active )) {
                 Debug.LogError( $"Sequence was already active. You should stop it before playing it again." );

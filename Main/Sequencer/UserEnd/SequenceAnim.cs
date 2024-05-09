@@ -9,7 +9,6 @@ namespace AnimFlex.Sequencer
 	[AddComponentMenu("AnimFlex/Sequencer")]
 	public class SequenceAnim : MonoBehaviour
 	{
-
 		[FormerlySerializedAs("playOnEnable")]
 		[Tooltip("Plays the sequence everytime the game object gets enabled or created.")]
 		[SerializeField] internal bool playOnStart = true;
@@ -55,14 +54,19 @@ namespace AnimFlex.Sequencer
 
 		private void Start()
 		{
-			if (playOnStart) PlaySequence();
-		}
+			if (playOnStart)
+            {
+                PlaySequence();
+            }
+        }
 
 		private void OnDisable()
 		{
 			if (sequence.IsActive())
-				sequence.Stop();
-		}
+            {
+                sequence.Stop();
+            }
+        }
 
 		private void OnValidate() => sequence.EditorValidate(this);
 
@@ -84,9 +88,12 @@ namespace AnimFlex.Sequencer
 					: coreProxy
 				: null;
 #endif
-			foreach (var node in sequence.nodes) node.clip.proxy = proxy;
-			// ReSharper disable once Unity.NoNullPropagation
-			sequence.sequenceController = (proxy ? proxy : AnimflexCoreProxy.MainDefault).core.SequenceController;
+			foreach (var node in sequence.nodes)
+            {
+                node.clip.proxy = proxy;
+            }
+            // ReSharper disable once Unity.NoNullPropagation
+            sequence.sequenceController = (proxy ? proxy : AnimflexCoreProxy.MainDefault).core.SequenceController;
 			sequence.activateNextClipsASAP = activateNextClipsASAP;
 			sequence.PlayOrRestart(dontWaitInQueueToPlay);
 		}

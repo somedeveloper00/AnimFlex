@@ -13,7 +13,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             var toPos = target;
-            if (relative) toPos += fromObject.position;
+            if (relative)
+            {
+                toPos += fromObject.position;
+            }
+
             return fromObject.AnimPositionTo(toPos, duration, delay, ease, curve, proxy);
         }
     }
@@ -24,7 +28,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             var toPos = target;
-            if (relative) toPos += fromObject.localPosition;
+            if (relative)
+            {
+                toPos += fromObject.localPosition;
+            }
+
             return fromObject.AnimLocalPositionTo(toPos, duration, delay, ease, curve, proxy);
         }
     }
@@ -35,7 +43,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             Vector3 toRot = target;
-            if (relative) toRot += fromObject.rotation.eulerAngles;
+            if (relative)
+            {
+                toRot += fromObject.rotation.eulerAngles;
+            }
+
             Vector3 startRot = fromObject.rotation.eulerAngles;
             float t = 0;
             return Tweener.Generate(
@@ -44,7 +56,7 @@ namespace AnimFlex.Tweening
                 {
                     t = value;
                     fromObject.rotation = Quaternion.Euler(Vector3.LerpUnclamped(startRot, toRot, t));
-                }, 1, duration, delay, ease, curve, () => fromObject != null, proxy );
+                }, 1, duration, delay, ease, curve, () => fromObject != null, proxy);
         }
     }
 
@@ -54,7 +66,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Transform fromObject, AnimationCurve curve, float delay)
         {
             Vector3 toRot = target;
-            if (relative) toRot += fromObject.localRotation.eulerAngles;
+            if (relative)
+            {
+                toRot += fromObject.localRotation.eulerAngles;
+            }
+
             Vector3 startRot = fromObject.localRotation.eulerAngles;
             float t = 0;
             return Tweener.Generate(
@@ -63,7 +79,7 @@ namespace AnimFlex.Tweening
                 {
                     t = value;
                     fromObject.localRotation = Quaternion.Euler(Vector3.LerpUnclamped(startRot, toRot, t));
-                }, 1, duration, delay, ease, curve, () => fromObject != null, proxy );
+                }, 1, duration, delay, ease, curve, () => fromObject != null, proxy);
         }
     }
 
@@ -98,7 +114,7 @@ namespace AnimFlex.Tweening
                 {
                     t = value;
                     onSet?.Invoke(t);
-                }, 1, duration, delay, ease, curve, () => fromObject != null, proxy );
+                }, 1, duration, delay, ease, curve, () => fromObject != null, proxy);
         }
     }
 
@@ -110,11 +126,11 @@ namespace AnimFlex.Tweening
             Vector3 toScl = target;
             if (relative)
             {
-	            var localScale = fromObject.localScale;
-	            toScl = new Vector3(
-		            toScl.x * localScale.x,
-		            toScl.y * localScale.y,
-		            toScl.z * localScale.z);
+                var localScale = fromObject.localScale;
+                toScl = new Vector3(
+                    toScl.x * localScale.x,
+                    toScl.y * localScale.y,
+                    toScl.z * localScale.z);
             }
 
             return fromObject.AnimScaleTo(toScl, duration, delay, ease, curve, proxy);
@@ -131,7 +147,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Graphic fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
-            if (relative) toVal *= fromObject.color.a;
+            if (relative)
+            {
+                toVal *= fromObject.color.a;
+            }
+
             return fromObject.AnimFadeTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
@@ -142,7 +162,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Renderer fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
-            if (relative) toVal *= fromObject.material.color.a;
+            if (relative)
+            {
+                toVal *= fromObject.material.color.a;
+            }
+
             return fromObject.AnimFadeTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
@@ -153,7 +177,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, CanvasGroup fromObject, AnimationCurve curve, float delay)
         {
             float toVal = target;
-            if (relative) toVal *= fromObject.alpha;
+            if (relative)
+            {
+                toVal *= fromObject.alpha;
+            }
+
             return fromObject.AnimFadeTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
@@ -168,7 +196,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Graphic fromObject, AnimationCurve curve, float delay)
         {
             var toVal = target;
-            if (relative) toVal += fromObject.color;
+            if (relative)
+            {
+                toVal += fromObject.color;
+            }
+
             return fromObject.AnimColorTo(toVal, duration, delay, ease, curve, proxy);
         }
     }
@@ -179,7 +211,11 @@ namespace AnimFlex.Tweening
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy, Renderer fromObject, AnimationCurve curve, float delay)
         {
             var toVal = target;
-            if (relative) toVal += fromObject.material.color;
+            if (relative)
+            {
+                toVal += fromObject.material.color;
+            }
+
             return fromObject.AnimColorTo(toVal, duration, delay, ease, curve, proxy);
         }
     }

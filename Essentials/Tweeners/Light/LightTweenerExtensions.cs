@@ -6,20 +6,19 @@ namespace AnimFlex
 {
 	public static class LightTweenerExtensions
 	{
-
 		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
 			AnimLightColorTo(light, color, duration, delay, Ease.Linear, curve, proxy);
 
 		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
 			AnimLightColorTo(light, color, duration, delay, ease, null, proxy);
-	
-		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy) 
+
+		public static Tweener<Color> AnimLightColorTo(this Light light, Color color, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy)
 		{
 			return Tweener.Generate(
 				() => light.color,
 				(value) => light.color = value,
 				color, duration, delay, ease, curve,
-				() => light != null, proxy );
+				() => light != null, proxy);
 		}
 
 
@@ -35,7 +34,7 @@ namespace AnimFlex
 				() => light.intensity,
 				(value) => light.intensity = value,
 				intensity, duration, delay, ease,
-				curve, () => light != null, proxy );
+				curve, () => light != null, proxy);
 		}
 
 		public static Tweener<float> AnimLightRangeTo(this Light light, float range, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
@@ -50,7 +49,7 @@ namespace AnimFlex
 				() => light.range,
 				(value) => light.range = value,
 				range, duration, delay, ease,
-				curve, () => light != null, proxy );
+				curve, () => light != null, proxy);
 		}
 	}
 }

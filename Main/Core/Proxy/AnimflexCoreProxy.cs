@@ -10,7 +10,11 @@ namespace AnimFlex.Core.Proxy
         {
             get
             {
-                if (m_core) return m_core;
+                if (m_core)
+                {
+                    return m_core;
+                }
+
                 m_core = gameObject.AddComponent<AnimFlexCore>();
                 return m_core;
             }
@@ -18,7 +22,10 @@ namespace AnimFlex.Core.Proxy
 
         private void OnDestroy()
         {
-            if (m_core) Destroy(m_core);
+            if (m_core)
+            {
+                Destroy(m_core);
+            }
         }
 
         private void LateUpdate() => core.Tick(GetDeltaTime());
