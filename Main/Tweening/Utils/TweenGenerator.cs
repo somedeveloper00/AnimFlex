@@ -161,6 +161,25 @@ namespace AnimFlex.Tweening
             return tweener;
         }
 
+        public static Tweener<Vector4> Generate(Func<Vector4> getter, Action<Vector4> setter, Vector4 endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
+        {
+            var tweener = new TweenerVector4
+            {
+                tweenerController = proxy?.core.TweenerController ?? AnimflexCoreProxy.MainDefault.core.TweenerController,
+                getter = getter,
+                setter = setter,
+                isValid = isValid,
+                endValue = endValue,
+                ease = ease,
+                duration = duration,
+                delay = delay,
+                customCurve = customCurve,
+                useCurve = customCurve != null
+            };
+            tweener.Construct();
+            return tweener;
+        }
+
         public static Tweener<Quaternion> Generate(Func<Quaternion> getter, Action<Quaternion> setter, Quaternion endValue, float duration = 1, float delay = 0, Ease ease = Ease.InOutSine, AnimationCurve customCurve = null, Func<bool> isValid = null, AnimflexCoreProxy proxy = null)
         {
             var tweener = new TweenerQuaternion
