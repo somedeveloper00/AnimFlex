@@ -257,7 +257,10 @@ namespace AnimFlex.Editor
                 {
                     rect.width -= 20;
                     if (Event.current.type != EventType.Used)
-                        EditorGUI.PropertyField(rect, variablesProp.GetArrayElementAtIndex(index), new($"{index}    {sequence.variables[index].Type.Name}"), true);
+                    {
+                        string label = $"{index}    {(sequence.variables.Length > index - 1 ? sequence.variables[index].Type.Name : string.Empty)}";
+                        EditorGUI.PropertyField(rect, variablesProp.GetArrayElementAtIndex(index), new(label), true);
+                    }
 
                     // draw X button
                     rect.x += rect.width; rect.width = 20;

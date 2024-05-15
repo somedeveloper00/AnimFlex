@@ -200,9 +200,9 @@ namespace AnimFlex.Editor
                 _clearButton.alignment = TextAnchor.MiddleCenter;
 
                 var tex = new Texture2D(2, 2);
-                tex.SetPixels(new[] {
-                    Color.clear, Color.clear,
-                    Color.clear, Color.clear
+                tex.SetPixels32(new Color32[] {
+                    new(), new(),
+                    new(), new()
                 });
                 tex.Apply(false);
                 _clearButton.normal.background = _clearButton.hover.background =
