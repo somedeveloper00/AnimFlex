@@ -43,7 +43,6 @@ namespace AnimFlex.Editor
                 $"create a file named AnimFlexEditor.ind at the root of the editor resources of AnimFlex.");
         }
 
-
         /// <summary>
         /// Creates a relative path from one file or folder to another.
         /// Credits to Dave : https://stackoverflow.com/a/340454/17089583
@@ -197,7 +196,6 @@ namespace AnimFlex.Editor
             }
             return type;
         }
-
 #nullable restore
 
         /// <summary>
@@ -289,7 +287,6 @@ namespace AnimFlex.Editor
             menu.ShowAsContext();
         }
 
-
         public static void DrawNodeSelectionPopup(Rect position, SerializedProperty property, GUIContent label,
             Sequence sequence)
         {
@@ -308,84 +305,6 @@ namespace AnimFlex.Editor
                 selectedIndex: property.intValue,
                 displayedOptions: displayedOptions,
                 style: AFStyles.Popup);
-        }
-
-        public static void DrawFieldNameSelectionPopup(Type type, SerializedProperty componentProp, Rect pos,
-            SerializedProperty valueNameProp)
-        {
-            if (componentProp.objectReferenceValue == null)
-            {
-                AFStyles.DrawHelpBox(pos, $"--{componentProp.name} is empty--", MessageType.Warning);
-            }
-            else
-            {
-                var valueOptions = componentProp.objectReferenceValue
-                    .GetType()
-                    .GetFields(BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public |
-                                BindingFlags.NonPublic)
-                    .Where(fieldInfo => fieldInfo.FieldType == type)
-                    .Select(fieldInfo => fieldInfo.Name).ToList();
-
-                if (valueOptions.Count == 0)
-                {
-                    AFStyles.DrawHelpBox(pos, $"--No field of type {type.Name} found--", MessageType.Warning);
-                }
-                else
-                {
-                    var selectedIndex = valueOptions.IndexOf(valueNameProp.stringValue);
-                    if (selectedIndex == -1)
-                    {
-                        valueNameProp.stringValue = valueOptions[0];
-                        selectedIndex = 0;
-                    }
-
-                    valueNameProp.stringValue = valueOptions[
-                        EditorGUI.Popup(pos,
-                            new GUIContent("Value :", valueNameProp.tooltip),
-                            selectedIndex,
-                            valueOptions.Select(val => new GUIContent(val)).ToArray(),
-                            AFStyles.Popup)];
-                }
-            }
-        }
-
-        public static void DrawPropertyNameSelectionPopup(Type type, SerializedProperty componentProp, Rect pos,
-            SerializedProperty valueNameProp)
-        {
-            if (componentProp.objectReferenceValue == null)
-            {
-                AFStyles.DrawHelpBox(pos, $"--{componentProp.name} is empty--", MessageType.Warning);
-            }
-            else
-            {
-                var valueOptions = componentProp.objectReferenceValue
-                    .GetType()
-                    .GetProperties(BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public |
-                                BindingFlags.NonPublic | BindingFlags.SetProperty)
-                    .Where(fieldInfo => fieldInfo.PropertyType == type)
-                    .Select(fieldInfo => fieldInfo.Name).ToList();
-
-                if (valueOptions.Count == 0)
-                {
-                    AFStyles.DrawHelpBox(pos, $"--No property of type {type.Name} found--", MessageType.Warning);
-                }
-                else
-                {
-                    var selectedIndex = valueOptions.IndexOf(valueNameProp.stringValue);
-                    if (selectedIndex == -1)
-                    {
-                        valueNameProp.stringValue = valueOptions[0];
-                        selectedIndex = 0;
-                    }
-
-                    valueNameProp.stringValue = valueOptions[
-                        EditorGUI.Popup(pos,
-                            new GUIContent("Value :", valueNameProp.tooltip),
-                            selectedIndex,
-                            valueOptions.Select(val => new GUIContent(val)).ToArray(),
-                            AFStyles.Popup)];
-                }
-            }
         }
     }
 }

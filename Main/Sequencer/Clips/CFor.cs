@@ -10,10 +10,10 @@ namespace AnimFlex.Sequencer.Clips
     public sealed class CFor : Clip
     {
         [Tooltip("The node index to play after this node")]
-        public VariableFetch<int> index;
+        public VariableFetch<NodeSelection> index;
 
         [Tooltip("The amount of times to play the node")]
-        [Min(0)] public VariableFetch<int> count;
+        public VariableFetch<uint> count;
 
         [Tooltip("The delay between each iteration")]
         public VariableFetch<float> inbetweenDelay;
@@ -40,7 +40,7 @@ namespace AnimFlex.Sequencer.Clips
                 {
                     // locking finishing of the whole sequence from that branch 
                     Node.sequence.sequenceStopLock++;
-                    PlayIndex(index.value);
+                    PlayIndex(index.value.index);
                     if (i == count.value - 1)
                     {
                         PlayNext();

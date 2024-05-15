@@ -68,9 +68,9 @@ namespace AnimFlex.Editor.Tweener
 
             using (new AFStyles.GuiForceActive(true))
             {
-                if (GUI.Button(pos, AFPreviewUtils.isActive ? "Stop" : "Play Tweener", AFStyles.Button))
+                if (GUI.Button(pos, AFPreviewUtils.IsActive ? "Stop" : "Play Tweener", AFStyles.Button))
                 {
-                    if (AFPreviewUtils.isActive)
+                    if (AFPreviewUtils.IsActive)
                         AFPreviewUtils.StopPreviewMode();
                     else
                         AFPreviewUtils.PreviewTweener(target);
@@ -84,7 +84,7 @@ namespace AnimFlex.Editor.Tweener
             var onComplete = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onComplete));
             var onKill = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onKill));
 
-            return selectedEvent switch
+            return !onStart.isExpanded ? 0 : selectedEvent switch
             {
                 0 => EditorGUI.GetPropertyHeight(onStart, GUIContent.none),
                 1 => EditorGUI.GetPropertyHeight(onComplete, GUIContent.none),
@@ -95,27 +95,37 @@ namespace AnimFlex.Editor.Tweener
 
         protected virtual void DrawUnityEvents(Rect position)
         {
+            var pos = new Rect(position);
             var onStart = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onStart));
             var onComplete = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onComplete));
             var onKill = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.onKill));
 
-            var pos = new Rect(position);
+            pos.x += 15;
+            pos.width = 10;
+            onStart.isExpanded = EditorGUI.Foldout(pos, onStart.isExpanded, GUIContent.none, true);
+            pos.x += pos.width;
+            pos.width = position.width - 10 - 15;
 
             s_eventSelectionGuiContents ??= new GUIContent[]
             {
-                new("On Start", onStart.tooltip),
-                new("On Complete", onComplete.tooltip),
-                new("On Kill", onKill.tooltip)
+                    new("On Start", onStart.tooltip),
+                    new("On Complete", onComplete.tooltip),
+                    new("On Kill", onKill.tooltip)
             };
-            selectedEvent = GUI.Toolbar(position, selectedEvent, s_eventSelectionGuiContents);
+            selectedEvent = GUI.Toolbar(pos, selectedEvent, s_eventSelectionGuiContents);
 
-            pos.y += AFStyles.Height + AFStyles.VerticalSpace;
-
-            switch (selectedEvent)
+            if (onStart.isExpanded)
             {
-                case 0: EditorGUI.PropertyField(pos, onStart, GUIContent.none); break;
-                case 1: EditorGUI.PropertyField(pos, onComplete, GUIContent.none); break;
-                case 2: EditorGUI.PropertyField(pos, onKill, GUIContent.none); break;
+                pos.y += AFStyles.Height + AFStyles.VerticalSpace;
+                pos.width = position.width;
+                pos.x = position.x;
+
+                switch (selectedEvent)
+                {
+                    case 0: EditorGUI.PropertyField(pos, onStart, GUIContent.none); break;
+                    case 1: EditorGUI.PropertyField(pos, onComplete, GUIContent.none); break;
+                    case 2: EditorGUI.PropertyField(pos, onKill, GUIContent.none); break;
+                }
             }
         }
 
@@ -137,7 +147,7 @@ namespace AnimFlex.Editor.Tweener
             {
                 pos.x += pos.width;
                 using (new AFStyles.EditorLabelWidth(80))
-                    EditorGUI.PropertyField(pos, loopDelayProp, new GUIContent("Loop-Delay", loopDelayProp.tooltip));
+                    EditorGUI.PropertyField(pos, loopDelayProp, new GUIContent("LoopDelay: ", loopDelayProp.tooltip));
             }
 
 

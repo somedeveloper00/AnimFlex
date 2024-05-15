@@ -13,7 +13,7 @@ namespace AnimFlex.Sequencer.BindingSystem
         public SequenceAnim sequenceAnim;
 
         [Tooltip("Selections to bind the value to")]
-        [SerializeField] internal int variableIndex;
+        [SerializeField] internal uint variableIndex;
 
         /// <summary>
         /// Binds the value to all the selections. retruns the success state

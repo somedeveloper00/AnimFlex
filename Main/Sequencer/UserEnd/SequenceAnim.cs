@@ -48,25 +48,25 @@ namespace AnimFlex.Sequencer
 		[SerializeField] internal bool activateNextClipsASAP = true;
 
 
-		public Sequence sequence = new Sequence();
+		public Sequence sequence = new();
 
-		internal event Action beforePlay;
+		internal event Action DuringPlay;
 
 		private void Start()
 		{
 			if (playOnStart)
-            {
-                PlaySequence();
-            }
-        }
+			{
+				PlaySequence();
+			}
+		}
 
 		private void OnDisable()
 		{
 			if (sequence.IsActive())
-            {
-                sequence.Stop();
-            }
-        }
+			{
+				sequence.Stop();
+			}
+		}
 
 		private void OnValidate() => sequence.EditorValidate(this);
 
@@ -74,7 +74,7 @@ namespace AnimFlex.Sequencer
 
 		public void PlaySequence()
 		{
-			beforePlay?.Invoke();
+			DuringPlay?.Invoke();
 #if UNITY_EDITOR
 			var proxy = Application.isPlaying && useProxyAsCore
 				? useDefaultCoreProxy
@@ -89,11 +89,11 @@ namespace AnimFlex.Sequencer
 				: null;
 #endif
 			foreach (var node in sequence.nodes)
-            {
-                node.clip.proxy = proxy;
-            }
-            // ReSharper disable once Unity.NoNullPropagation
-            sequence.sequenceController = (proxy ? proxy : AnimflexCoreProxy.MainDefault).core.SequenceController;
+			{
+				node.clip.proxy = proxy;
+			}
+			// ReSharper disable once Unity.NoNullPropagation
+			sequence.sequenceController = (proxy ? proxy : AnimflexCoreProxy.MainDefault).core.SequenceController;
 			sequence.activateNextClipsASAP = activateNextClipsASAP;
 			sequence.PlayOrRestart(dontWaitInQueueToPlay);
 		}

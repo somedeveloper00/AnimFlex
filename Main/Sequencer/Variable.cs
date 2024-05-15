@@ -11,6 +11,9 @@ namespace AnimFlex.Sequencer
 	[Serializable]
 	public abstract class Variable
 	{
+#if true
+		[SerializeField] public string name;
+#endif
 		/// <summary>
 		/// The type of variable. This will indicate what type this variable is of.
 		/// </summary>

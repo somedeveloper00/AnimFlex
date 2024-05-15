@@ -67,7 +67,7 @@ namespace AnimFlex.Tweening
 
     internal sealed class TweenerString : Tweener<string>
     {
-        private static System.Random rand = new System.Random(-1234567891);
+        private static System.Random rand = new(-1234567891);
 
         internal override void Set(float t)
         {

@@ -5,6 +5,7 @@ using AnimFlex.Sequencer;
 namespace AnimFlex.Editor
 {
     [CustomPropertyDrawer(typeof(VariableFetch<>), useForChildren: true)]
+    [CustomPropertyDrawer(typeof(VariableFetch<int>), useForChildren: true)]
     public sealed class VariableFetchDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -36,7 +37,7 @@ namespace AnimFlex.Editor
                     int index = i;
                     if (variables[i].Type == type || variables[i].Type.IsSubclassOf(type))
                     {
-                        menu.AddItem(new GUIContent("Variables/" + i), indexProp.intValue == i + 1, () =>
+                        menu.AddItem(new GUIContent("Variables/" + variables[i].name), indexProp.intValue == i + 1, () =>
                         {
                             for (int i = 0; i < variables.Length; i++)
                             {
@@ -52,7 +53,7 @@ namespace AnimFlex.Editor
                     }
                     else
                     {
-                        menu.AddDisabledItem(new GUIContent("Variables/" + i), false);
+                        menu.AddDisabledItem(new GUIContent("Variables/" + variables[i].name), false);
                     }
                 }
                 menu.ShowAsContext();

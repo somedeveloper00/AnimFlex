@@ -34,7 +34,6 @@ namespace AnimFlex.Editor
         private ReorderableList _variableList;
         private ReorderableList _nodeClipList;
         private GUIContent[] _coreProxyTypeOptions = null;
-        private bool _showAdvanced = false;
         private static readonly GUIContent _addCoreProxyGuiContent = new("Add", "Add a new Core Proxy Component to this Game Object");
         private static readonly GUIContent _xButtonGuiContent = new("X", "Remove Element");
         private static readonly GUIContent _variablesListGuiContent = new("Variables", "Values that can be changed at runtime");
@@ -56,25 +55,23 @@ namespace AnimFlex.Editor
 
         public override void OnInspectorGUI()
         {
+            if (AFPreviewUtils.IsActive)
+            {
+                GUILayout.Label("Previewing...");
+                return;
+            }
             Current = this;
             serializedObject.Update();
 
-            _showAdvanced = EditorGUILayout.Foldout(_showAdvanced, "Advanced Options", true);
-            if (_showAdvanced)
-            {
-                DrawAdvancedOptions();
-            }
-
             using (new EditorGUI.DisabledScope(Application.isPlaying))
             {
-                GUILayout.Space(10);
                 DrawPlayback();
-                if (!AFPreviewUtils.isActive)
-                {
-                    DrawVariables();
-                    GUILayout.Space(AFStyles.VerticalSpace);
-                    DrawClipNodes();
-                }
+                GUILayout.Space(AFStyles.VerticalSpace);
+                DrawVariables();
+                GUILayout.Space(AFStyles.VerticalSpace);
+                DrawClipNodes();
+                GUILayout.Space(AFStyles.VerticalSpace);
+                DrawAdvancedOptions();
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -83,72 +80,77 @@ namespace AnimFlex.Editor
 
         private void DrawAdvancedOptions()
         {
-            using (new GUILayout.HorizontalScope())
+            playOnStartProp.isExpanded = EditorGUILayout.Foldout(playOnStartProp.isExpanded, "Advanced Options", true);
+            if (playOnStartProp.isExpanded)
             {
-                using (new AFStyles.EditorLabelWidth(90))
-                    EditorGUILayout.PropertyField(playOnStartProp, GUILayout.Width(110));
-                using (new AFStyles.EditorLabelWidth(155))
-                    EditorGUILayout.PropertyField(dontWaitInQueueToPlayProp);
-            }
-            using (new GUILayout.HorizontalScope())
-            {
-                using (new AFStyles.EditorLabelWidth(90))
-                    EditorGUILayout.PropertyField(resetOnPlayProp, GUILayout.Width(110));
-                using (new AFStyles.EditorLabelWidth(155))
-                    EditorGUILayout.PropertyField(activateNextClipAsapProp);
-            }
 
-            using (new GUILayout.HorizontalScope())
-            {
-                using (new AFStyles.EditorLabelWidth(110))
-                    EditorGUILayout.PropertyField(useProxyAsCoreProp, GUILayout.Width(130));
-
-                if (useProxyAsCoreProp.boolValue)
+                using (new GUILayout.HorizontalScope())
                 {
-                    using (new AFStyles.EditorLabelWidth(140))
-                        EditorGUILayout.PropertyField(useDefaultCoreProxyProp, GUILayout.Width(160));
+                    using (new AFStyles.EditorLabelWidth(90))
+                        EditorGUILayout.PropertyField(playOnStartProp, GUILayout.Width(110));
+                    using (new AFStyles.EditorLabelWidth(155))
+                        EditorGUILayout.PropertyField(dontWaitInQueueToPlayProp);
+                }
+                using (new GUILayout.HorizontalScope())
+                {
+                    using (new AFStyles.EditorLabelWidth(90))
+                        EditorGUILayout.PropertyField(resetOnPlayProp, GUILayout.Width(110));
+                    using (new AFStyles.EditorLabelWidth(155))
+                        EditorGUILayout.PropertyField(activateNextClipAsapProp);
+                }
 
-                    if (useDefaultCoreProxyProp.boolValue)
+                using (new GUILayout.HorizontalScope())
+                {
+                    using (new AFStyles.EditorLabelWidth(110))
+                        EditorGUILayout.PropertyField(useProxyAsCoreProp, GUILayout.Width(130));
+
+                    if (useProxyAsCoreProp.boolValue)
                     {
-                        var result = EditorGUILayout.Popup(AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
-                            defaultCoreProxyProp.stringValue), _coreProxyTypeOptions);
-                        if (result != -1)
+                        using (new AFStyles.EditorLabelWidth(140))
+                            EditorGUILayout.PropertyField(useDefaultCoreProxyProp, GUILayout.Width(160));
+
+                        if (useDefaultCoreProxyProp.boolValue)
                         {
-                            defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];
+                            var result = EditorGUILayout.Popup(AnimFlexCoreProxyHelper.AllCoreProxyTypeNames.IndexOf(
+                                defaultCoreProxyProp.stringValue), _coreProxyTypeOptions);
+                            if (result != -1)
+                            {
+                                defaultCoreProxyProp.stringValue = AnimFlexCoreProxyHelper.AllCoreProxyTypeNames[result];
+                            }
                         }
                     }
                 }
-            }
 
-            using (new GUILayout.HorizontalScope())
-            {
-                if (useProxyAsCoreProp.boolValue && !useDefaultCoreProxyProp.boolValue)
+                using (new GUILayout.HorizontalScope())
                 {
-                    using (new AFStyles.EditorLabelWidth(80))
+                    if (useProxyAsCoreProp.boolValue && !useDefaultCoreProxyProp.boolValue)
                     {
-                        EditorGUILayout.PropertyField(coreProxyProp);
-                    }
-
-                    if (coreProxyProp.objectReferenceValue == null)
-                    {
-                        if (GUILayout.Button(_addCoreProxyGuiContent, GUILayout.Width(60)))
+                        using (new AFStyles.EditorLabelWidth(80))
                         {
-                            // add core proxy component
-                            AFEditorUtils.GetTypeInstanceFromHierarchy<AnimflexCoreProxy>(type =>
-                            {
-                                serializedObject.ApplyModifiedProperties();
-                                if (sequenceAnim.TryGetComponent(type, out var comp))
-                                {
-                                    sequenceAnim.coreProxy = (AnimflexCoreProxy)comp;
-                                }
-                                else
-                                {
-                                    sequenceAnim.coreProxy =
-                                        (AnimflexCoreProxy)sequenceAnim.gameObject.AddComponent(type);
-                                }
+                            EditorGUILayout.PropertyField(coreProxyProp);
+                        }
 
-                                serializedObject.Update();
-                            });
+                        if (coreProxyProp.objectReferenceValue == null)
+                        {
+                            if (GUILayout.Button(_addCoreProxyGuiContent, GUILayout.Width(60)))
+                            {
+                                // add core proxy component
+                                AFEditorUtils.GetTypeInstanceFromHierarchy<AnimflexCoreProxy>(type =>
+                                {
+                                    serializedObject.ApplyModifiedProperties();
+                                    if (sequenceAnim.TryGetComponent(type, out var comp))
+                                    {
+                                        sequenceAnim.coreProxy = (AnimflexCoreProxy)comp;
+                                    }
+                                    else
+                                    {
+                                        sequenceAnim.coreProxy =
+                                            (AnimflexCoreProxy)sequenceAnim.gameObject.AddComponent(type);
+                                    }
+
+                                    serializedObject.Update();
+                                });
+                            }
                         }
                     }
                 }
@@ -165,11 +167,11 @@ namespace AnimFlex.Editor
                 {
                     using (new EditorGUI.DisabledScope(Application.isPlaying))
                     {
-                        var text = AFPreviewUtils.isActive ? "Stop Preview" : "Preview Sequence";
+                        var text = AFPreviewUtils.IsActive ? "Stop Preview" : "Preview Sequence";
                         if (GUILayout.Button(text, AFStyles.BigButton,
                                 GUILayout.Height(AFStyles.BigHeight), GUILayout.Width(200)))
                         {
-                            if (AFPreviewUtils.isActive)
+                            if (AFPreviewUtils.IsActive)
                                 AFPreviewUtils.StopPreviewMode();
                             else
                                 AFPreviewUtils.PreviewSequence(sequenceAnim);

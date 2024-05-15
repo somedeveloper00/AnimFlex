@@ -10,8 +10,8 @@ namespace AnimFlex.Sequencer.BindingSystem
     public static class BindingUtils
     {
         private const BindingFlags SelectableBindingFlags = BindingFlags.Default | BindingFlags.Public | BindingFlags.Instance;
-        private static readonly Dictionary<(Type clipType, Type valueType), string[]> cachedBindableFields = new Dictionary<(Type, Type), string[]>();
-        private static readonly Dictionary<(Type clipType, Type valueType), GUIContent[]> cachedBindableFieldsGuiContent = new Dictionary<(Type, Type), GUIContent[]>();
+        private static readonly Dictionary<(Type clipType, Type valueType), string[]> cachedBindableFields = new();
+        private static readonly Dictionary<(Type clipType, Type valueType), GUIContent[]> cachedBindableFieldsGuiContent = new();
 
         /// <summary>
         /// returns all bindable fields on the clip given the valueType

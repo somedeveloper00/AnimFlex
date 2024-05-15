@@ -20,11 +20,15 @@ namespace AnimFlex.Editor
             {
                 // draw containing box
                 EditorGUI.DrawRect(position, AFEditorSettings.Instance.BoxColOutline);
-                position.x += AFStyles.VerticalSpace / 2; position.width -= AFStyles.VerticalSpace;
-                position.y += AFStyles.VerticalSpace / 2; position.height -= AFStyles.VerticalSpace;
+                position.x += AFStyles.VerticalSpace / 2;
+                position.width -= AFStyles.VerticalSpace;
+                position.y += AFStyles.VerticalSpace / 2;
+                position.height -= AFStyles.VerticalSpace;
                 EditorGUI.DrawRect(position, AFEditorSettings.Instance.BoxColDarker);
-                position.x -= AFStyles.VerticalSpace / 2; position.width += AFStyles.VerticalSpace;
-                position.y -= AFStyles.VerticalSpace / 2; position.height += AFStyles.VerticalSpace;
+                position.x -= AFStyles.VerticalSpace / 2;
+                position.width += AFStyles.VerticalSpace;
+                position.y -= AFStyles.VerticalSpace / 2;
+                position.height += AFStyles.VerticalSpace;
 
                 position.x += 15; position.width -= 30;
                 position.y += AFStyles.VerticalSpace;
@@ -48,35 +52,47 @@ namespace AnimFlex.Editor
                     var oldWidth = position.width;
                     position.width = EditorGUIUtility.labelWidth; // dropdown and sequencer field clickable
                     property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label, true);
-                    position.x += EditorGUIUtility.labelWidth;
+                    position.x += EditorGUIUtility.labelWidth - 15;
                     position.width = oldWidth - EditorGUIUtility.labelWidth - 70;
                     EditorGUI.PropertyField(position, sequenceAnimProp, GUIContent.none);
                     position.x += position.width;
-                    position.width = 20;
+                    position.width = 10;
                     GUI.Label(position, ":");
                     position.x += position.width;
-                    position.width = 50;
-                    if (EditorGUI.DropdownButton(position, new(variableIndexProp.intValue.ToString()), FocusType.Keyboard))
+                    position.width = 60 + 15;
+                    var sequence = sequenceAnimProp.objectReferenceValue as SequenceAnim;
+                    if (sequence != null && sequence.sequence.variables.Length > 0)
                     {
-                        var sequence = sequenceAnimProp.objectReferenceValue as SequenceAnim;
-                        valueProp.GetValue(out var type);
-                        if (sequence != null)
+                        if (sequence.sequence.variables.Length <= variableIndexProp.intValue)
                         {
-                            var menu = new GenericMenu();
-                            for (int i = 0; i < sequence.sequence.variables.Length; i++)
-                            {
-                                if (sequence.sequence.variables[i].Type == type)
-                                {
-                                    int ind = i;
-                                    menu.AddItem(new GUIContent(i.ToString()), i == variableIndexProp.intValue, () =>
-                                    {
-                                        variableIndexProp.intValue = ind;
-                                        property.serializedObject.ApplyModifiedProperties();
-                                    });
-                                }
-                            }
-                            menu.ShowAsContext();
+                            variableIndexProp.intValue = 0;
                         }
+                        var guiContent = new GUIContent(sequence.sequence.variables[variableIndexProp.intValue].name);
+                        if (EditorGUI.DropdownButton(position, guiContent, FocusType.Keyboard))
+                        {
+                            valueProp.GetValue(out var type);
+                            if (sequence != null)
+                            {
+                                var menu = new GenericMenu();
+                                for (int i = 0; i < sequence.sequence.variables.Length; i++)
+                                {
+                                    if (sequence.sequence.variables[i].Type == type)
+                                    {
+                                        int ind = i;
+                                        menu.AddItem(new GUIContent(sequence.sequence.variables[i].name), i == variableIndexProp.intValue, () =>
+                                        {
+                                            variableIndexProp.intValue = ind;
+                                            property.serializedObject.ApplyModifiedProperties();
+                                        });
+                                    }
+                                }
+                                menu.ShowAsContext();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        EditorGUI.PropertyField(position, variableIndexProp, GUIContent.none);
                     }
                     position.width = oldWidth;
                     position.x = oldX;

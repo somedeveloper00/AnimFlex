@@ -1,10 +1,12 @@
 using System;
 using System.ComponentModel;
+using AnimFlex.Sequencer.Clips;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace AnimFlex.Sequencer.Variables
 {
+    [Category("Sequencer"), DisplayName("Node Selection"), Serializable] public sealed class Variable_NodeSelection : Variable<NodeSelection> { }
     [Category("Primitives"), DisplayName("Int"), Serializable] public sealed class Variable_Int : Variable<int> { }
     [Category("Primitives"), DisplayName("Float"), Serializable] public sealed class Variable_Float : Variable<float> { }
     [Category("Primitives"), DisplayName("Bool"), Serializable] public sealed class Variable_Bool : Variable<bool> { }

@@ -23,17 +23,20 @@ namespace AnimFlex.Sequencer.Clips
     public sealed class CGotoIf : Clip
     {
         [Tooltip("The node index to play after this node")]
-        public VariableFetch<int> index;
+        public VariableFetch<NodeSelection> index;
 
         [Tooltip("Only go to index if this condition is true")]
         public VariableFetch<bool> condition;
+
+        [Tooltip("Invert the condition")]
+        public bool invert;
 
         protected override void OnStart()
         {
             InjectVariable(ref index);
             InjectVariable(ref condition);
-            if (condition.value)
-                PlayIndex(index.value);
+            if (condition.value ^ invert)
+                PlayIndex(index.value.index);
             else
                 PlayNext();
         }

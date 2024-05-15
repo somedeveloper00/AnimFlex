@@ -264,11 +264,7 @@ namespace AnimFlex.Sequencer
 		public void AddNewClipNode(Clip clip)
 		{
 			Array.Resize(ref nodes, nodes.Length + 1);
-			nodes[^1] = new()
-			{
-				clip = clip,
-				name = $"Node {nodes.Length - 1}"
-			};
+			nodes[^1] = new() { clip = clip };
 		}
 
 		public void InsertNewClipAt(Clip clip, int index)
