@@ -2,48 +2,52 @@
 
 namespace AnimFlex.Tweening
 {
-    internal class TweenerFloat : Tweener<float>
+    internal sealed class TweenerFloat : Tweener<float>
     {
         internal override void Set(float t) => setter(startValue + (endValue - startValue) * t);
     }
 
-    internal class TweenerInt : Tweener<int>
+    internal sealed class TweenerInt : Tweener<int>
     {
         internal override void Set(float t) => setter(Mathf.RoundToInt(startValue + (endValue - startValue) * t));
     }
 
-    internal class TweenerUInt : Tweener<uint>
+    internal sealed class TweenerUInt : Tweener<uint>
     {
         internal override void Set(float t) => setter((uint)(startValue + (endValue - startValue) * (double)t));
     }
 
-    internal class TweenerLong : Tweener<long>
+    internal sealed class TweenerLong : Tweener<long>
     {
         internal override void Set(float t) => setter((long)(startValue + (endValue - startValue) * (double)t));
     }
 
-    internal class TweenerULong : Tweener<ulong>
+    internal sealed class TweenerULong : Tweener<ulong>
     {
         internal override void Set(float t) => setter((ulong)(startValue + (endValue - startValue) * (double)t));
     }
 
-    internal class TweenerDecimal : Tweener<decimal>
+    internal sealed class TweenerDecimal : Tweener<decimal>
     {
         internal override void Set(float t) => setter(startValue + (endValue - startValue) * (decimal)t);
     }
 
-    internal class TweenerVector2 : Tweener<Vector2>
+    internal sealed class TweenerVector2 : Tweener<Vector2>
     {
         internal override void Set(float t) => setter(startValue + (endValue - startValue) * t);
     }
 
-
-    internal class TweenerVector3 : Tweener<Vector3>
+    internal sealed class TweenerVector3 : Tweener<Vector3>
     {
         internal override void Set(float t) => setter(Vector3.LerpUnclamped(startValue, endValue, t));
     }
 
-    internal class TweenerRect : Tweener<Rect>
+    internal sealed class TweenerVector4 : Tweener<Vector4>
+    {
+        internal override void Set(float t) => setter(Vector4.LerpUnclamped(startValue, endValue, t));
+    }
+
+    internal sealed class TweenerRect : Tweener<Rect>
     {
         internal override void Set(float t) =>
             setter(new Rect(
@@ -51,17 +55,17 @@ namespace AnimFlex.Tweening
                 startValue.max + (endValue.max - startValue.max) * t));
     }
 
-    internal class TweenerQuaternion : Tweener<Quaternion>
+    internal sealed class TweenerQuaternion : Tweener<Quaternion>
     {
         internal override void Set(float t) => setter(Quaternion.LerpUnclamped(startValue, endValue, t));
     }
 
-    internal class TweenerColor : Tweener<Color>
+    internal sealed class TweenerColor : Tweener<Color>
     {
         internal override void Set(float t) => setter(Color.LerpUnclamped(startValue, endValue, t));
     }
 
-    internal class TweenerString : Tweener<string>
+    internal sealed class TweenerString : Tweener<string>
     {
         private static System.Random rand = new System.Random(-1234567891);
 
