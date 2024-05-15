@@ -303,7 +303,8 @@ namespace AnimFlex.Editor.Tweener
         {
             var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
             s_fromGuiContnet ??= new GUIContent("For :", fromProp.tooltip);
-            bool isVariable = false;
+            bool fetchableIsVariable = false;
+            SerializedProperty fetchableConstant = null;
 
             var pos = new Rect(position)
             {
@@ -332,7 +333,8 @@ namespace AnimFlex.Editor.Tweener
                             EditorGUI.PropertyField(pos, prop, s_fromGuiContnet);
                         pos.x -= 5;
                         pos.width += 5 * 2;
-                        isVariable = prop.FindPropertyRelative(nameof(VariableFetch<int>._index)).intValue != 0;
+                        fetchableIsVariable = prop.FindPropertyRelative(nameof(VariableFetch<int>._index)).intValue != 0;
+                        fetchableConstant = prop.FindPropertyRelative(nameof(VariableFetch<int>.value));
                     }
                 }
                 else
@@ -352,7 +354,10 @@ namespace AnimFlex.Editor.Tweener
             }
 
             // null warning
-            if (!isVariable && (fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null))
+            if (
+                (!SequenceAnimEditor.Current && (fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null)) ||
+                (SequenceAnimEditor.Current && !fetchableIsVariable && (fetchableConstant.isArray && fetchableConstant.arraySize == 0 || !fetchableConstant.isArray && fetchableConstant.objectReferenceValue == null))
+                )
             {
                 pos.x = position.x;
                 pos.y += EditorGUI.GetPropertyHeight(fromProp) + AFStyles.VerticalSpace;

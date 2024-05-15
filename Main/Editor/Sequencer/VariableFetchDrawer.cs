@@ -34,7 +34,7 @@ namespace AnimFlex.Editor
                 for (int i = 0; i < variables.Length; i++)
                 {
                     int index = i;
-                    if (variables[i].Type == type)
+                    if (variables[i].Type == type || variables[i].Type.IsSubclassOf(type))
                     {
                         menu.AddItem(new GUIContent("Variables/" + i), indexProp.intValue == i + 1, () =>
                         {
