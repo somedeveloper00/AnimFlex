@@ -152,6 +152,24 @@ namespace AnimFlex.Tweening
 
         #endregion
 
+        #region AnimAnchoredPositionTo
+
+        public static Tweener<Vector2> AnimAnchoredPositionTo(this RectTransform transform, Vector2 endPosition, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+            AnimAnchoredPositionTo(transform, endPosition, duration, delay, EaseEvaluator.CUSTOM_ANIMATION_CURVE_EASE, curve, proxy);
+
+        public static Tweener<Vector2> AnimAnchoredPositionTo(this RectTransform transform, Vector2 endPosition, Ease ease = Ease.InOutSine, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
+            AnimAnchoredPositionTo(transform, endPosition, duration, delay, ease, null, proxy);
+
+        internal static Tweener<Vector2> AnimAnchoredPositionTo(this RectTransform transform, Vector2 endPosition, float duration, float delay, Ease ease, AnimationCurve curve, AnimflexCoreProxy proxy)
+        {
+            return Tweener.Generate(
+                () => transform.anchoredPosition,
+                (value) => transform.anchoredPosition = value,
+                endPosition, duration, delay, ease, curve,
+                () => transform != null, proxy);
+        }
+
+        #endregion
 
         #region AnimFadeTo
         public static Tweener<float> AnimFadeTo(this Graphic graphic, float endFade, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null)

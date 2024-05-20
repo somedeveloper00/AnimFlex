@@ -55,17 +55,12 @@ namespace AnimFlex.Editor
 
         public override void OnInspectorGUI()
         {
-            if (AFPreviewUtils.IsActive)
-            {
-                GUILayout.Label("Previewing...");
-                return;
-            }
             Current = this;
             serializedObject.Update();
 
+            DrawPlayback();
             using (new EditorGUI.DisabledScope(Application.isPlaying))
             {
-                DrawPlayback();
                 GUILayout.Space(AFStyles.VerticalSpace);
                 DrawVariables();
                 GUILayout.Space(AFStyles.VerticalSpace);

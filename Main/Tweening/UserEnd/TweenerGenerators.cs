@@ -149,6 +149,25 @@ namespace AnimFlex.Tweening
 
     #endregion
 
+    #region Rect Transform
+
+    [Serializable]
+    public class TweenerGeneratorAnchoredPosition : TweenerGenerator<RectTransform, Vector2>
+    {
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
+        {
+            var toPos = target;
+            if (relative)
+            {
+                toPos += fromObject.anchoredPosition;
+            }
+
+            return fromObject.AnimAnchoredPositionTo(toPos, duration, delay, ease, customCurve, proxy);
+        }
+    }
+
+    #endregion
+
     #region Fade
 
     [Serializable]

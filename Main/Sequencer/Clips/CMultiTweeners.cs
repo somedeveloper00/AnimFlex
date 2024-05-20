@@ -20,6 +20,9 @@ namespace AnimFlex.Sequencer.Clips
     [DisplayName("Multi Tweener Scale")]
     [Category("Tweener/Multi/Transform/Scale")]
     internal class CMultiTweenerScale : CMultiTweener<Transform, Vector3, MultiTweenerGeneratorScale> { }
+    [DisplayName("Multi Tweener Anchored Position")]
+    [Category("Tweener/Multi/Rect Transform/Anchored Position")]
+    internal class CMultiTweenerAnchoredPosition : CMultiTweener<RectTransform, Vector2, MultiTweenerGeneratorAnchoredPosition> { }
     [DisplayName("Multi Tweener Transform")]
     [Category("Tweener/Multi/Transform/Transform")]
     internal class CMultiTweenerTransform : CMultiTweener<Transform, Transform, MultiTweenerGeneratorTransform> { }

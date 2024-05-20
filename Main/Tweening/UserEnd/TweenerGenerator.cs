@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AnimFlex.Core.Proxy;
-using AnimFlex.Sequencer.Clips;
 using UnityEngine;
 using UnityEngine.Events;
 using Component = UnityEngine.Component;

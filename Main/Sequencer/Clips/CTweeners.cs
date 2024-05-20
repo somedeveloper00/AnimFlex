@@ -20,6 +20,9 @@ namespace AnimFlex.Sequencer.Clips
     [DisplayName("Tweener Scale")]
     [Category("Tweener/Transform/Scale")]
     public class CTweenerScale : CTweener<Transform, Vector3, TweenerGeneratorScale> { }
+    [DisplayName("Tweener Anchored Position")]
+    [Category("Tweener/Rect Transform/Anchored Position")]
+    public class CTweenerAnchoredPosition : CTweener<RectTransform, Vector2, TweenerGeneratorAnchoredPosition> { }
     [DisplayName("Tweener Transform")]
     [Category("Tweener/Transform/Transform")]
     public class CTweenerTransform : CTweener<Transform, Transform, TweenerGeneratorTransform> { }
