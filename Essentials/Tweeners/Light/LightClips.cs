@@ -1,18 +1,18 @@
 ﻿using System.ComponentModel;
-using AnimFlex.Sequencer.Clips;
+using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
 	[DisplayName("Tweener Light Color")]
 	[Category("Tweener/Light/Color")]
-	public class CTweenerLightColor : CTweener<Light, Color, TweenerGeneratorLightColor> { }
+	public sealed class CTweenerLightColor : CTweener<Light, Color, TweenerGeneratorLightColor> { }
 
 	[DisplayName("Tweener Light Intensity")]
 	[Category("Tweener/Light/Intensity")]
-	public class CTweenerLightIntensity : CTweener<Light, float, TweenerGeneratorLightIntensity> { }
+	public sealed class CTweenerLightIntensity : CTweener<Light, float, TweenerGeneratorLightIntensity> { }
 
 	[DisplayName("Tweener Light Range")]
 	[Category("Tweener/Light/Range")]
-	public class CTweenerLightRange : CTweener<Light, float, TweenerGeneratorLightRange> { }
+	public sealed class CTweenerLightRange : CTweener<Light, float, TweenerGeneratorLightRange> { }
 }

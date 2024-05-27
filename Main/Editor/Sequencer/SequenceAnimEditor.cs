@@ -42,6 +42,8 @@ namespace AnimFlex.Editor
         private void OnEnable()
         {
             sequenceAnim = target as SequenceAnim;
+            if (sequenceAnim == null)
+                return;
             sequence = sequenceAnim.sequence;
             GetProperties();
 

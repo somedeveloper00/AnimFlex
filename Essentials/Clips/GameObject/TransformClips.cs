@@ -7,7 +7,7 @@ namespace AnimFlex {
     [DisplayName("Set Sibling")]
     [Category("GameObject/Transform/Set Sibling Index")]
     [Serializable]
-    sealed class CTransformSetSibling : Clip {
+    internal sealed class CTransformSetSibling : Clip {
 
         public Transform transform;
         public int siblingIndex;

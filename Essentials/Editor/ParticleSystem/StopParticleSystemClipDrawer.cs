@@ -1,10 +1,11 @@
-﻿using UnityEditor;
+﻿using AnimFlex.Sequencer.Clips;
+using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Editor
 {
     [CustomPropertyDrawer(typeof(StopParticleSystem))]
-    public class StopParticleSystemClipDrawer : PropertyDrawer
+    public sealed class StopParticleSystemClipDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

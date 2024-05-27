@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using AnimFlex.Sequencer;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
     [Category("FX/Play Particle System")]
     [DisplayName("Play Particle System")]
@@ -19,9 +18,8 @@ namespace AnimFlex
 
         [Tooltip("If Enabled, the clip will wait until the particle system finishes playing before moving to the next clip")]
         public bool waitTillFinish = true;
-
-        float t;
-        float longestDuration;
+        private float t;
+        private float longestDuration;
 
         protected override void OnStart()
         {

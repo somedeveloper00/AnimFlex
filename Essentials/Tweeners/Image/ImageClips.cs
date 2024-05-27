@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using AnimFlex.Sequencer.Clips;
+using AnimFlex.Tweening;
 using UnityEngine.UI;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
-	[DisplayName("Tweener Image Fill")]
+    [DisplayName("Tweener Image Fill")]
 	[Category("Tweener/Image/Fill")]
-	public class CTweenerImageFill : CTweener<Image, float, TweenerGeneratorImageFill> { }
+	public sealed class CTweenerImageFill : CTweener<Image, float, TweenerGeneratorImageFill> { }
 }

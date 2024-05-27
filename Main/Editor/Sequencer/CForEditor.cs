@@ -6,7 +6,7 @@ using UnityEngine;
 namespace AnimFlex.Editor
 {
     [CustomPropertyDrawer(typeof(NodeSelection))]
-    public class NodeSelectionDrawer : PropertyDrawer
+    public sealed class NodeSelectionDrawer : PropertyDrawer
     {
         private Sequence _sequence;
 

@@ -1,7 +1,6 @@
 ﻿using AnimFlex.Editor.Preview;
 using AnimFlex.Sequencer;
 using AnimFlex.Sequencer.Clips;
-using AnimFlex.Sequencer.Variables;
 using AnimFlex.Tweening;
 using UnityEditor;
 using UnityEngine;
@@ -289,23 +288,6 @@ namespace AnimFlex.Editor.Tweener
         {
             var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
             var height = Mathf.Max(AFStyles.Height, EditorGUI.GetPropertyHeight(fromProp));
-            bool isVariable = false;
-
-            if (SequenceAnimEditor.Current != null && ClipNodeDrawer.Current != null)
-            {
-                // draw variable fetch from clip node (parent)
-                // get clip node
-                string parentPropertyPath = AFEditorUtils.GetParentPropertyPath(property.propertyPath);
-                var clipNodeProp = property.serializedObject.FindProperty(parentPropertyPath);
-                if (clipNodeProp != null)
-                {
-                    var prop = clipNodeProp.FindPropertyRelative(nameof(CTweenerPosition.from));
-                    isVariable = prop.FindPropertyRelative(nameof(VariableFetch<int>._index)).intValue != 0;
-                }
-            }
-
-            if (!isVariable && (fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null))
-                height += AFStyles.Height + AFStyles.VerticalSpace;
             return height;
         }
 
@@ -313,9 +295,6 @@ namespace AnimFlex.Editor.Tweener
         {
             var fromProp = property.FindPropertyRelative(nameof(TweenerGeneratorPosition.fromObject));
             s_fromGuiContnet ??= new GUIContent("For :", fromProp.tooltip);
-            bool fetchableIsVariable = false;
-            SerializedProperty fetchableConstant = null;
-
             var pos = new Rect(position)
             {
                 width = position.width - 80
@@ -343,8 +322,6 @@ namespace AnimFlex.Editor.Tweener
                             EditorGUI.PropertyField(pos, prop, s_fromGuiContnet);
                         pos.x -= 5;
                         pos.width += 5 * 2;
-                        fetchableIsVariable = prop.FindPropertyRelative(nameof(VariableFetch<int>._index)).intValue != 0;
-                        fetchableConstant = prop.FindPropertyRelative(nameof(VariableFetch<int>.value));
                     }
                 }
                 else
@@ -358,22 +335,24 @@ namespace AnimFlex.Editor.Tweener
             pos.width = 80;
             if (GUI.Button(pos, s_selfBtnGuiContent, AFStyles.Button))
             {
-                fromProp.objectReferenceValue =
-                    ((Component)property.serializedObject.targetObject)
-                    .GetComponent(target.GetFromValueType());
-            }
-
-            // null warning
-            if (
-                (!SequenceAnimEditor.Current && (fromProp.isArray && fromProp.arraySize == 0 || !fromProp.isArray && fromProp.objectReferenceValue == null)) ||
-                (SequenceAnimEditor.Current && !fetchableIsVariable && (fetchableConstant.isArray && fetchableConstant.arraySize == 0 || !fetchableConstant.isArray && fetchableConstant.objectReferenceValue == null))
-                )
-            {
-                pos.x = position.x;
-                pos.y += EditorGUI.GetPropertyHeight(fromProp) + AFStyles.VerticalSpace;
-                pos.width = position.width;
-                pos.height = AFStyles.BigHeight;
-                AFStyles.DrawHelpBox(pos, "The \"From\" reference is empty!", MessageType.Warning);
+                var obj = ((Component)property.serializedObject.targetObject).GetComponent(target.GetFromValueType());
+                if (SequenceAnimEditor.Current == null)
+                {
+                    fromProp.objectReferenceValue = obj;
+                }
+                else
+                {
+                    var clipNodeProp = property.serializedObject.FindProperty(AFEditorUtils.GetParentPropertyPath(property.propertyPath));
+                    if (clipNodeProp != null)
+                    {
+                        clipNodeProp
+                            .FindPropertyRelative(nameof(CTweenerPosition.from))
+                            .FindPropertyRelative(nameof(VariableFetch<int>.value)).objectReferenceValue = obj;
+                        clipNodeProp
+                            .FindPropertyRelative(nameof(CTweenerPosition.from))
+                            .FindPropertyRelative(nameof(VariableFetch<int>._index)).intValue = 0;
+                    }
+                }
             }
         }
 

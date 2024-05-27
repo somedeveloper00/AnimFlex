@@ -1,10 +1,9 @@
 ﻿using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
-	public static class AudioTweenerExtensions
+    public static class AudioTweenerExtensions
 	{
 		public static Tweener<float> AnimAudioVolumeTo(this AudioSource audioSource, float volume, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
 			AnimAudioVolumeTo(audioSource, volume, duration, delay, Ease.Linear, curve, proxy);

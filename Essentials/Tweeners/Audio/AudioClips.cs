@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using AnimFlex.Sequencer.Clips;
+using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
 	[DisplayName( "Tweener Audio Volume" )]
 	[Category( "Tweener/Audio/Volume" )]
-	public class CTweenerAudioVolume : CTweener<AudioSource, float, TweenerGeneratorAudioVolume> { }
+	public sealed class CTweenerAudioVolume : CTweener<AudioSource, float, TweenerGeneratorAudioVolume> { }
 }

@@ -1,10 +1,9 @@
 ﻿using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
-	public static class CameraTweenerExtensions
+    public static class CameraTweenerExtensions
 	{
 		public static Tweener<float> AnimCameraFieldOfViewTo(this Camera camera, float value, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
 			AnimCameraFieldOfViewTo(camera, value, duration, delay, Ease.Linear, curve, proxy);

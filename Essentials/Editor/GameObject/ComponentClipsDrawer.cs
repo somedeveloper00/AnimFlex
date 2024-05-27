@@ -1,10 +1,11 @@
-﻿using UnityEditor;
+﻿using AnimFlex.Sequencer.Clips;
+using UnityEditor;
 using UnityEngine;
 
 namespace AnimFlex.Editor
 {
     [CustomPropertyDrawer(typeof(ComponentDestroy), true)]
-    public class ComponentDestroyDrawer : PropertyDrawer
+    public sealed class ComponentDestroyDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -22,7 +23,7 @@ namespace AnimFlex.Editor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) => AFStyles.Height + AFStyles.VerticalSpace;
     }
     [CustomPropertyDrawer(typeof(ComponentSetActive), true)]
-    public class ComponentSetActiveDrawer : PropertyDrawer
+    public sealed class ComponentSetActiveDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

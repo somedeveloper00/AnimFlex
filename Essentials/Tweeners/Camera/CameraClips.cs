@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using AnimFlex.Sequencer.Clips;
+using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
-	[DisplayName("Tweener Camera FieldOfView")]
+    [DisplayName("Tweener Camera FieldOfView")]
 	[Category("Tweener/Camera/Field Of View")]
-	public class CTweenerCameraFieldOfView : CTweener<Camera, float, TweenerGeneratorCameraFieldOfView> { }
+	public sealed class CTweenerCameraFieldOfView : CTweener<Camera, float, TweenerGeneratorCameraFieldOfView> { }
 }

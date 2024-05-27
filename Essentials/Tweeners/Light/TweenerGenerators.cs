@@ -1,12 +1,11 @@
 ﻿using System;
 using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
 	[Serializable]
-	public class TweenerGeneratorLightColor : TweenerGenerator<Light, Color>
+	public sealed class TweenerGeneratorLightColor : TweenerGenerator<Light, Color>
 	{
 		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
 		{
@@ -15,7 +14,7 @@ namespace AnimFlex
 	}
 
 	[Serializable]
-	public class TweenerGeneratorLightIntensity : TweenerGenerator<Light, float>
+	public sealed class TweenerGeneratorLightIntensity : TweenerGenerator<Light, float>
 	{
 		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
 		{
@@ -24,7 +23,7 @@ namespace AnimFlex
 	}
 
 	[Serializable]
-	public class TweenerGeneratorLightRange : TweenerGenerator<Light, float>
+	public sealed class TweenerGeneratorLightRange : TweenerGenerator<Light, float>
 	{
 		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
 		{

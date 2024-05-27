@@ -8,12 +8,12 @@ namespace AnimFlex.Sequencer.Clips
     public sealed class CGoto : Clip
     {
         [Tooltip("The node index to play after this node")]
-        public VariableFetch<int> index;
+        public VariableFetch<NodeSelection> index;
 
         protected override void OnStart()
         {
             InjectVariable(ref index);
-            PlayIndex(index.value);
+            PlayIndex(index.value.index);
         }
         public override void OnEnd() { }
     }

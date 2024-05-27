@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using AnimFlex.Sequencer;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
     [Category("FX/Stop Particle System")]
     [DisplayName("Stop Particle System")]

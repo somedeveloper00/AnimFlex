@@ -1,8 +1,7 @@
 using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
 	public static class LightTweenerExtensions
 	{

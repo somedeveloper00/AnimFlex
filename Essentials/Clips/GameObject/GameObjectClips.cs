@@ -1,15 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using AnimFlex.Sequencer;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
     [DisplayName("Destroy GameObject")]
     [Category("GameObject/Destroy")]
     [Serializable]
-    sealed class GameObjectDestroy : Clip
+    internal sealed class GameObjectDestroy : Clip
     {
         public GameObject gameObject;
 
@@ -35,7 +34,7 @@ namespace AnimFlex
     [DisplayName("Change Parent")]
     [Category("GameObject/Change Parent")]
     [Serializable]
-    sealed class GameObjectReParent : Clip
+    internal sealed class GameObjectReParent : Clip
     {
         public GameObject gameObject;
         public Transform newParent;
@@ -52,7 +51,7 @@ namespace AnimFlex
     [DisplayName("Set Active")]
     [Category("GameObject/Set Active")]
     [Serializable]
-    sealed class GameObjectSetActive : Clip
+    internal sealed class GameObjectSetActive : Clip
     {
         public GameObject gameObject;
 
@@ -92,7 +91,7 @@ namespace AnimFlex
     [DisplayName("Instanciate ()")]
     [Category("GameObject/Instantiate/()")]
     [Serializable]
-    sealed class GameObjectInstantiate_Simple : GameObjectInstantiate
+    internal sealed class GameObjectInstantiate_Simple : GameObjectInstantiate
     {
         protected override GameObject instantiate() => Object.Instantiate(gameObject);
     }
@@ -100,7 +99,7 @@ namespace AnimFlex
     [DisplayName("Instanciate (parent)")]
     [Category("GameObject/Instantiate/(Parent)")]
     [Serializable]
-    sealed class GameObjectInstantiate_Par : GameObjectInstantiate
+    internal sealed class GameObjectInstantiate_Par : GameObjectInstantiate
     {
         public Transform parent;
         public bool worldPositionStays = true;
@@ -112,7 +111,7 @@ namespace AnimFlex
     [DisplayName("Instanciate (position, rotation, parent)")]
     [Category("GameObject/Instantiate/(position, rotation, Parent)")]
     [Serializable]
-    sealed class GameObjectInstantiate_PosRotPar : GameObjectInstantiate
+    internal sealed class GameObjectInstantiate_PosRotPar : GameObjectInstantiate
     {
         public Vector3 position;
         public Quaternion rotation;

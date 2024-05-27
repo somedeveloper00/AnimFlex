@@ -1,12 +1,11 @@
 ﻿using System;
 using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
     [Serializable]
-    public class TweenerGeneratorProjectorSize : TweenerGenerator<Projector, float>
+    public sealed class TweenerGeneratorProjectorSize : TweenerGenerator<Projector, float>
     {
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
         {
@@ -15,7 +14,7 @@ namespace AnimFlex
     }
 
     [Serializable]
-    public class TweenerGeneratorProjectorAspectRatio : TweenerGenerator<Projector, float>
+    public sealed class TweenerGeneratorProjectorAspectRatio : TweenerGenerator<Projector, float>
     {
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
         {
@@ -24,7 +23,7 @@ namespace AnimFlex
     }
 
     [Serializable]
-    public class TweenerGeneratorProjectorFieldOfView : TweenerGenerator<Projector, float>
+    public sealed class TweenerGeneratorProjectorFieldOfView : TweenerGenerator<Projector, float>
     {
         protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
         {

@@ -1,11 +1,10 @@
 ﻿using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
-	public static class ImageTweenerExtensions
+    public static class ImageTweenerExtensions
 	{
 		public static Tweener<float> AnimImageFillTo(this Image image, float fill, AnimationCurve curve, float duration = 1, float delay = 0, AnimflexCoreProxy proxy = null) =>
 			AnimImageFillTo(image, fill, duration, delay, Ease.Linear, curve, proxy);

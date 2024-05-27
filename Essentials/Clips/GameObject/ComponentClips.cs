@@ -1,15 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using AnimFlex.Sequencer;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace AnimFlex
+namespace AnimFlex.Sequencer.Clips
 {
     [DisplayName("Destroy Component")]
     [Category("GameObject/Component/Destroy")]
     [Serializable]
-    public class ComponentDestroy : Clip
+    public sealed class ComponentDestroy : Clip
     {
         public Behaviour component;
 
@@ -30,7 +29,7 @@ namespace AnimFlex
     [DisplayName("Set Component Active")]
     [Category("GameObject/Component/Set Active")]
     [Serializable]
-    public class ComponentSetActive : Clip
+    public sealed class ComponentSetActive : Clip
     {
         public Behaviour component;
         [Tooltip("The active state of the component")]

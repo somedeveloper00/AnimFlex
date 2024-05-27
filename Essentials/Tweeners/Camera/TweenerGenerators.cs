@@ -1,16 +1,12 @@
 ﻿using System;
 using AnimFlex.Core.Proxy;
-using AnimFlex.Tweening;
 using UnityEngine;
 
-namespace AnimFlex
+namespace AnimFlex.Tweening
 {
-	[Serializable]
-	public class TweenerGeneratorCameraFieldOfView : TweenerGenerator<Camera, float>
+    [Serializable]
+	public sealed class TweenerGeneratorCameraFieldOfView : TweenerGenerator<Camera, float>
 	{
-		protected override Tweener GenerateTween(AnimflexCoreProxy proxy)
-		{
-			return fromObject.AnimCameraFieldOfViewTo(target, duration, delay, ease, customCurve, proxy);
-		}
-	}
+        protected override Tweener GenerateTween(AnimflexCoreProxy proxy) => fromObject.AnimCameraFieldOfViewTo(target, duration, delay, ease, customCurve, proxy);
+    }
 }
