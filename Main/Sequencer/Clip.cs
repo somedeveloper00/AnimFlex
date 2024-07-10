@@ -53,12 +53,12 @@ namespace AnimFlex.Sequencer
         public abstract void OnEnd();
 
         /// <summary>
-        /// if true, it'll receive <c>Tick()</c> callback every Update
+        /// if true, it'll receive <see cref="Tick"/> callback every Update
         /// </summary>
         public virtual bool HasTick() => false;
 
         /// <summary>
-        /// executes every Update time if <c>hasTick()</c> is true
+        /// executes every Update time if <see cref="HasTick"/> is true
         /// </summary>
         public virtual void Tick(float deltaTime) { }
 
